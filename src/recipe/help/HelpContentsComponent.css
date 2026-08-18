@@ -1,17 +1,12 @@
 .help {
 	overflow: auto;
 	-webkit-overflow-scrolling: touch;
-
-	--help-accent: var(--dietwise-dark-green);
-	--help-badge-background: rgba(var(--ion-color-dwlightgreen-rgb), 0.14);
-	--help-callout-background: rgba(var(--ion-color-dwlightgreen-rgb), 0.07);
-	--help-text: var(--ion-color-step-750);
 }
 
 .help p {
 	margin: 0 0 12px;
 	line-height: 1.55;
-	color: var(--help-text);
+	color: var(--dietwise-body-text);
 }
 
 .help__title {
@@ -19,7 +14,7 @@
 	font-size: 1.75rem;
 	font-weight: 700;
 	line-height: 1.2;
-	color: var(--help-accent);
+	color: var(--dietwise-accent);
 }
 
 .help__intro {
@@ -57,8 +52,8 @@
 	width: 34px;
 	height: 34px;
 	border-radius: 50%;
-	background: var(--help-badge-background);
-	color: var(--help-accent);
+	background: var(--dietwise-badge-background);
+	color: var(--dietwise-accent);
 	font-size: 1rem;
 	font-weight: 600;
 	line-height: 1;
@@ -75,7 +70,7 @@
 	font-size: 1.15rem;
 	font-weight: 700;
 	line-height: 1.25;
-	color: var(--help-accent);
+	color: var(--dietwise-accent);
 }
 
 .help__step-body > *:last-child {
@@ -89,11 +84,11 @@
 	margin: 0 0 12px;
 	padding-left: 20px;
 	line-height: 1.55;
-	color: var(--help-text);
+	color: var(--dietwise-body-text);
 }
 
 .help__options li::marker {
-	color: var(--help-accent);
+	color: var(--dietwise-accent);
 }
 
 .help__callout {
@@ -103,7 +98,7 @@
 	margin-top: 16px;
 	padding: 14px 16px;
 	border-radius: 12px;
-	background: var(--help-callout-background);
+	background: var(--dietwise-callout-background);
 }
 
 .help__callout > div > *:last-child {
@@ -115,7 +110,7 @@
 	font-size: 1rem;
 	font-weight: 600;
 	line-height: 1.25;
-	color: var(--help-accent);
+	color: var(--dietwise-accent);
 }
 
 .sim-button {

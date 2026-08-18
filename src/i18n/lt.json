@@ -26,6 +26,35 @@
 			"step3": "Įveskite savo el. pašto adresą ir slaptažodį (privaloma), vardą (neprivaloma)"
 		}
 	},
+	"onboarding": {
+		"showAgain": "Rodyti įvadą",
+		"skip": "Praleisti",
+		"next": "Toliau",
+		"getStarted": "Pradėti",
+		"goToScreen": "Eiti į {{number}} ekraną",
+		"welcome": {
+			"title": "Gaminkite sveikiau su „MyRecipeWatch“",
+			"text": "Įklijuokite recepto nuorodą iš savo mėgstamos kulinarijos svetainės ir atraskite sveikesnių ingredientų pakaitų – nekeisdami mėgstamų patiekalų.",
+			"start": "Pradėkime"
+		},
+		"assess": {
+			"title": "Įvertinkite savo receptą",
+			"text": "Nukopijuokite recepto URL adresą, įklijuokite jį programėlėje ir paspauskite „Vertinti“. Mes automatiškai išskirsime ingredientus ir išanalizuosime receptą."
+		},
+		"choose": {
+			"title": "Pasirinkite sveikesnes alternatyvas",
+			"text": "Peržiūrėkite mūsų siūlomus ingredientų pakaitus. Priimkite tuos, kurie jums patinka, kitus atmeskite ir iškart pamatykite, kaip pasikeičia jūsų receptas."
+		},
+		"impact": {
+			"title": "Pamatykite rezultatą",
+			"text": "Stebėkite, kaip jūsų recepto vertinimas gerėja, kai priimate sveikesnius ingredientus.",
+			"cost": "Taip pat matysite numatomą kiekvienos alternatyvos kainą (€–€€€) ir sezoniškumą, kad galėtumėte priimti subalansuotus sprendimus."
+		},
+		"registration": {
+			"title": "Registracija",
+			"text": "Nedvejokite, susikurkite paskyrą!"
+		}
+	},
 	"recipe": {
 		"title": "MyRecipeWatch",
 		"helpTitle": "Pagalba",
