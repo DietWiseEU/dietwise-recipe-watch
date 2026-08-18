@@ -26,6 +26,35 @@
 			"step3": "Enter your email and password (required), name (optional)"
 		}
 	},
+	"onboarding": {
+		"showAgain": "Show the introduction",
+		"skip": "Skip",
+		"next": "Next",
+		"getStarted": "Get started",
+		"goToScreen": "Go to screen {{number}}",
+		"welcome": {
+			"title": "Cook healthier with MyRecipeWatch",
+			"text": "Paste a recipe link from your favourite cooking website and discover healthier ingredient swaps—while keeping the meals you love.",
+			"start": "Let's get started"
+		},
+		"assess": {
+			"title": "Assess your recipe",
+			"text": "Copy a recipe URL, paste it into the app and tap Assess. We'll automatically extract the ingredients and analyse the recipe."
+		},
+		"choose": {
+			"title": "Choose healthier alternatives",
+			"text": "Review our suggested ingredient swaps. Accept the ones you like, reject the others, and instantly see how your recipe changes."
+		},
+		"impact": {
+			"title": "See the impact",
+			"text": "Watch your recipe score improve as you accept healthier ingredients.",
+			"cost": "You'll also see an estimated cost (€–€€€) and seasonality for each alternative to help you make balanced choices."
+		},
+		"registration": {
+			"title": "Registration",
+			"text": "Go on, create an account!"
+		}
+	},
 	"recipe": {
 		"title": "MyRecipeWatch Recipe",
 		"helpTitle": "Help",

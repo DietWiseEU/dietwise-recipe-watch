@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
 	IonButton,
 	IonButtons,
@@ -10,16 +10,28 @@ import {
 	IonToolbar,
 } from '@ionic/react';
 import { useTranslation } from 'react-i18next';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { userAtom } from '@/auth/atoms';
 import { authService } from '@/auth/authService';
 import TermsModal from '@/home/TermsModal';
+import { onboardingSeenAtom } from '@/onboarding/atoms';
+import OnboardingModal from '@/onboarding/OnboardingModal';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
 	const user = useAtomValue(userAtom);
 	const signIn = useCallback(() => authService.signIn(), []);
 	const [isTermsOpen, setIsTermsOpen] = useState(false);
+	const onboardingSeen = useAtomValue(onboardingSeenAtom);
+	const setOnboardingSeen = useSetAtom(onboardingSeenAtom);
+	// The onboarding introduces the app once; afterwards it is only shown on demand.
+	const [isOnboardingOpen, setIsOnboardingOpen] = useState(!onboardingSeen);
+
+	useEffect(() => {
+		if (!onboardingSeen) {
+			void setOnboardingSeen(true);
+		}
+	}, [onboardingSeen, setOnboardingSeen]);
 
 	return (
 		<IonPage>
@@ -61,6 +73,11 @@ const HomePage: React.FC = () => {
 						</>
 					)}
 					<p className="ion-text-center">
+						<IonButton fill="outline" onClick={() => setIsOnboardingOpen(true)}>
+							{t('onboarding.showAgain')}
+						</IonButton>
+					</p>
+					<p className="ion-text-center">
 						<IonButton fill="clear" size="small" onClick={() => setIsTermsOpen(true)}>
 							{t('terms.openButton')}
 						</IonButton>
@@ -68,6 +85,7 @@ const HomePage: React.FC = () => {
 				</div>
 
 				<TermsModal isOpen={isTermsOpen} setIsOpen={setIsTermsOpen} />
+				<OnboardingModal isOpen={isOnboardingOpen} setIsOpen={setIsOnboardingOpen} />
 			</IonContent>
 		</IonPage>
 	);

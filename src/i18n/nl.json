@@ -26,6 +26,35 @@
 			"step3": "Voer je e-mailadres en wachtwoord in (verplicht), naam (optioneel)"
 		}
 	},
+	"onboarding": {
+		"showAgain": "Bekijk de introductie",
+		"skip": "Overslaan",
+		"next": "Volgende",
+		"getStarted": "Aan de slag",
+		"goToScreen": "Ga naar scherm {{number}}",
+		"welcome": {
+			"title": "Kook gezonder met MyRecipeWatch",
+			"text": "Plak een receptlink van je favoriete kooksite en ontdek gezondere alternatieven voor ingrediënten — terwijl je de maaltijden houdt waar je van houdt.",
+			"start": "Laten we beginnen"
+		},
+		"assess": {
+			"title": "Beoordeel je recept",
+			"text": "Kopieer de URL van een recept, plak die in de app en tik op BEOORDELEN. We halen automatisch de ingrediënten eruit en analyseren het recept."
+		},
+		"choose": {
+			"title": "Kies gezondere alternatieven",
+			"text": "Bekijk onze voorgestelde vervangingen voor ingrediënten. Accepteer wat je bevalt, wijs de rest af en zie direct hoe je recept verandert."
+		},
+		"impact": {
+			"title": "Zie het effect",
+			"text": "Zie de score van je recept verbeteren terwijl je gezondere ingrediënten accepteert.",
+			"cost": "Je ziet ook een geschatte prijs (€–€€€) en de seizoensgebondenheid van elk alternatief, zodat je evenwichtige keuzes kunt maken."
+		},
+		"registration": {
+			"title": "Registratie",
+			"text": "Ga ervoor, maak een account aan!"
+		}
+	},
 	"recipe": {
 		"title": "MyRecipeWatch Recept",
 		"helpTitle": "Help",

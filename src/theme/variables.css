@@ -15,6 +15,12 @@ http://ionicframework.com/docs/theming/ */
 	--ion-color-dwlightgreen-shade: #00baa5;
 	--ion-color-dwlightgreen-tint: #1ad7c2;
 
+	/* Shared accents of the explanatory screens (help, onboarding) */
+	--dietwise-accent: var(--dietwise-dark-green);
+	--dietwise-badge-background: rgba(var(--ion-color-dwlightgreen-rgb), 0.14);
+	--dietwise-callout-background: rgba(var(--ion-color-dwlightgreen-rgb), 0.07);
+	--dietwise-body-text: var(--ion-color-step-750);
+
 	--ion-color-lightmedium: #deddda;
 	--ion-color-lightmedium-rgb: 222,221,218;
 	--ion-color-lightmedium-contrast: #000000;

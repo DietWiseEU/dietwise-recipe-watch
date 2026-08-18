@@ -33,6 +33,7 @@ src/
   config/                  AppConfig (auth/api hosts) + Jotai atoms + runtime loader
   home/                    Landing page
   i18n/                    {en,el,lt,nl}.json + configureI18n
+  onboarding/              First-run introduction, opened once and then from the home page
   personalization/         Personal info form, atoms (uses atomWithRefresh + unwrap)
   recipe/                  The core: URL entry → streaming assessment → suggestions UI
     actions.ts             Action creators + discriminated union (MainAction)
