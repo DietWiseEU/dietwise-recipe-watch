@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { IngredientStateType, Rating, Recipe, RecipeDetectionType, SuggestionState } from '@/recipe/model';
 import IngredientComponent from './IngredientComponent';
 import RatingComponent from './RatingComponent';
+import { MAX_RATING } from '@/recipe/reducers/calculateRating';
 import brainIcon from '@/assets/images/brain.svg';
 import jsonLdIcon from '@/assets/images/json-ld.svg';
 import './RecipeComponent.css';
@@ -69,7 +70,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 						/>
 					) : null}
 				</div>
-				{props.rating ? <RatingComponent rating={props.rating} max={10} /> : null}
+				{props.rating ? <RatingComponent rating={props.rating} max={MAX_RATING} /> : null}
 			</h2>
 			{props.recipe.recipeIngredients?.length > 0 ? (
 				<>

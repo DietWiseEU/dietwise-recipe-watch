@@ -72,6 +72,7 @@
 		"anonymousRecipeTemplateTitle": "Receptas #{{index, number}}",
 		"emptySuggestionsFromServer": "Šiam receptui pasiūlymų nėra",
 		"rating": {
+			"score": "Įvertinimas {{score}} iš {{max}}",
 			"detailsTitle": "Šiame recepte esantys komponentai",
 			"encouragedPresent": "Skatinamas",
 			"limitedPresent": "Apriboti",

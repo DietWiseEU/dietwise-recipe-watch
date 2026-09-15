@@ -72,6 +72,7 @@
 		"anonymousRecipeTemplateTitle": "Recept #{{index, number}}",
 		"emptySuggestionsFromServer": "Er zijn geen suggesties voor dit recept.",
 		"rating": {
+			"score": "Beoordeling {{score}} van {{max}}",
 			"detailsTitle": "Componenten aanwezig in dit recept",
 			"encouragedPresent": "Aangemoedigd",
 			"limitedPresent": "Om te beperken",

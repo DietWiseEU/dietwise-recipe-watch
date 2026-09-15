@@ -72,6 +72,7 @@
 		"anonymousRecipeTemplateTitle": "Συνταγή #{{index, number}}",
 		"emptySuggestionsFromServer": "Δεν υπάρχουν προτάσεις για αυτή τη συνταγή.",
 		"rating": {
+			"score": "Βαθμολογία {{score}} από {{max}}",
 			"detailsTitle": "Στοιχεία της συνταγής",
 			"encouragedPresent": "Θετικά",
 			"limitedPresent": "Προς περιορισμό",
