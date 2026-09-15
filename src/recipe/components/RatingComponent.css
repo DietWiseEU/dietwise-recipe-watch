@@ -1,28 +1,28 @@
-.rating-bipolar {
+.rating-score {
 	display: flex;
 	align-items: center;
-	gap: 6px;
+	gap: 8px;
 	width: 100%;
 	max-width: 260px;
 	cursor: pointer;
 }
 
-.rating-bipolar:focus-visible {
+.rating-score:focus-visible {
 	outline: 2px solid var(--ion-color-primary, #3880ff);
 	outline-offset: 3px;
 	border-radius: 6px;
 }
 
-.rating-bipolar__component {
+.rating-score__component {
 	text-transform: capitalize;
 }
 
 /* Separates the "To limit" section from the "Encouraged" one above it, only when both are shown. */
-.rating-bipolar__section-gap {
+.rating-score__section-gap {
 	margin-top: 32px;
 }
 
-.rating-bipolar__track {
+.rating-score__track {
 	position: relative;
 	flex: 1;
 	height: 12px;
@@ -31,26 +31,38 @@
 	overflow: hidden;
 }
 
-.rating-bipolar__fill {
+.rating-score__fill {
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	transition: width 0.25s ease;
+	left: 0;
+	transition:
+		width 0.25s ease,
+		background-color 0.25s ease;
 }
 
-/* Grows toward the center icon, i.e. to the left, as more LIMITED components are present. */
-.rating-bipolar__fill--limited {
-	right: 0;
+.rating-score__fill--poor {
+	background: var(--ion-color-danger, #eb445a);
+}
+
+.rating-score__fill--fair {
 	background: var(--ion-color-warning, #ffa500);
 }
 
-/* Grows away from the center icon, i.e. to the right, as more ENCOURAGED components are present. */
-.rating-bipolar__fill--encouraged {
-	left: 0;
+.rating-score__fill--good {
 	background: var(--ion-color-success, #2dd36f);
 }
 
-.rating-bipolar__center {
+.rating-score__value {
+	flex: 0 0 auto;
+	min-width: 2.5ch;
+	text-align: right;
+	font-size: 16px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.rating-score__info {
 	flex: 0 0 auto;
 	font-size: 20px;
 	color: var(--ion-color-medium, #92949c);

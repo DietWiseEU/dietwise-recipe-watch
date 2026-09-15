@@ -72,6 +72,7 @@
 		"anonymousRecipeTemplateTitle": "Recipe #{{index, number}}",
 		"emptySuggestionsFromServer": "There are no suggestions for this recipe.",
 		"rating": {
+			"score": "Rating {{score}} out of {{max}}",
 			"detailsTitle": "Components present in this recipe",
 			"encouragedPresent": "Encouraged",
 			"limitedPresent": "To limit",

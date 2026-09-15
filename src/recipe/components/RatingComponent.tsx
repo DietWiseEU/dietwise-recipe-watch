@@ -9,13 +9,14 @@ import {
 	IonList,
 	IonListHeader,
 	IonModal,
+	IonNote,
 	IonTitle,
 	IonToolbar,
 } from '@ionic/react';
 import { TbInfoSquareRounded } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
-import type { Rating } from '@/recipe/model';
-import { encouragedRatio, limitedRatio } from '@/recipe/reducers/calculateRating';
+import type { Rating, RatingContribution } from '@/recipe/model';
+import { BASE, ratingScore } from '@/recipe/reducers/calculateRating';
 import './RatingComponent.css';
 
 export interface RatingComponentProps {
@@ -23,12 +24,21 @@ export interface RatingComponentProps {
 	max: number;
 }
 
+/** How far from the neutral BASE the score has to be before the bar changes colour. */
+const BAND_WIDTH = 10;
+
+function bandOf(score: number): string {
+	if (score < BASE - BAND_WIDTH) return 'poor';
+	if (score < BASE + BAND_WIDTH) return 'fair';
+	return 'good';
+}
+
 const RatingComponent: React.FC<RatingComponentProps> = (props: RatingComponentProps) => {
 	const { t } = useTranslation();
 	const [isOpen, setIsOpen] = useState(false);
 	const rating = props.rating;
-	const limited = rating ? limitedRatio(rating) : 0;
-	const encouraged = rating ? encouragedRatio(rating) : 0;
+	const score = rating ? ratingScore(rating) : 0;
+	const filled = props.max === 0 ? 0 : (score / props.max) * 100;
 	const encouragedPresent = rating?.encouragedPresent ?? [];
 	const limitedPresent = rating?.limitedPresent ?? [];
 	const bothPresent = encouragedPresent.length > 0 && limitedPresent.length > 0;
@@ -37,11 +47,15 @@ const RatingComponent: React.FC<RatingComponentProps> = (props: RatingComponentP
 		if (rating) setIsOpen(true);
 	};
 
-	const renderComponents = (names: string[]) =>
-		names.length ? (
-			names.map((name) => (
-				<IonItem key={name}>
-					<IonLabel className="rating-bipolar__component">{name}</IonLabel>
+	const renderComponents = (contributions: RatingContribution[], sign: string) =>
+		contributions.length ? (
+			contributions.map((contribution) => (
+				<IonItem key={contribution.componentName}>
+					<IonLabel className="rating-score__component">{contribution.componentName}</IonLabel>
+					<IonNote slot="end">
+						{sign}
+						{Math.round(contribution.points)}
+					</IonNote>
 				</IonItem>
 			))
 		) : (
@@ -53,10 +67,10 @@ const RatingComponent: React.FC<RatingComponentProps> = (props: RatingComponentP
 	return (
 		<>
 			<div
-				className="rating-bipolar"
+				className="rating-score"
 				role="button"
 				tabIndex={0}
-				aria-label={t('recipe.rating.detailsTitle')}
+				aria-label={t('recipe.rating.score', { score, max: props.max })}
 				onClick={openDetails}
 				onKeyDown={(event) => {
 					if (event.key === 'Enter' || event.key === ' ') {
@@ -65,19 +79,14 @@ const RatingComponent: React.FC<RatingComponentProps> = (props: RatingComponentP
 					}
 				}}
 			>
-				<div className="rating-bipolar__track rating-bipolar__track--limited">
+				<div className="rating-score__track">
 					<div
-						className="rating-bipolar__fill rating-bipolar__fill--limited"
-						style={{ width: `${limited * 100}%` }}
+						className={`rating-score__fill rating-score__fill--${bandOf(score)}`}
+						style={{ width: `${filled}%` }}
 					/>
 				</div>
-				<TbInfoSquareRounded className="rating-bipolar__center" aria-hidden="true" />
-				<div className="rating-bipolar__track rating-bipolar__track--encouraged">
-					<div
-						className="rating-bipolar__fill rating-bipolar__fill--encouraged"
-						style={{ width: `${encouraged * 100}%` }}
-					/>
-				</div>
+				<span className="rating-score__value">{score}</span>
+				<TbInfoSquareRounded className="rating-score__info" aria-hidden="true" />
 			</div>
 			<IonModal isOpen={isOpen} onDidDismiss={() => setIsOpen(false)}>
 				<IonHeader>
@@ -91,11 +100,11 @@ const RatingComponent: React.FC<RatingComponentProps> = (props: RatingComponentP
 				<IonContent>
 					<IonList>
 						<IonListHeader>{t('recipe.rating.encouragedPresent')}</IonListHeader>
-						{renderComponents(encouragedPresent)}
-						<IonListHeader className={bothPresent ? 'rating-bipolar__section-gap' : undefined}>
+						{renderComponents(encouragedPresent, '+')}
+						<IonListHeader className={bothPresent ? 'rating-score__section-gap' : undefined}>
 							{t('recipe.rating.limitedPresent')}
 						</IonListHeader>
-						{renderComponents(limitedPresent)}
+						{renderComponents(limitedPresent, '−')}
 					</IonList>
 				</IonContent>
 			</IonModal>
