@@ -24,6 +24,7 @@ import {
 } from '@/recipe/actions';
 import { assessRecipe } from '@/recipe/assessRecipe';
 import type { CancellationFunction } from '@/recipe/assessRecipe';
+import { useLogRating } from '@/recipe/useLogRating';
 import UrlContainer from '@/recipe/components/UrlContainer';
 import UrlModal from '@/recipe/components/UrlModal';
 import HelpModal from '@/recipe/help/HelpModal';
@@ -42,6 +43,8 @@ const RecipePage: React.FC = () => {
 	const apiServerHost = useAtomValue(apiServerHostAtom);
 	const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
 	const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+
+	useLogRating(mainState);
 
 	const cancelRef = useRef<CancellationFunction>(null);
 
