@@ -19,8 +19,6 @@ export function calculateRating(state: MainData): Rating | undefined {
 		let recommendations = state.scoringData.recommendationsPerIngredient[ingredientId];
 		if (state.ingredientState?.[ingredientId]) {
 			// the ingredient is replaced, calculate the contribution of its replacement
-			// const acceptedSuggestionId = state.ingredientState?.[ingredientId];
-			// const suggestionKey = keyOfIngredientSuggestion(acceptedSuggestionId, ingredientId);
 			const suggestionKey = state.ingredientState?.[ingredientId];
 			const acceptedSuggestion = state?.suggestions?.[suggestionKey];
 			const maybeRecommendations = acceptedSuggestion?.suggestion.alternativeComponentNames;
