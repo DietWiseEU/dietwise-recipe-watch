@@ -1,6 +1,6 @@
 import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom';
 import Menu from '@/components/Menu';
 
 /* Core CSS required for Ionic components to work properly */
@@ -55,15 +55,13 @@ const App: React.FC = () => {
 				<IonSplitPane contentId="main" when="(min-width: 3000px)">
 					<Menu />
 					<IonRouterOutlet id="main">
-						<Route path="/" exact={true}>
-							<Redirect to="/Home" />
-						</Route>
-						<Route path="/authcallback" exact component={AuthCallbackPage} />
-						<Route path="/endsession" exact component={EndSessionPage} />
-						<Route path="/Home" exact component={HomePage} />
-						<Route path="/Recipe" exact component={RecipePage} />
-						<Route path="/Personalization" exact component={PersonalizationPage} />
-						<Route path="/Settings" exact component={SettingsPage} />
+						<Route path="/" element={<Navigate to="/Home" replace />} />
+						<Route path="/authcallback" element={<AuthCallbackPage />} />
+						<Route path="/endsession" element={<EndSessionPage />} />
+						<Route path="/Home" element={<HomePage />} />
+						<Route path="/Recipe" element={<RecipePage />} />
+						<Route path="/Personalization" element={<PersonalizationPage />} />
+						<Route path="/Settings" element={<SettingsPage />} />
 					</IonRouterOutlet>
 				</IonSplitPane>
 			</IonReactRouter>

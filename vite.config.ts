@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defaultClientConditions, defineConfig, loadEnv } from 'vite';
 import eslintPlugin from '@nabla/vite-plugin-eslint';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -57,6 +57,12 @@ export default defineConfig(({ mode }) => {
 			__APP_GIT_HASH__: JSON.stringify(gitHash),
 		},
 		resolve: {
+			// Vitest resolves packages with Node's export conditions, which hands @lit/react — the
+			// library behind the Ionic React component wrappers — its server build. That build passes
+			// props to a lit SSR renderer instead of assigning them to the element, so under jsdom every
+			// Ionic component would render without any of its props. Resolving with the browser
+			// conditions gives tests the same build the app runs.
+			...(mode === 'test' ? { conditions: [...defaultClientConditions] } : {}),
 			tsconfigPaths: true,
 			alias: {
 				'@': path.resolve('./src'),
@@ -71,6 +77,9 @@ export default defineConfig(({ mode }) => {
 		},
 		test: {
 			environment: 'jsdom', // Required for DOM-based tests
+			// Externalized dependencies are loaded by Node, which ignores resolve.conditions above, so
+			// the packages that reach @lit/react have to go through Vite's resolver.
+			server: { deps: { inline: [/@lit\/react/, /@stencil\/react-output-target/] } },
 			globals: true, // So we can use describe/it/expect directly
 			setupFiles: './src/setupTests.ts',
 			exclude: [...configDefaults.exclude],

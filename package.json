@@ -28,10 +28,8 @@
     "@capacitor/ios": "8.5.2",
     "@capacitor/keyboard": "8.0.5",
     "@capacitor/status-bar": "8.0.3",
-    "@ionic/react": "8.8.15",
-    "@ionic/react-router": "8.8.15",
-    "@types/react-router": "^5.1.20",
-    "@types/react-router-dom": "^5.3.3",
+    "@ionic/react": "9.0.4",
+    "@ionic/react-router": "9.0.4",
     "capacitor-secure-storage-plugin": "^0.13.0",
     "ionic-appauth": "^2.1.0",
     "ionicons": "8.1.0",
@@ -40,8 +38,8 @@
     "react-dom": "19.3.0",
     "react-i18next": "17.0.14",
     "react-icons": "5.7.0",
-    "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router": "6.30.6",
+    "react-router-dom": "6.30.6"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",

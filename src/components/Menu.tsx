@@ -14,7 +14,7 @@ import {
 	settingsOutline,
 	settingsSharp,
 } from 'ionicons/icons';
-import type { Location } from 'history';
+import type { Location } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/auth/atoms';

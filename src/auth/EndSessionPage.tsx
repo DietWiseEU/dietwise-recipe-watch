@@ -1,9 +1,11 @@
 import { useIonViewDidEnter, IonPage } from '@ionic/react';
-import { RouteComponentProps } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { authService } from '@/auth/authService';
 import { consumeMobilePreviewReturnPath } from '@/auth/mobilePreviewAuth';
 
-const EndSessionPage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
+const EndSessionPage: React.FC = () => {
+	const navigate = useNavigate();
+
 	useIonViewDidEnter(() => {
 		authService.endSessionCallback();
 		const mobilePreviewReturnPath = consumeMobilePreviewReturnPath();
@@ -11,7 +13,7 @@ const EndSessionPage: React.FC<RouteComponentProps> = (props: RouteComponentProp
 			window.location.replace(mobilePreviewReturnPath);
 			return;
 		}
-		props.history.replace('/Home');
+		navigate('/Home', { replace: true });
 	});
 
 	return (

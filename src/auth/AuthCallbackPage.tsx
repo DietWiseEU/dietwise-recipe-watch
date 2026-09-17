@@ -1,13 +1,14 @@
 import { useRef, RefObject } from 'react';
 import { useIonViewDidEnter, useIonViewWillLeave, IonPage } from '@ionic/react';
-import { RouteComponentProps } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { authService } from '@/auth/authService';
 import { filter, from, Subscription, switchMap, take, throwError } from 'rxjs';
 import { AuthActions } from 'ionic-appauth';
 import { consumeMobilePreviewReturnPath } from '@/auth/mobilePreviewAuth';
 import { LOG_SENSITIVE_DATA } from '@/common/logging';
 
-const AuthCallbackPage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
+const AuthCallbackPage: React.FC = () => {
+	const navigate = useNavigate();
 	const unsubscribeRef: RefObject<Subscription | null> = useRef(null);
 
 	const leaveCallbackPage = () => {
@@ -16,7 +17,7 @@ const AuthCallbackPage: React.FC<RouteComponentProps> = (props: RouteComponentPr
 			window.location.replace(mobilePreviewReturnPath);
 			return;
 		}
-		props.history.replace('/Home');
+		navigate('/Home', { replace: true });
 	};
 
 	useIonViewDidEnter(() => {

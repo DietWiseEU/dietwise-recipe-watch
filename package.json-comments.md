@@ -22,9 +22,12 @@ ChatGPT claims there is an issue/conflict because Ionic / Stencil components do 
 **Resolution (2026/02/18):** ChatGRP offered a solution with shims in `setupTests.ts` that works around the problem.
 
 
-### react-router/react-router-dom - 5.x - 7.x
+### react-router/react-router-dom - 6.x - 7.x
 
 Incompatible with ionic-router.
+
+**Update (2026/09/17):** Ionic 9 rebuilt its React router integration on react-router 6, so the floor moved
+from 5.x to 6.30.x. `@ionic/react-router@9` declares `react-router@">=6.4.0 <7"`. 7.x remains out of reach.
 
 
 ### ~~eslint: 9.x - 10.x~~

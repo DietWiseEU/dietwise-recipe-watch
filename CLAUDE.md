@@ -10,7 +10,7 @@ Functional purpose (per the Grant Agreement, `Grant Agreement - GAP-DIETWISE SHO
 
 ## Tech stack
 
-- **Ionic React 8 + Capacitor 8** — single codebase targeting web, Android and iOS.
+- **Ionic React 9 + Capacitor 8** — single codebase targeting web, Android and iOS.
 - **React 19, TypeScript 6**, build with **Vite 8** (`vite.config.ts`). Path alias `@/` → `src/`.
 - **Jotai 2** for state. `atomWithReducer` for the recipe page's main state machine; `atomWithObservable` to bridge `ionic-appauth` RxJS streams into atoms.
 - **react-i18next** for translations. Languages: `en`, `el`, `lt`, `nl` (only `en` is currently exposed in the Settings UI — others are commented out in `SettingsPage.tsx`).
@@ -94,12 +94,13 @@ Android release flow and Docker build are documented in `README.md` — don't du
 
 - **Naming**: the package is `recipe-watch`, the Capacitor `appId` is `eu.dietwise.recipewatch`, the UI title is "MyRecipeWatch", the Keycloak `client_id` is `recipewatch`. Each lives where it does for a reason; don't unify them casually.
 - **Path imports**: use `@/...` for cross-feature imports, relative for same-folder. Both `tsconfig.json` and `vite.config.ts` are wired for it.
-- **Held-back dependencies**: see `package.json-comments.md`. `react-router` is pinned to 5.x because Ionic React Router requires it. Don't propose upgrading these without checking that note first.
+- **Held-back dependencies**: see `package.json-comments.md`. `react-router` is pinned to 6.x because `@ionic/react-router` peers on `>=6.4.0 <7`. Don't propose upgrading these without checking that note first.
 - **Sensitive logging**: console.log of tokens, user info, or personal data must be gated on `LOG_SENSITIVE_DATA` from `@/common/logging`. Import it rather than redeclaring it per file: in a `.tsx` file a local `const LOG_SENSITIVE_DATA = import.meta.env.DEV` trips `react-refresh/only-export-components`, whose component heuristic matches both the SCREAMING_SNAKE name and the `.DEV` property.
 - **State transitions** in the recipe reducer throw on unexpected combinations — this is intentional defensive code, not something to soften into `console.warn`s.
 - **JSON Lines hack**: `src/recipe/reducer.ts` does `text.replaceAll('\\n', '\n').trimStart()` on incoming recipe text. The comments mark this as a hack — if you find yourself touching it, also check the backend producing the field rather than piling on more string surgery.
 - **Settings storage** uses `capacitor-secure-storage-plugin` under the key `recipewatch.settings`. If you bump the schema, write a migration in `mergeLoadedSettings` rather than reading raw.
 - **JSDom 28 + Stencil**: `src/setupTests.ts` installs an `adoptedStyleSheets` shim. Don't remove it; without it Ionic components fail to initialize under Vitest.
+- **Ionic components under Vitest**: `vite.config.ts` resolves test runs with the browser export conditions and inlines `@lit/react` / `@stencil/react-output-target`. The Ionic React wrappers set element properties through `@lit/react`, whose Node build does not do that at all — without both settings every Ionic component renders with none of its props and assertions on `value`/`label` fail.
 - **App version**: `package.json` `version` is **not** read by the native builds. `scripts/set-app-version.mjs` is the single source of truth — it stamps `android/app/build.gradle` and the iOS `project.pbxproj` from `package.json` plus a required build-number arg. The store-facing build number (`versionCode` / `CURRENT_PROJECT_VERSION`) must strictly increase per upload; the user-visible version need not. Release flow is in README "App versioning".
 
 ## Things this app does *not* do (yet)
