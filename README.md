@@ -57,6 +57,13 @@ Health endpoint:
 Mobile preview URL:
 - `http://localhost:8080/mobile-preview`
 
+UI mocks URL:
+- `http://localhost:8080/ui/`
+
+The mocks are the static files of the `ui/` folder of this repository, copied into the artifact by
+`npm run build:mobile-preview` and served as a site of their own. They are for test users to look at a
+candidate UI; the app itself does not link to them.
+
 
 ## App versioning
 

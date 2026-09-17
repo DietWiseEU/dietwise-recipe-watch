@@ -79,7 +79,7 @@ This lets a single Docker artifact be re-pointed per environment by mounting a d
 ```bash
 npm run dev                  # Vite dev server (web)
 npm run build                # tsc + vite build → dist/
-npm run build:mobile-preview # build that also emits mobile-preview.html
+npm run build:mobile-preview # build that also emits mobile-preview.html and copies ui/ (UI mocks) to dist/ui
 npm run lint                 # ESLint
 npm run test                 # Vitest
 npm run i18n:csv:export      # Export translation strings to CSV

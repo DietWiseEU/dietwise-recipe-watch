@@ -30,6 +30,14 @@ location ${base_path}/assets/ {
 	add_header Cache-Control "public, max-age=31536000, immutable";
 }
 
+location = ${base_path}/ui {
+	return 301 ${base_path}/ui/;
+}
+
+location ${base_path}/ui/ {
+	try_files \$uri \$uri/ ${base_path}/ui/index.html;
+}
+
 location ${base_path}/ {
 	try_files \$uri \$uri/ ${base_path}/index.html;
 }
