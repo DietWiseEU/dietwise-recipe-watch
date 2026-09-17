@@ -17,7 +17,7 @@ export async function fetchPersonalInfo(
 		});
 	} catch (e) {
 		console.error('Error fetching personal info', e);
-		throw new Error(t('error.networkOrSystem'));
+		throw new Error(t('error.networkOrSystem'), { cause: e });
 	}
 
 	if (response.status === 204) return {};
@@ -27,7 +27,7 @@ export async function fetchPersonalInfo(
 			return personalInfo;
 		} catch (e) {
 			console.error('Error parsing personal info', e);
-			throw new Error(t('error.networkOrSystem'));
+			throw new Error(t('error.networkOrSystem'), { cause: e });
 		}
 	}
 	if (response.status === 401) {
@@ -52,7 +52,7 @@ export async function savePersonalInfo(apiServerHost: string, accessToken: strin
 		});
 	} catch (e) {
 		console.error('Error saving personal info', e);
-		throw new Error(t('error.networkOrSystem'));
+		throw new Error(t('error.networkOrSystem'), { cause: e });
 	}
 
 	if (response.status === 204 || response.status === 200) {

@@ -40,8 +40,8 @@ const RecipePage: React.FC = () => {
 	const [mainState, dispatch] = useAtom(mainStateAtom);
 	const setSuggestionInFlight = useSetAtom(suggestionInFlightAtom);
 	const apiServerHost = useAtomValue(apiServerHostAtom);
-	const [isUrlModalOpen, setUrlModalIsOpen] = useState(false);
-	const [isHelpModalOpen, setHelpModalIsOpen] = useState(false);
+	const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
+	const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
 	const cancelRef = useRef<CancellationFunction>(null);
 
@@ -92,7 +92,7 @@ const RecipePage: React.FC = () => {
 					</IonButtons>
 					{assessing || hasOutcome ? (
 						<IonButtons slot="end">
-							<IonButton onClick={() => setHelpModalIsOpen(true)}>
+							<IonButton onClick={() => setIsHelpModalOpen(true)}>
 								<IonIcon slot="icon-only" icon={helpCircleOutline}></IonIcon>
 							</IonButton>
 						</IonButtons>
@@ -111,7 +111,7 @@ const RecipePage: React.FC = () => {
 
 				<div className="recipe-page__content">
 					<UrlContainer
-						onClick={() => setUrlModalIsOpen(true)}
+						onClick={() => setIsUrlModalOpen(true)}
 						onReset={resetCallback}
 						url={mainState.url}
 						status={mainState.status}
@@ -129,13 +129,13 @@ const RecipePage: React.FC = () => {
 
 				<UrlModal
 					isOpen={isUrlModalOpen}
-					setIsOpen={setUrlModalIsOpen}
+					setIsOpen={setIsUrlModalOpen}
 					url={mainState.url}
 					language={mainState.lang}
 					setData={assessRecipeCallback}
 				/>
 
-				<HelpModal isOpen={isHelpModalOpen} setIsOpen={setHelpModalIsOpen} />
+				<HelpModal isOpen={isHelpModalOpen} setIsOpen={setIsHelpModalOpen} />
 			</IonContent>
 		</IonPage>
 	);

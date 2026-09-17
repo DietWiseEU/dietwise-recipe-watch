@@ -16,6 +16,8 @@ const ANIMATION_DURATION_MS = 500;
 const hasRenderableContent = (content: ReactNode): boolean => {
 	if (content === null || content === undefined || content === false) return false;
 	if (typeof content === 'string') return content.trim().length > 0;
+	// The children are only inspected for renderable content here, never rendered from the result.
+	// eslint-disable-next-line @eslint-react/no-children-to-array
 	const items = Children.toArray(content);
 	if (items.length === 0) return false;
 	return items.some((item) => !(typeof item === 'string' && item.trim().length === 0));

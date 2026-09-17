@@ -115,7 +115,12 @@ const SuggestionsComponent: React.FC = () => {
 			<div className="sugestions-pane error-pane">
 				<h2>{t('recipe.encounteredErrors')}</h2>
 				<ul>
-					{mainState.errors ? mainState.errors.map((err, index) => <li key={index}>{err}</li>) : null}
+					{mainState.errors
+						? mainState.errors.map((err, index) => (
+								// eslint-disable-next-line @eslint-react/no-array-index-key -- the error list is static and never reordered
+								<li key={index}>{err}</li>
+							))
+						: null}
 					{mainState.emptySuggestionsFromServer ? <li>{t('recipe.emptySuggestionsFromServer')}</li> : null}
 				</ul>
 			</div>

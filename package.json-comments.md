@@ -27,9 +27,16 @@ ChatGPT claims there is an issue/conflict because Ionic / Stencil components do 
 Incompatible with ionic-router.
 
 
-### eslint: 9.x - 10.x
+### ~~eslint: 9.x - 10.x~~
 
 At least `eslint-plugin-react`, `eslint-plugin-react-hooks` have a peer dependency on `eslint@"^... || ^9"`.
+
+**Resolution (2026/09/17):** `eslint-plugin-react-hooks` accepts eslint 10 as of 7.x. `eslint-plugin-react` was
+declared but never referenced from `eslint.config.js`, and was the only remaining cap on eslint 9; it is replaced
+by `@eslint-react/eslint-plugin`, which declares no eslint version cap. Two notes for the future: eslint 10 no
+longer depends on `@eslint/js`, so that is now a direct devDependency; and `@eslint-react`'s
+`disable-conflict-eslint-plugin-react-hooks` preset is deliberately *not* used, because it switches off
+`eslint-plugin-react-hooks` (including `rules-of-hooks` and `exhaustive-deps`) in favour of its own.
 
 
 ### ~~typescript: 5.x - 6.x~~

@@ -47,7 +47,10 @@ const RecipesComponent: React.FC = () => {
 			<div className="recipes-pane">
 				{mainState.recipes.map((r, index) => (
 					<RecipeComponent
-						key={r.name ?? `recipe-${index}`}
+						key={
+							// eslint-disable-next-line @eslint-react/no-array-index-key -- the index only backs up a recipe with no name
+							r.name ?? `recipe-${index}`
+						}
 						index={index}
 						recipe={r}
 						rating={mainState.recipes?.length === 1 ? mainState.rating : undefined}
@@ -66,6 +69,7 @@ const RecipesComponent: React.FC = () => {
 				<h2>{t('recipe.encounteredErrors')}</h2>
 				<ul>
 					{mainState.errors.map((err, index) => (
+						// eslint-disable-next-line @eslint-react/no-array-index-key -- the error list is static and never reordered
 						<li key={index}>{err}</li>
 					))}
 				</ul>

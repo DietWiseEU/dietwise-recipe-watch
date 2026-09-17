@@ -23,7 +23,7 @@ export async function postSuggestionStatistics(
 		});
 	} catch (e) {
 		console.error(`Error posting suggestion statistics for ${statisticsAction}`, e);
-		throw new Error(t('error.networkOrSystem'));
+		throw new Error(t('error.networkOrSystem'), { cause: e });
 	}
 
 	if (response.status === 204 || response.status === 200) {
