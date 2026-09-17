@@ -4,11 +4,11 @@ import { CapacitorBrowser, CapacitorSecureStorage } from 'ionic-appauth/lib/capa
 import { RequestorImpl } from '@/services/RequestorImpl';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { MobilePreviewAwareBrowser } from '@/auth/mobilePreviewAuth';
+import { LOG_SENSITIVE_DATA } from '@/common/logging';
 
 const browser = isPlatform('capacitor') ? new CapacitorBrowser() : new MobilePreviewAwareBrowser();
 
 export const authService = new AuthService(browser, new CapacitorSecureStorage(), new RequestorImpl());
-const LOG_SENSITIVE_DATA = import.meta.env.DEV;
 
 let hasTokenInMemory = false;
 let lastResumeRefreshAt = 0;

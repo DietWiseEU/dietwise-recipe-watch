@@ -5,8 +5,7 @@ import { authService } from '@/auth/authService';
 import { filter, from, Subscription, switchMap, take, throwError } from 'rxjs';
 import { AuthActions } from 'ionic-appauth';
 import { consumeMobilePreviewReturnPath } from '@/auth/mobilePreviewAuth';
-
-const LOG_SENSITIVE_DATA = import.meta.env.DEV;
+import { LOG_SENSITIVE_DATA } from '@/common/logging';
 
 const AuthCallbackPage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 	const unsubscribeRef: RefObject<Subscription | null> = useRef(null);

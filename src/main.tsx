@@ -9,8 +9,7 @@ import { configureI18n } from './i18n';
 import { Provider as JotaiProvider, createStore } from 'jotai';
 import { settingsAtom } from '@/settings/atoms';
 import { authService, configureServerHost as configureAuthServerHost } from '@/auth/authService';
-
-const LOG_SENSITIVE_DATA = import.meta.env.DEV;
+import { LOG_SENSITIVE_DATA } from '@/common/logging';
 
 async function bootstrap() {
 	// innerHTMLTemplatesEnabled: true to display rich text in the info alerts of the suggestions

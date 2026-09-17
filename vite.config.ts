@@ -49,7 +49,9 @@ export default defineConfig(({ mode }) => {
 
 	return {
 		base: basePath,
-		plugins: [react(), eslintPlugin()],
+		// The ESLint plugin leaves behind a worker thread that keeps the process alive, so it is
+		// left out of test runs; `npm run lint` lints the whole project anyway.
+		plugins: [react(), ...(mode === 'test' ? [] : [eslintPlugin()])],
 		define: {
 			__APP_VERSION__: JSON.stringify(appVersion),
 			__APP_GIT_HASH__: JSON.stringify(gitHash),

@@ -5,8 +5,7 @@ import { AuthActions } from 'ionic-appauth';
 import type { TokenResponse } from '@openid/appauth';
 import { authService } from '@/auth/authService';
 import type { User } from './model';
-
-const LOG_SENSITIVE_DATA = import.meta.env.DEV;
+import { LOG_SENSITIVE_DATA } from '@/common/logging';
 
 // Just for debugging, maybe remove for production
 authService.events$.subscribe({

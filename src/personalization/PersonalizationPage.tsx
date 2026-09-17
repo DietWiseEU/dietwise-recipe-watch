@@ -21,8 +21,7 @@ import {
 } from '@/personalization/atoms';
 import type { PersonalInfo } from '@/personalization/model';
 import PersonalizationForm from '@/personalization/PersonalizationForm';
-
-const LOG_SENSITIVE_DATA = import.meta.env.DEV;
+import { LOG_SENSITIVE_DATA } from '@/common/logging';
 
 const PersonalizationPage: React.FC = () => {
 	const { t } = useTranslation();

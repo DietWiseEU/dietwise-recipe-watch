@@ -72,7 +72,7 @@ This lets a single Docker artifact be re-pointed per environment by mounting a d
 
 - Native (Capacitor) uses the custom URL scheme `eu.dietwise.recipewatch://authcallback`; web uses `${basePath}/authcallback`. `basePath` is derived from `BASE_URL` so a non-root deployment (e.g. `/recipewatch/`) keeps working.
 - The **mobile-preview** page (`mobile-preview.html`) embeds the web app in an iframe to demo the mobile UX in a desktop browser. Keycloak refuses to be framed, so `MobilePreviewAwareBrowser` (`src/auth/mobilePreviewAuth.ts`) opens the OIDC URL in `_top` and stashes the return path in `sessionStorage` so the iframe can navigate back after the redirect. Don't simplify this unless you've verified the framed flow still works.
-- `LOG_SENSITIVE_DATA = import.meta.env.DEV` gates verbose auth logging. Don't log tokens or user info unconditionally.
+- `LOG_SENSITIVE_DATA` (`src/common/logging.ts`) gates verbose auth logging. Don't log tokens or user info unconditionally.
 
 ## Build & dev commands
 
@@ -95,7 +95,7 @@ Android release flow and Docker build are documented in `README.md` — don't du
 - **Naming**: the package is `recipe-watch`, the Capacitor `appId` is `eu.dietwise.recipewatch`, the UI title is "MyRecipeWatch", the Keycloak `client_id` is `recipewatch`. Each lives where it does for a reason; don't unify them casually.
 - **Path imports**: use `@/...` for cross-feature imports, relative for same-folder. Both `tsconfig.json` and `vite.config.ts` are wired for it.
 - **Held-back dependencies**: see `package.json-comments.md`. `react-router` is pinned to 5.x because Ionic React Router requires it. Don't propose upgrading these without checking that note first.
-- **Sensitive logging**: console.log of tokens, user info, or personal data must be gated on `LOG_SENSITIVE_DATA` / `import.meta.env.DEV`.
+- **Sensitive logging**: console.log of tokens, user info, or personal data must be gated on `LOG_SENSITIVE_DATA` from `@/common/logging`. Import it rather than redeclaring it per file: in a `.tsx` file a local `const LOG_SENSITIVE_DATA = import.meta.env.DEV` trips `react-refresh/only-export-components`, whose component heuristic matches both the SCREAMING_SNAKE name and the `.DEV` property.
 - **State transitions** in the recipe reducer throw on unexpected combinations — this is intentional defensive code, not something to soften into `console.warn`s.
 - **JSON Lines hack**: `src/recipe/reducer.ts` does `text.replaceAll('\\n', '\n').trimStart()` on incoming recipe text. The comments mark this as a hack — if you find yourself touching it, also check the backend producing the field rather than piling on more string surgery.
 - **Settings storage** uses `capacitor-secure-storage-plugin` under the key `recipewatch.settings`. If you bump the schema, write a migration in `mergeLoadedSettings` rather than reading raw.
