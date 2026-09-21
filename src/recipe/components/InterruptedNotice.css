@@ -1,0 +1,17 @@
+.interrupted-notice {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	border: 1px solid var(--ion-color-danger, #b00020);
+	border-radius: 8px;
+}
+
+.interrupted-notice__message {
+	flex: 1 1 auto;
+}
+
+.interrupted-notice ion-button {
+	flex: 0 0 auto;
+	white-space: nowrap;
+}

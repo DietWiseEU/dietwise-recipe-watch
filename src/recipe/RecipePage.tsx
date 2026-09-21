@@ -25,9 +25,11 @@ import {
 import { assessRecipe } from '@/recipe/assessRecipe';
 import type { CancellationFunction } from '@/recipe/assessRecipe';
 import { useLogRating } from '@/recipe/useLogRating';
+import { useKeepScreenAwake } from '@/recipe/useKeepScreenAwake';
 import UrlContainer from '@/recipe/components/UrlContainer';
 import UrlModal from '@/recipe/components/UrlModal';
 import HelpModal from '@/recipe/help/HelpModal';
+import InterruptedNotice from '@/recipe/components/InterruptedNotice';
 import SplitPane from '@/recipe/components/SplitPane';
 import RecipesComponent from '@/recipe/components/RecipesComponent';
 import SuggestionsComponent from '@/recipe/components/SuggestionsComponent';
@@ -80,8 +82,15 @@ const RecipePage: React.FC = () => {
 		setSuggestionInFlight({});
 	}, [dispatch, setSuggestionInFlight]);
 
+	const retryCallback = useCallback(() => {
+		void assessRecipeCallback(mainState.url ?? '', mainState.lang);
+	}, [assessRecipeCallback, mainState.url, mainState.lang]);
+
 	const hasOutcome = mainState.status === 'SUCCESS' || mainState.status === 'FAILURE';
 	const assessing = mainState.status === 'PENDING';
+	// An assessment is a single long-lived streaming request. If the screen locks the WebView
+	// stops being serviced, the connection is dropped and the user is left with a network error.
+	useKeepScreenAwake(assessing);
 
 	const topPaneContent = hasRecipesContent(mainState) ? <RecipesComponent /> : null;
 	const bottomPaneContent = hasSuggestionsContent(mainState) ? <SuggestionsComponent /> : null;
@@ -119,6 +128,7 @@ const RecipePage: React.FC = () => {
 						url={mainState.url}
 						status={mainState.status}
 					/>
+					{mainState.interrupted ? <InterruptedNotice onRetry={retryCallback} /> : null}
 					{!assessing && !hasOutcome ? (
 						<>
 							<HelpContentsComponent />

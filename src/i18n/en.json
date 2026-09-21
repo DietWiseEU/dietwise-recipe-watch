@@ -71,6 +71,8 @@
 		"keepScreenOn": "Keep screen on",
 		"anonymousRecipeTemplateTitle": "Recipe #{{index, number}}",
 		"emptySuggestionsFromServer": "There are no suggestions for this recipe.",
+		"assessmentInterrupted": "The connection was interrupted before the assessment finished.",
+		"retry": "Try again",
 		"rating": {
 			"score": "Rating {{score}} out of {{max}}",
 			"detailsTitle": "Components present in this recipe",

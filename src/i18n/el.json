@@ -71,6 +71,8 @@
 		"keepScreenOn": "Να μένει αναμμένη η οθόνη",
 		"anonymousRecipeTemplateTitle": "Συνταγή #{{index, number}}",
 		"emptySuggestionsFromServer": "Δεν υπάρχουν προτάσεις για αυτή τη συνταγή.",
+		"assessmentInterrupted": "Η σύνδεση διακόπηκε πριν ολοκληρωθεί η αξιολόγηση.",
+		"retry": "Δοκιμάστε ξανά",
 		"rating": {
 			"score": "Βαθμολογία {{score}} από {{max}}",
 			"detailsTitle": "Στοιχεία της συνταγής",

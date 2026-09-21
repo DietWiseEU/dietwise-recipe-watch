@@ -71,6 +71,8 @@
 		"keepScreenOn": "Ekranas lieka įjungtas",
 		"anonymousRecipeTemplateTitle": "Receptas #{{index, number}}",
 		"emptySuggestionsFromServer": "Šiam receptui pasiūlymų nėra",
+		"assessmentInterrupted": "Ryšys nutrūko nebaigus vertinimo.",
+		"retry": "Bandyti dar kartą",
 		"rating": {
 			"score": "Įvertinimas {{score}} iš {{max}}",
 			"detailsTitle": "Šiame recepte esantys komponentai",

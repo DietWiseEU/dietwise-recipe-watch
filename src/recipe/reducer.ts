@@ -23,10 +23,13 @@ export function reducer(state: MainData, action: MainAction): MainData {
 			};
 		}
 		case 'RecipeAssessmentFailedAction': {
+			// The stream broke rather than the server reporting something about the recipe, so the
+			// transport error is of no use to the user. Whatever arrived before the break is kept.
+			console.warn('The recipe assessment was interrupted', action.error);
 			return {
 				...state,
 				status: 'FAILURE',
-				errors: [action.error.message],
+				interrupted: true,
 			};
 		}
 		case 'RecipeAssessmentCompletedAction': {

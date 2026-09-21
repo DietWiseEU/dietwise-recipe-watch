@@ -170,6 +170,8 @@ export type IngredientStateType = { [key: string]: string | undefined };
 export interface MainData {
 	status: MainDataStatus;
 	errors?: string[];
+	/** Set when the assessment never ran to its end, as opposed to the server reporting a problem with it. */
+	interrupted?: boolean;
 	rating?: Rating;
 	recipes?: Recipe[];
 	detectionTypes?: RecipeDetectionType[];
