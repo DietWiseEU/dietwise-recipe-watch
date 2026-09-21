@@ -156,12 +156,18 @@ export interface RecipeAssessmentErrorMessage {
 	errors?: string[];
 }
 
+/** Says nothing about the recipe; the server sends it so that a long assessment keeps the connection busy. */
+export interface KeepAliveRecipeAssessmentMessage {
+	type: 'KEEP_ALIVE';
+}
+
 export type RecipeAssessmentMessage =
 	| RecipeExtractionRecipeAssessmentMessage
 	| MoreThanOneRecipesAssessmentMessage
 	| SuggestionsRecipeAssessmentMessage
 	| ScoringRecipeAssessmentMessage
-	| RecipeAssessmentErrorMessage;
+	| RecipeAssessmentErrorMessage
+	| KeepAliveRecipeAssessmentMessage;
 
 export type MainDataStatus = 'INITIAL' | 'SUCCESS' | 'FAILURE' | 'PENDING' | 'SELECT_RECIPE';
 

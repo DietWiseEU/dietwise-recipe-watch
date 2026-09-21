@@ -99,6 +99,28 @@ describe('RecipePage', () => {
 		warn.mockRestore();
 	});
 
+	it('is unmoved by a keep-alive arriving while the assessment runs', async () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const store = createStore();
+		store.set(mainStateAtom, createPrepareToAssessRecipeAction(URL, 'en'));
+		store.set(mainStateAtom, createRecipeAssessmentFailedAction(new Error('Load failed')));
+
+		render(
+			<JotaiProvider store={store}>
+				<RecipePage />
+			</JotaiProvider>,
+		);
+		await act(async () => {
+			fireEvent.click(screen.getByText('recipe.retry'));
+		});
+
+		const onMessage = vi.mocked(assessRecipe).mock.calls[0][3];
+		act(() => onMessage?.({ type: 'KEEP_ALIVE' }));
+
+		expect(store.get(mainStateAtom).status).toBe('PENDING');
+		warn.mockRestore();
+	});
+
 	it('leaves a failure reported by the server alone', () => {
 		const store = createStore();
 		store.set(mainStateAtom, createPrepareToAssessRecipeAction(URL, 'en'));

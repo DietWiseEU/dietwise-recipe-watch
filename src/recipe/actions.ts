@@ -110,8 +110,11 @@ export function createResetMainPageAction(): ResetMainPageAction {
 	};
 }
 
-export function createMessageReceivedAction(message: RecipeAssessmentMessage): MessageReceivedAction {
+/** A keep-alive carries nothing to act on, so it maps to no action; everything else drives the state machine. */
+export function createMessageReceivedAction(message: RecipeAssessmentMessage): MessageReceivedAction | null {
 	switch (message.type) {
+		case 'KEEP_ALIVE':
+			return null;
 		case 'RECIPES':
 			return {
 				type: 'RecipeExtractionMessageReceivedAction',

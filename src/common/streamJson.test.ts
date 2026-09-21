@@ -125,6 +125,23 @@ describe('streamJson', () => {
 		expect(onMessage.mock.calls[1][0]).toEqual({ ok: 2 });
 	});
 
+	it('skips blank lines', async () => {
+		const onMessage = vi.fn();
+		const onComplete = vi.fn();
+
+		mockFetchStream(['', '', '{"ok":1}', '', '{"ok":2}']);
+
+		streamJson('/api/stream', undefined, { onMessage, onComplete });
+
+		await vi.waitUntil(() => onComplete.mock.calls.length > 0, {
+			timeout: 1000,
+		});
+
+		expect(onMessage).toHaveBeenCalledTimes(2);
+		expect(onMessage.mock.calls[0][0]).toEqual({ ok: 1 });
+		expect(onMessage.mock.calls[1][0]).toEqual({ ok: 2 });
+	});
+
 	it('parses trailing JSON chunk without newline', async () => {
 		const onMessage = vi.fn();
 		const onComplete = vi.fn();

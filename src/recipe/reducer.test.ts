@@ -5,11 +5,19 @@ import {
 	createPrepareToAssessRecipeAction,
 	createRecipeAssessmentFailedAction,
 } from './actions';
-import type { RecipeAndDetectionType } from './model';
+import type { RecipeAndDetectionType, RecipeAssessmentMessage } from './model';
+import type { MainAction } from './actions';
 
 const URL = 'https://example.com/recipe';
 
 const pending = () => reducer(createInitialState(), createPrepareToAssessRecipeAction(URL, 'en'));
+
+/** Every message these tests send is one the state machine acts on, unlike a keep-alive. */
+const messageAction = (message: RecipeAssessmentMessage): MainAction => {
+	const action = createMessageReceivedAction(message);
+	if (!action) throw new Error('Expected an action for ' + message.type);
+	return action;
+};
 
 const aRecipe: RecipeAndDetectionType = {
 	recipe: { name: 'Fasolada', recipeIngredients: [], recipeInstructions: [] },
@@ -34,7 +42,7 @@ describe('reducer', () => {
 
 		const withRecipe = reducer(
 			pending(),
-			createMessageReceivedAction({ type: 'RECIPES', recipes: [aRecipe], pageText: 'page text' }),
+			messageAction({ type: 'RECIPES', recipes: [aRecipe], pageText: 'page text' }),
 		);
 		const state = reducer(withRecipe, createRecipeAssessmentFailedAction(new Error('Load failed')));
 
@@ -43,10 +51,7 @@ describe('reducer', () => {
 	});
 
 	it('keeps the reported problems when the server is the one reporting the failure', () => {
-		const state = reducer(
-			pending(),
-			createMessageReceivedAction({ type: 'ERROR', errors: ['No recipe found on that page'] }),
-		);
+		const state = reducer(pending(), messageAction({ type: 'ERROR', errors: ['No recipe found on that page'] }));
 
 		expect(state.status).toBe('FAILURE');
 		expect(state.errors).toEqual(['No recipe found on that page']);

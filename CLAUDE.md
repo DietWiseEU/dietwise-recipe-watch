@@ -69,6 +69,8 @@ This lets a single Docker artifact be re-pointed per environment by mounting a d
 
 `POST ${apiServerHost}/recipe/assess/url` returns **newline-delimited JSON** (NDJSON). Each line is a `RecipeAssessmentMessage` with a `type` discriminator: `RECIPES`, `MORE_THAN_ONE_RECIPE`, `SUGGESTIONS`, `SCORING`, `ERROR`. See `src/common/streamJson.ts` for the reader and `src/recipe/reducer.ts` for the state transitions each message triggers. The reducer **throws** on out-of-order messages (e.g. a `SCORING` when not `PENDING`); if you add new message types, update both the union in `src/recipe/model.ts` and the exhaustive `switch` in the reducer.
 
+An assessment takes minutes and says nothing for most of them, so the backend sends a `KEEP_ALIVE` message every so often to keep the connection busy. It maps to no action — `createMessageReceivedAction` returns `null` for it and `RecipePage` skips the dispatch — because it is not a state transition. The RCA extension reads the same stream with a copy of the same code and needs the same case; a client without it treats an unknown `type` as a failed assessment.
+
 ### Auth quirks
 
 - Native (Capacitor) uses the custom URL scheme `eu.dietwise.recipewatch://authcallback`; web uses `${basePath}/authcallback`. `basePath` is derived from `BASE_URL` so a non-root deployment (e.g. `/recipewatch/`) keeps working.

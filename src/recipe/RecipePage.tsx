@@ -59,7 +59,10 @@ const RecipePage: React.FC = () => {
 					url || '',
 					lang,
 					(message) => {
-						dispatch(createMessageReceivedAction(message));
+						// createMessageReceivedAction returns null for a keep-alive message, which is no
+						// state transition, only the server saying the assessment is still running.
+						const action = createMessageReceivedAction(message);
+						if (action) dispatch(action);
 					},
 					(error) => {
 						cancelRef.current = null;
