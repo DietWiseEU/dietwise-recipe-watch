@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<link rel="stylesheet" href="nikos.css">
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/organic-3277cdc4-21c5-4ac1-bcb5-db8ec943a0b3/styles.css">
+<script src="_ds/organic-3277cdc4-21c5-4ac1-bcb5-db8ec943a0b3/_ds_bundle.js"></script>
+<style>body{margin:0;background:#eee7db;font-family:Figtree,system-ui,sans-serif}.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 8px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#201e1d;color:#f5ead8;border-radius:4px;text-decoration:none}.dv-tname{font:600 13px/1.2 Figtree,system-ui,sans-serif;color:#201e1d}.dv-note{max-width:860px;margin:0 0 26px;font:13.5px/1.6 Figtree,system-ui,sans-serif;color:rgba(32,30,29,.62)}.dv-opts{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:10px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#201e1d;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 12px/1.4 Figtree,system-ui,sans-serif;color:rgba(32,30,29,.6);max-width:402px}.dv-opt:target .dv-oid{background:#c67139;color:#fff}.dv-next{margin:26px 0 0;font:12.5px/1.6 Figtree,system-ui,sans-serif;color:rgba(32,30,29,.5)}code{font:600 11.5px ui-monospace,Menlo,monospace;background:rgba(32,30,29,.07);padding:1px 5px;border-radius:5px}@keyframes dw-spin{to{transform:rotate(360deg)}}[data-palette="green"]{--color-bg:#f1f8ea;--color-surface:#e5f3d9;--color-neutral-100:#f9fcf4;--color-neutral-200:#e9f5df;--color-neutral-300:#daedc7;--color-neutral-400:#a9bcb1;--color-neutral-500:#92aa9c;--color-accent-100:#f2f8e8;--color-accent-200:#e2f0d2}</style></helmet>
+
+<section class="dv-turn" id="t2" data-palette="{{ palette }}">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Grounded in the repo — real model, real copy, three layouts + the surrounding states</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin:0 0 18px;padding:9px 12px;background:#fff;border:1px solid rgba(32,30,29,.1);border-radius:999px;width:fit-content;box-shadow:0 1px 3px rgba(0,0,0,.05)">
+  <span style="font:600 11px/1 Figtree,system-ui,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:rgba(32,30,29,.45)">Ground</span>
+  <sc-if value="{{ isCream }}" hint-placeholder-val="{{ true }}">
+    <span style="font:700 12.5px/1 Figtree,system-ui,sans-serif;color:#fff2eb;background:#c67139;padding:8px 14px;border-radius:999px">Cream (Organic)</span>
+    <button onClick="{{ onGreen }}" style="font:600 12.5px/1 Figtree,system-ui,sans-serif;color:#201e1d;background:transparent;border:1px solid rgba(32,30,29,.2);padding:7px 14px;border-radius:999px;cursor:pointer" style-hover="background:rgba(32,30,29,.06)">DietWise green ·&nbsp;#8bc751 tints</button>
+  </sc-if>
+  <sc-if value="{{ isGreen }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ onCream }}" style="font:600 12.5px/1 Figtree,system-ui,sans-serif;color:#201e1d;background:transparent;border:1px solid rgba(32,30,29,.2);padding:7px 14px;border-radius:999px;cursor:pointer" style-hover="background:rgba(32,30,29,.06)">Cream (Organic)</button>
+    <span style="font:700 12.5px/1 Figtree,system-ui,sans-serif;color:#f4f9ec;background:#728157;padding:8px 14px;border-radius:999px">DietWise green ·&nbsp;#8bc751 tints</span>
+  </sc-if>
+</div>
+<p class="dv-note">Rebuilt against <strong>nikospara/dietwise-recipe-watch</strong>: ingredients are <code>nameInRecipe</code> strings, suggestions carry <code>text</code>, <code>alternative</code>, <code>equivalence</code>, <code>techniqueNotes</code>, cost (€/€€/€€€), the seasonality warning and the accept/reject/undecided tri-state — accepting a second suggestion for one ingredient releases the first, and pressing an active button returns it to undecided, exactly as <code>reduceSuggestionStatusAction</code> does. The bipolar rating, the gold intervention banner, cooking mode and the split pane are all from your code; the Organic palette and Caprasimo/Figtree replace the default Ionic skin. <a class="dv-oid" href="#2a">2a</a> keeps your split-pane information architecture; <a class="dv-oid" href="#2b">2b</a> and <a class="dv-oid" href="#2c">2c</a> re-arrange the same state machine.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a">
+<div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Split pane, restyled — your current architecture: ingredients above, the global suggestion list below, rating and intervention banner in place.</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:54px 8px 6px;display:flex;align-items:center;gap:4px">
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+    <img src="{{ markSrc }}" alt="" style="width:24px;height:24px">
+    <div style="flex:1;font-family:var(--font-heading);font-size:17px">Recipe</div>
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--color-accent-700)" style-hover="background:var(--color-accent-200)">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M9.5 9.2a2.6 2.6 0 015 .9c0 1.8-2.5 2-2.5 3.6"></path><path d="M12 17.2h.01"></path></svg>
+    </button>
+  </div>
+
+  <div style="flex:none;margin:0 16px 10px;display:flex;align-items:center;gap:10px;background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:999px;padding:8px 10px 8px 12px">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#728157" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.5l2.8 2.8L16.5 9.5"></path></svg>
+    <div style="flex:1;min-width:0;font-size:12.5px;color:rgba(32,30,29,0.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ recipeUrl }}</div>
+    <button title="Reset" style="width:34px;height:34px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;color:var(--color-neutral-700);display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5L4 10l5 5"></path><path d="M4 10h10a6 6 0 010 12H8"></path></svg>
+    </button>
+  </div>
+
+  <div style="flex:1.05;min-height:0;overflow:auto;padding:0 16px">
+    <div style="position:sticky;top:0;z-index:20;background:var(--color-bg);padding:2px 0 8px">
+      <div style="display:flex;align-items:flex-start;gap:8px">
+        <h2 style="flex:1;margin:0;font-size:21px;line-height:1.12">{{ recipeTitle }}</h2>
+        <img src="src/assets/images/json-ld.svg" alt="Read from the page's JSON-LD" title="Read from the page's JSON-LD" style="flex:none;width:28px;height:28px;margin-top:2px;opacity:.35">
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;max-width:280px;margin-top:9px">
+        <div style="flex:1;display:flex;flex-direction:row-reverse;gap:3px">
+          <sc-for list="{{ rating2a.limitedPips }}" as="p" hint-placeholder-count="5">
+            <div style="flex:1;height:10px;border-radius:999px;background:var(--color-neutral-300)">
+              <sc-if value="{{ p.on }}" hint-placeholder-val="{{ false }}"><div style="width:100%;height:100%;border-radius:999px;background:var(--color-accent-500)"></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(32,30,29,0.45)" stroke-width="2.75" stroke-linecap="round" style="flex:none"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><path d="M12 10.5v6M12 7.6h.01"></path></svg>
+        <div style="flex:1;display:flex;gap:3px">
+          <sc-for list="{{ rating2a.encouragedPips }}" as="p" hint-placeholder-count="5">
+            <div style="flex:1;height:10px;border-radius:999px;background:var(--color-neutral-300)">
+              <sc-if value="{{ p.on }}" hint-placeholder-val="{{ false }}"><div style="width:100%;height:100%;border-radius:999px;background:var(--color-accent-2-600)"></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="margin-top:5px;font-size:11px;color:rgba(32,30,29,0.5)">{{ rating2a.summary }} · {{ recipeYield }}</div>
+    </div>
+
+    <h3 style="margin:6px 0 6px;font-size:14px;font-family:var(--font-heading);letter-spacing:.02em">Ingredients</h3>
+    <div style="font-size:10.5px;line-height:1.45;color:var(--color-accent-900);background:#ffdc73;border-radius:14px;padding:8px 11px;margin-bottom:8px">The following content comes from the website at the address you have entered and its intellectual property is that specified by the same page.</div>
+    <sc-for list="{{ ings2a }}" as="i" hint-placeholder-count="6">
+      <div style="padding:9px 0;border-bottom:1px solid rgba(32,30,29,0.08);display:flex;align-items:flex-start;gap:10px">
+        <sc-if value="{{ i.isPlain }}" hint-placeholder-val="{{ true }}">
+          <div style="flex:1;font-size:15px;line-height:1.4">{{ i.name }}</div>
+        </sc-if>
+        <sc-if value="{{ i.isReplaced }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1">
+            <div style="font-size:13px;color:rgba(32,30,29,0.45);text-decoration:line-through">{{ i.name }}</div>
+            <div style="font-size:15.5px;font-weight:700;color:var(--color-accent-2-900);line-height:1.35">{{ i.alternative }}</div>
+            <div style="font-size:11.5px;color:var(--color-accent-2-800)"><span style="font-weight:700">Equivalence:</span> {{ i.equivalence }}</div>
+            <sc-if value="{{ i.hasNotes }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:11.5px;color:rgba(32,30,29,0.6)"><span style="font-weight:700">Notes:</span> {{ i.techniqueNotes }}</div>
+            </sc-if>
+          </div>
+          <button onClick="{{ i.onUndo }}" title="Back to undecided" style="width:38px;height:38px;flex:none;border:1px solid var(--color-neutral-500);border-radius:999px;background:transparent;color:var(--color-text);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"></path></svg>
+          </button>
+        </sc-if>
+      </div>
+    </sc-for>
+    <div style="height:12px"></div>
+  </div>
+
+  <div style="flex:none;height:14px;background:#638672;display:flex;align-items:center;justify-content:center;cursor:row-resize">
+    <div style="width:48px;height:4px;border-radius:999px;background:#fcc594;opacity:.75"></div>
+  </div>
+
+  <div style="flex:1;min-height:0;overflow:auto;padding:0 16px">
+    <div style="position:sticky;top:0;z-index:20;background:var(--color-bg);padding:10px 0 8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <h2 style="margin:0;font-size:19px">Suggestions – Advice</h2>
+        <sc-if value="{{ cookingOff }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ onToggleCooking }}" style="flex:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 11px;border:1px solid var(--color-accent-500);border-radius:999px;background:transparent;color:var(--color-accent-700);font-family:var(--font-body);font-size:11.5px;font-weight:700;cursor:pointer" style-hover="background:var(--color-accent-200)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M18.7 5.3L17 7M7 17l-1.7 1.7"></path></svg>
+            Keep screen on
+          </button>
+        </sc-if>
+        <sc-if value="{{ cooking }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ onToggleCooking }}" style="flex:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 11px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-body);font-size:11.5px;font-weight:700;cursor:pointer" style-hover="background:var(--color-accent-600)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4.6"></circle></svg>
+            Screen stays on
+          </button>
+        </sc-if>
+      </div>
+      <div style="margin:9px 0 2px;padding:11px 14px;border-radius:14px;background:#ffdc73;color:#201e1d;font-size:13.5px;font-weight:600;line-height:1.35;text-align:center;box-shadow:var(--shadow-sm)">{{ intervention }}</div>
+    </div>
+
+    <sc-for list="{{ sugs2a }}" as="s" hint-placeholder-count="4">
+      <div style="margin-bottom:10px">
+        <sc-if value="{{ s.isUndecided }}" hint-placeholder-val="{{ true }}">
+          <div style="background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:20px;padding:12px 13px;box-shadow:var(--shadow-sm)">
+            <div style="display:flex;align-items:flex-start;gap:8px">
+              <div style="flex:1;font-size:15px;font-weight:600;line-height:1.35">{{ s.text }}</div>
+              <sc-if value="{{ s.isRecipeTarget }}" hint-placeholder-val="{{ false }}">
+                <span style="flex:none;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-2-900);background:var(--color-accent-2-300);border-radius:999px;padding:3px 7px">whole recipe</span>
+              </sc-if>
+            </div>
+            <sc-if value="{{ s.showWhy }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:5px;font-size:12.5px;line-height:1.45;color:rgba(32,30,29,0.62)">{{ s.rationale }}</div>
+            </sc-if>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px">
+              <sc-for list="{{ s.deltas }}" as="d" hint-placeholder-count="2">
+                <span style="font-size:11px;font-weight:700;background:var(--color-accent-2-200);color:var(--color-accent-2-800);padding:3px 9px;border-radius:999px">{{ d.t }}</span>
+              </sc-for>
+              <span style="font-size:11.5px;font-weight:700;color:var(--color-neutral-800)">{{ s.cost }}</span>
+              <sc-if value="{{ s.seasonal }}" hint-placeholder-val="{{ false }}">
+                <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--color-accent-800);background:#ffdc73;padding:3px 9px;border-radius:999px">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M12 7.5v5M12 16.4h.01"></path></svg>
+                  May be out of season!
+                </span>
+              </sc-if>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:11px">
+              <button title="Details" style="width:38px;height:38px;flex:none;border:1px solid var(--color-neutral-400);border-radius:999px;background:transparent;color:var(--color-neutral-800);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M12 10.5v6.5M12 7.2h.01"></path><circle cx="12" cy="12" r="9.5"></circle></svg>
+              </button>
+              <div style="flex:1;font-size:10px;line-height:1.35;color:rgba(32,30,29,0.42)">You {{ s.user }} · All {{ s.total }}<br>accepted/rejected/suggested</div>
+              <button onClick="{{ s.onReject }}" title="Reject" style="width:44px;height:44px;flex:none;border:1px solid var(--color-neutral-500);border-radius:999px;background:transparent;color:var(--color-text);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+              </button>
+              <button onClick="{{ s.onAccept }}" title="Accept" style="width:44px;height:44px;flex:none;border:1px solid var(--color-accent-2-600);border-radius:999px;background:var(--color-accent-2-200);color:var(--color-accent-2-900);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-accent-2-300)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+              </button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ s.isAccepted }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--color-accent-2-200);border:1px solid var(--color-accent-2-500);border-radius:20px;padding:12px 13px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3d472b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+              <div style="flex:1;font-size:15px;font-weight:700;line-height:1.35;color:var(--color-accent-2-900)">{{ s.text }}</div>
+            </div>
+            <div style="margin-top:6px;padding-left:26px;font-size:12px;color:var(--color-accent-2-800)"><span style="font-weight:700">Equivalence:</span> {{ s.equivalence }}</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding-left:26px">
+              <div style="flex:1;font-size:11px;color:var(--color-accent-2-800)">Applied to the ingredient list above</div>
+              <button onClick="{{ s.onAccept }}" style="flex:none;height:34px;padding:0 13px;border:1px solid var(--color-accent-2-700);border-radius:999px;background:transparent;color:var(--color-accent-2-900);font-family:var(--font-body);font-size:12px;font-weight:700;cursor:pointer" style-hover="background:var(--color-accent-2-300)">Undecided</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+
+    <sc-if value="{{ hasRejected2a }}" hint-placeholder-val="{{ false }}">
+      <div style="margin:2px 0 14px;padding-top:10px;border-top:1px solid rgba(32,30,29,0.1)">
+        <div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(32,30,29,0.4);margin-bottom:7px">Dismissed ({{ rejectedCount2a }}) · suggested less often</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <sc-for list="{{ rejected2a }}" as="s" hint-placeholder-count="1">
+            <button onClick="{{ s.onReject }}" style="display:inline-flex;align-items:center;gap:6px;max-width:100%;font-family:var(--font-body);font-size:11px;font-weight:600;color:rgba(32,30,29,0.45);background:transparent;border:1px dashed var(--color-neutral-400);border-radius:999px;padding:4px 10px;cursor:pointer;text-align:left" style-hover="color:var(--color-text)">
+              <span style="text-decoration:line-through">{{ s.alternative }}</span>
+              <span style="flex:none;font-weight:700;color:var(--color-accent-700)">undo</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="flex:none;padding:10px 16px 30px;background:var(--color-surface);display:flex;align-items:center;gap:12px">
+    <div style="flex:1;font-size:12px;line-height:1.3;color:rgba(32,30,29,0.6)">{{ applied2a }} ingredient swaps applied</div>
+    <button style="flex:none;height:44px;padding:0 18px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:14px;cursor:pointer" style-hover="background:var(--color-accent-600)">Save to my recipes</button>
+  </div>
+</div>
+</x-import>
+</div>
+
+<div class="dv-opt" id="2b">
+<div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Ingredient-anchored — the same tri-state model, but each suggestion lives under the ingredient it targets, with a compare sheet for the alternatives side by side.</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:54px 8px 6px;display:flex;align-items:center;gap:4px;border-bottom:1px solid rgba(32,30,29,0.08)">
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+    <img src="{{ markSrc }}" alt="" style="width:24px;height:24px">
+    <div style="flex:1;font-family:var(--font-heading);font-size:17px">Recipe</div>
+    <div style="flex:none;margin-right:8px;font-size:11.5px;font-weight:700;color:var(--color-accent-2-900);background:var(--color-accent-2-200);padding:5px 10px;border-radius:999px">{{ applied2b }} swapped</div>
+  </div>
+
+  <div style="flex:1;min-height:0;overflow:auto">
+    <div style="padding:16px 18px 14px;background:var(--color-surface)">
+      <h1 style="margin:0 0 6px;font-size:27px;line-height:1.08">{{ recipeTitle }}</h1>
+      <div style="font-size:11.5px;color:rgba(32,30,29,0.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ recipeUrl }}</div>
+      <div style="display:flex;align-items:center;gap:6px;max-width:280px;margin-top:12px">
+        <div style="flex:1;display:flex;flex-direction:row-reverse;gap:3px">
+          <sc-for list="{{ rating2b.limitedPips }}" as="p" hint-placeholder-count="5">
+            <div style="flex:1;height:10px;border-radius:999px;background:var(--color-neutral-300)">
+              <sc-if value="{{ p.on }}" hint-placeholder-val="{{ false }}"><div style="width:100%;height:100%;border-radius:999px;background:var(--color-accent-500)"></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(32,30,29,0.45)" stroke-width="2.75" stroke-linecap="round" style="flex:none"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><path d="M12 10.5v6M12 7.6h.01"></path></svg>
+        <div style="flex:1;display:flex;gap:3px">
+          <sc-for list="{{ rating2b.encouragedPips }}" as="p" hint-placeholder-count="5">
+            <div style="flex:1;height:10px;border-radius:999px;background:var(--color-neutral-300)">
+              <sc-if value="{{ p.on }}" hint-placeholder-val="{{ false }}"><div style="width:100%;height:100%;border-radius:999px;background:var(--color-accent-2-600)"></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="margin-top:5px;font-size:11px;color:rgba(32,30,29,0.55)">{{ rating2b.summary }} · tap an ingredient to see its alternatives</div>
+    </div>
+
+    <div style="padding:4px 0 22px">
+      <sc-for list="{{ rows2b }}" as="row" hint-placeholder-count="6">
+        <div style="padding:11px 18px;border-bottom:1px solid rgba(32,30,29,0.07)">
+          <sc-if value="{{ row.isPlain }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="flex:1;font-size:15px;line-height:1.4">{{ row.name }}</div>
+              <sc-if value="{{ row.hasSugg }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ row.onToggle }}" style="flex:none;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border:1px solid var(--color-accent-2-400);border-radius:999px;background:var(--color-accent-2-100);color:var(--color-accent-2-800);font-family:var(--font-body);font-size:12px;font-weight:700;cursor:pointer" style-hover="background:var(--color-accent-2-200)">
+                  {{ row.badge }}
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+                </button>
+              </sc-if>
+              <sc-if value="{{ row.noSugg }}" hint-placeholder-val="{{ false }}">
+                <span style="flex:none;font-size:11px;color:rgba(32,30,29,0.35)">no suggestions</span>
+              </sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ row.isReplaced }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--color-accent-2-200);border:1px solid var(--color-accent-2-400);border-radius:18px;padding:11px 12px;display:flex;align-items:flex-start;gap:10px">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#3d472b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:3px"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+              <div style="flex:1">
+                <div style="font-size:12.5px;color:rgba(32,30,29,0.5);text-decoration:line-through">{{ row.name }}</div>
+                <div style="font-size:15.5px;font-weight:700;color:var(--color-accent-2-900);line-height:1.35">{{ row.alternative }}</div>
+                <div style="font-size:11.5px;color:var(--color-accent-2-800)"><span style="font-weight:700">Equivalence:</span> {{ row.equivalence }}</div>
+                <sc-if value="{{ row.hasNotes }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:11.5px;color:var(--color-accent-2-800)"><span style="font-weight:700">Notes:</span> {{ row.techniqueNotes }}</div>
+                </sc-if>
+              </div>
+              <button onClick="{{ row.onUndo }}" title="Back to undecided" style="width:36px;height:36px;flex:none;border:1px solid var(--color-accent-2-700);border-radius:999px;background:transparent;color:var(--color-accent-2-900);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-accent-2-300)">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"></path></svg>
+              </button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ row.isOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:10px">
+              <sc-for list="{{ row.open }}" as="s" hint-placeholder-count="2">
+                <div style="background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:18px;padding:12px 13px;box-shadow:var(--shadow-sm)">
+                  <div style="font-size:15px;font-weight:700;line-height:1.3">{{ s.alternative }}</div>
+                  <sc-if value="{{ s.showWhy }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:4px;font-size:12.5px;line-height:1.45;color:rgba(32,30,29,0.65)">{{ s.rationale }}</div>
+                  </sc-if>
+                  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px">
+                    <sc-for list="{{ s.deltas }}" as="d" hint-placeholder-count="2">
+                      <span style="font-size:11px;font-weight:700;background:var(--color-accent-2-200);color:var(--color-accent-2-800);padding:3px 9px;border-radius:999px">{{ d.t }}</span>
+                    </sc-for>
+                    <span style="font-size:11.5px;font-weight:700;color:var(--color-neutral-800)">{{ s.cost }}</span>
+                  </div>
+                  <div style="display:flex;gap:8px;margin-top:11px">
+                    <button onClick="{{ s.onAccept }}" style="flex:1;height:42px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:14px;cursor:pointer" style-hover="background:var(--color-accent-600)">Accept</button>
+                    <button onClick="{{ s.onReject }}" style="flex:1;height:42px;border:1px solid var(--color-neutral-500);border-radius:999px;background:transparent;color:var(--color-text);font-family:var(--font-heading);font-size:14px;cursor:pointer" style-hover="background:var(--color-neutral-200)">Reject</button>
+                  </div>
+                </div>
+              </sc-for>
+              <button onClick="{{ row.onCompare }}" style="align-self:flex-start;border:0;background:transparent;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--color-accent-700);cursor:pointer;padding:2px" style-hover="text-decoration:underline">Compare side by side →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ row.hasDismissed }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+              <sc-for list="{{ row.dismissed }}" as="d" hint-placeholder-count="1">
+                <button onClick="{{ d.onRestore }}" style="font-family:var(--font-body);font-size:11px;font-weight:600;color:rgba(32,30,29,0.42);background:transparent;border:1px dashed var(--color-neutral-400);border-radius:999px;padding:3px 9px;cursor:pointer;text-decoration:line-through" style-hover="color:var(--color-text)">{{ d.name }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ sheetOpen2b }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCloseSheet2b }}" style="position:absolute;inset:0;z-index:70;background:rgba(32,30,29,0.45)"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;z-index:80;display:flex;flex-direction:column;max-height:80%;background:var(--color-bg);border-radius:28px 28px 0 0;box-shadow:var(--shadow-lg);padding:10px 0 30px">
+      <div style="width:44px;height:5px;border-radius:999px;background:var(--color-neutral-400);margin:0 auto 12px"></div>
+      <div style="padding:0 18px 12px">
+        <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Alternatives for</div>
+        <h3 style="margin:3px 0 0;font-size:21px;line-height:1.15">{{ sheetTitle2b }}</h3>
+        <div style="font-size:12px;color:rgba(32,30,29,0.5)">Only one can be accepted — the rest stay undecided.</div>
+      </div>
+      <div style="display:flex;gap:12px;overflow-x:auto;padding:4px 18px 6px">
+        <sc-for list="{{ sheetOpts2b }}" as="s" hint-placeholder-count="2">
+          <div style="width:250px;flex:none;background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:20px;padding:13px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column">
+            <div style="font-size:15.5px;font-weight:700;line-height:1.25">{{ s.alternative }}</div>
+            <div style="margin-top:4px;font-size:11.5px;color:var(--color-accent-700);font-weight:700">{{ s.equivalence }}</div>
+            <sc-if value="{{ s.showWhy }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:7px;font-size:12.5px;line-height:1.45;color:rgba(32,30,29,0.65)">{{ s.rationale }}</div>
+            </sc-if>
+            <div style="margin-top:8px;font-size:11.5px;line-height:1.45;color:rgba(32,30,29,0.6)"><span style="font-weight:700">Notes:</span> {{ s.techniqueNotes }}</div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:9px">
+              <sc-for list="{{ s.deltas }}" as="d" hint-placeholder-count="1">
+                <span style="font-size:10.5px;font-weight:700;background:var(--color-accent-2-200);color:var(--color-accent-2-800);padding:3px 8px;border-radius:999px">{{ d.t }}</span>
+              </sc-for>
+              <span style="font-size:11px;font-weight:700;color:var(--color-neutral-800)">{{ s.cost }}</span>
+            </div>
+            <div style="flex:1"></div>
+            <div style="display:flex;gap:7px;margin-top:12px">
+              <button onClick="{{ s.onAccept }}" style="flex:1;height:40px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:13.5px;cursor:pointer" style-hover="background:var(--color-accent-600)">Accept</button>
+              <button onClick="{{ s.onReject }}" title="Reject" style="width:40px;flex:none;height:40px;border:1px solid var(--color-neutral-500);border-radius:999px;background:transparent;color:var(--color-neutral-800);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+              </button>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ sheetEmpty2b }}" hint-placeholder-val="{{ false }}">
+          <div style="width:250px;flex:none;border:1px dashed var(--color-neutral-400);border-radius:20px;padding:16px;font-size:12.5px;line-height:1.5;color:rgba(32,30,29,0.5)">Every alternative for this ingredient was rejected. The backend will propose them less often.</div>
+        </sc-if>
+      </div>
+      <div style="padding:12px 18px 0">
+        <button onClick="{{ onCloseSheet2b }}" style="width:100%;height:46px;border:1px solid var(--color-neutral-500);border-radius:999px;background:transparent;color:var(--color-text);font-family:var(--font-heading);font-size:15px;cursor:pointer" style-hover="background:var(--color-neutral-200)">Leave undecided</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-import>
+</div>
+
+<div class="dv-opt" id="2c">
+<div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Review queue — one suggestion at a time in the order the backend streamed them, with the amended ingredient list underneath. Includes the whole-recipe suggestion and its seasonality warning.</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;background:var(--color-accent-100);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:54px 14px 10px;display:flex;align-items:center;gap:10px">
+    <img src="{{ markSrc }}" alt="" style="width:28px;height:28px">
+    <div style="flex:1;min-width:0">
+      <div style="font-size:14.5px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ recipeTitle }}</div>
+      <div style="font-size:10.5px;color:rgba(32,30,29,0.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ recipeUrl }}</div>
+    </div>
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-accent-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+  </div>
+
+  <div style="flex:none;padding:0 16px 10px;display:flex;align-items:center;gap:7px">
+    <sc-for list="{{ dots2c }}" as="d" hint-placeholder-count="6">
+      <div style="flex:1;height:6px;border-radius:999px;background:var(--color-accent-200)">
+        <sc-if value="{{ d.done }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;height:100%;border-radius:999px;background:var(--color-accent-2-600)"></div>
+        </sc-if>
+      </div>
+    </sc-for>
+    <div style="flex:none;font-size:11px;font-weight:700;color:var(--color-accent-2-800)">{{ decided2c }}/6</div>
+  </div>
+
+  <sc-if value="{{ has2c }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:none;padding:2px 16px 0">
+      <div style="background:var(--color-neutral-100);border-radius:28px;box-shadow:var(--shadow-md);padding:17px 17px 15px">
+        <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Applies to</div>
+        <div style="margin-top:2px;font-size:13.5px;font-weight:600;color:rgba(32,30,29,0.62)">{{ card2c.targetName }}</div>
+        <h2 style="margin:11px 0 0;font-size:23px;line-height:1.12">{{ card2c.text }}</h2>
+        <sc-if value="{{ card2c.showWhy }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:9px;font-size:13.5px;line-height:1.5;color:rgba(32,30,29,0.7)">{{ card2c.rationale }}</div>
+        </sc-if>
+        <sc-if value="{{ card2c.hasEquivalence }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:7px;font-size:12px;color:var(--color-accent-700)"><span style="font-weight:700">Equivalence:</span> {{ card2c.equivalence }}</div>
+        </sc-if>
+        <div style="margin-top:3px;font-size:12px;color:rgba(32,30,29,0.6)"><span style="font-weight:700">Notes:</span> {{ card2c.techniqueNotes }}</div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:11px">
+          <sc-for list="{{ card2c.deltas }}" as="d" hint-placeholder-count="2">
+            <span style="font-size:11.5px;font-weight:700;background:var(--color-accent-2-200);color:var(--color-accent-2-800);padding:4px 10px;border-radius:999px">{{ d.t }}</span>
+          </sc-for>
+          <span style="font-size:12px;font-weight:700;color:var(--color-neutral-800)">{{ card2c.cost }}</span>
+          <sc-if value="{{ card2c.seasonal }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--color-accent-800);background:#ffdc73;padding:4px 10px;border-radius:999px">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M12 7.5v5M12 16.4h.01"></path></svg>
+              May be out of season!
+            </span>
+          </sc-if>
+        </div>
+        <div style="display:flex;align-items:center;gap:11px;margin-top:16px">
+          <button onClick="{{ card2c.onReject }}" title="Reject" style="width:58px;height:58px;flex:none;border:1px solid var(--color-neutral-500);border-radius:999px;background:transparent;color:var(--color-neutral-800);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+          <button onClick="{{ card2c.onAccept }}" style="flex:1;height:58px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px" style-hover="background:var(--color-accent-600)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+            Accept
+          </button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:11px">
+          <div style="flex:1;font-size:11px;color:rgba(32,30,29,0.45)">{{ card2c.remaining }}</div>
+          <button onClick="{{ card2c.onKeep }}" style="flex:none;border:0;background:transparent;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--color-neutral-800);cursor:pointer;padding:4px 2px" style-hover="text-decoration:underline">Skip this ingredient</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ done2c }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:none;padding:2px 16px 0">
+      <div style="background:var(--color-accent-2-200);border-radius:28px;padding:22px 18px">
+        <h2 style="margin:0 0 6px;font-size:25px;line-height:1.1;color:var(--color-accent-2-900)">Queue empty</h2>
+        <div style="font-size:13.5px;line-height:1.5;color:var(--color-accent-2-800)">{{ applied2c }} swaps applied. Rejections were sent to the backend, so those suggestions come up less often for you.</div>
+        <button style="margin-top:14px;height:46px;padding:0 20px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:15px;cursor:pointer" style-hover="background:var(--color-accent-600)">Save to my recipes</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="flex:1;min-height:0;overflow:auto;margin-top:13px;background:var(--color-bg);border-radius:28px 28px 0 0;padding:14px 18px 30px">
+    <h6 style="margin:0 0 6px;font-size:11px;color:var(--color-neutral-700)">Ingredients</h6>
+    <sc-for list="{{ ings2c }}" as="i" hint-placeholder-count="6">
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(32,30,29,0.07)">
+        <sc-if value="{{ i.isReplaced }}" hint-placeholder-val="{{ false }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#56633f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:3px"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+          <div style="flex:1">
+            <div style="font-size:14.5px;font-weight:700;color:var(--color-accent-2-900);line-height:1.35">{{ i.alternative }}</div>
+            <div style="font-size:11.5px;color:rgba(32,30,29,0.45);text-decoration:line-through">{{ i.name }}</div>
+          </div>
+          <button onClick="{{ i.onUndo }}" style="flex:none;border:0;background:transparent;font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--color-accent-2-800);cursor:pointer;padding:2px" style-hover="text-decoration:underline">Undo</button>
+        </sc-if>
+        <sc-if value="{{ i.isKept }}" hint-placeholder-val="{{ false }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-700)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:3px"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+          <div style="flex:1">
+            <div style="font-size:14.5px;font-weight:700;line-height:1.35">{{ i.name }}</div>
+            <div style="font-size:11.5px;color:var(--color-accent-700)">{{ i.keptNote }}</div>
+          </div>
+          <button onClick="{{ i.onUndo }}" style="flex:none;border:0;background:transparent;font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--color-accent-700);cursor:pointer;padding:2px" style-hover="text-decoration:underline">Undo</button>
+        </sc-if>
+        <sc-if value="{{ i.isPlain }}" hint-placeholder-val="{{ true }}">
+          <div style="width:16px;height:16px;flex:none;margin-top:3px;border:1.5px solid var(--color-neutral-400);border-radius:999px"></div>
+          <div style="flex:1;font-size:14.5px;line-height:1.4">{{ i.name }}</div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-import>
+</div>
+
+<div class="dv-opt" id="2f">
+<div class="dv-olabel"><a class="dv-oid" href="#2f">2f</a>Queue by ingredient — same as 2c, but each step shows every alternative like 2b, so nothing is chosen blind. Decided rows below all carry Undo, and keeping the original shows a checkmark.</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;background:var(--color-accent-100);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:54px 14px 10px;display:flex;align-items:center;gap:10px">
+    <img src="{{ markSrc }}" alt="" style="width:28px;height:28px">
+    <div style="flex:1;min-width:0">
+      <div style="font-size:14.5px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ recipeTitle }}</div>
+      <div style="font-size:10.5px;color:rgba(32,30,29,0.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ recipeUrl }}</div>
+    </div>
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-accent-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+  </div>
+
+  <div style="flex:none;padding:0 16px 10px;display:flex;align-items:center;gap:7px">
+    <sc-for list="{{ dots2f }}" as="d" hint-placeholder-count="6">
+      <div style="flex:1;height:6px;border-radius:999px;background:var(--color-accent-200)">
+        <sc-if value="{{ d.done }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;height:100%;border-radius:999px;background:var(--color-accent-2-600)"></div>
+        </sc-if>
+      </div>
+    </sc-for>
+    <div style="flex:none;font-size:11px;font-weight:700;color:var(--color-accent-2-800)">{{ progress2f }}</div>
+  </div>
+
+  <div style="flex:1;min-height:0;overflow:auto;padding:2px 16px 0">
+    <sc-if value="{{ has2f }}" hint-placeholder-val="{{ true }}">
+      <div style="background:var(--color-neutral-100);border-radius:28px;box-shadow:var(--shadow-md);padding:16px 15px 15px">
+        <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">{{ stepLabel2f }} · alternatives for</div>
+        <h2 style="margin:5px 0 0;font-size:23px;line-height:1.12">{{ target2f }}</h2>
+        <div style="margin-top:4px;font-size:12.5px;line-height:1.45;color:rgba(32,30,29,0.6)">{{ count2f }} — accept the one you want, or reject the ones you never want to see again.</div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:13px">
+          <sc-for list="{{ opts2f }}" as="s" hint-placeholder-count="2">
+            <div style="border:1px solid var(--color-neutral-300);border-radius:20px;padding:12px 13px;background:var(--color-bg)">
+              <div style="font-size:16px;font-weight:700;line-height:1.25">{{ s.alternative }}</div>
+              <sc-if value="{{ s.hasEquivalence }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:3px;font-size:11.5px;font-weight:700;color:var(--color-accent-700)">{{ s.equivalence }}</div>
+              </sc-if>
+              <sc-if value="{{ s.showWhy }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:6px;font-size:12.5px;line-height:1.45;color:rgba(32,30,29,0.68)">{{ s.rationale }}</div>
+                <div style="margin-top:4px;font-size:11.5px;line-height:1.45;color:rgba(32,30,29,0.55)"><span style="font-weight:700">Notes:</span> {{ s.techniqueNotes }}</div>
+              </sc-if>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px">
+                <sc-for list="{{ s.deltas }}" as="d" hint-placeholder-count="2">
+                  <span style="font-size:11px;font-weight:700;background:var(--color-accent-2-200);color:var(--color-accent-2-800);padding:3px 9px;border-radius:999px">{{ d.t }}</span>
+                </sc-for>
+                <span style="font-size:11.5px;font-weight:700;color:var(--color-neutral-800)">{{ s.cost }}</span>
+                <sc-if value="{{ s.seasonal }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:var(--color-accent-800);background:#ffdc73;padding:3px 9px;border-radius:999px">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M12 7.5v5M12 16.4h.01"></path></svg>
+                    May be out of season!
+                  </span>
+                </sc-if>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:12px">
+                <button onClick="{{ s.onAccept }}" style="flex:1;height:46px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:14.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-hover="background:var(--color-accent-600)">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                  Accept
+                </button>
+                <button onClick="{{ s.onReject }}" title="Reject" style="width:46px;height:46px;flex:none;border:1px solid var(--color-neutral-500);border-radius:999px;background:transparent;color:var(--color-neutral-800);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+                </button>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ empty2f }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px dashed var(--color-neutral-400);border-radius:20px;padding:15px;font-size:12.5px;line-height:1.5;color:rgba(32,30,29,0.55)">Every alternative here was rejected. Restore one below, or skip this ingredient to move on.</div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ hasRejected2f }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:11px">
+            <span style="font-size:11px;color:rgba(32,30,29,0.45)">Rejected:</span>
+            <sc-for list="{{ rejected2f }}" as="d" hint-placeholder-count="1">
+              <button onClick="{{ d.onRestore }}" style="font-family:var(--font-body);font-size:11px;font-weight:600;color:rgba(32,30,29,0.42);background:transparent;border:1px dashed var(--color-neutral-400);border-radius:999px;padding:3px 9px;cursor:pointer;text-decoration:line-through" style-hover="color:var(--color-text)">{{ d.name }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(32,30,29,0.08)">
+          <div style="flex:1;font-size:11px;color:rgba(32,30,29,0.45)">{{ remaining2f }}</div>
+          <button onClick="{{ onKeep2f }}" style="flex:none;height:40px;padding:0 16px;border:1px solid var(--color-neutral-500);border-radius:999px;background:transparent;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--color-neutral-800);cursor:pointer" style-hover="background:var(--color-neutral-200)">Skip this ingredient</button>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ done2f }}" hint-placeholder-val="{{ false }}">
+      <div style="background:var(--color-accent-2-200);border-radius:28px;padding:22px 18px">
+        <h2 style="margin:0 0 6px;font-size:25px;line-height:1.1;color:var(--color-accent-2-900)">Every ingredient reviewed</h2>
+        <div style="font-size:13.5px;line-height:1.5;color:var(--color-accent-2-800)">{{ applied2f }} swaps applied. Undo any decision in the list below before you save.</div>
+        <button style="margin-top:14px;height:46px;padding:0 20px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:15px;cursor:pointer" style-hover="background:var(--color-accent-600)">Save to my recipes</button>
+      </div>
+    </sc-if>
+
+    <div style="margin:13px -16px 0;background:var(--color-bg);border-radius:28px 28px 0 0;padding:14px 18px 30px;min-height:200px">
+      <h6 style="margin:0 0 6px;font-size:11px;color:var(--color-neutral-700)">Ingredients</h6>
+      <sc-for list="{{ ings2f }}" as="i" hint-placeholder-count="6">
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(32,30,29,0.07)">
+          <sc-if value="{{ i.isReplaced }}" hint-placeholder-val="{{ false }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#56633f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:3px"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+            <div style="flex:1">
+              <div style="font-size:14.5px;font-weight:700;color:var(--color-accent-2-900);line-height:1.35">{{ i.alternative }}</div>
+              <div style="font-size:11.5px;color:rgba(32,30,29,0.45);text-decoration:line-through">{{ i.name }}</div>
+            </div>
+            <button onClick="{{ i.onUndo }}" style="flex:none;border:0;background:transparent;font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--color-accent-2-800);cursor:pointer;padding:2px" style-hover="text-decoration:underline">Undo</button>
+          </sc-if>
+          <sc-if value="{{ i.isKept }}" hint-placeholder-val="{{ false }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-700)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:3px"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+            <div style="flex:1">
+              <div style="font-size:14.5px;font-weight:700;line-height:1.35">{{ i.name }}</div>
+              <div style="font-size:11.5px;color:var(--color-accent-700)">{{ i.keptNote }}</div>
+            </div>
+            <button onClick="{{ i.onUndo }}" style="flex:none;border:0;background:transparent;font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--color-accent-700);cursor:pointer;padding:2px" style-hover="text-decoration:underline">Undo</button>
+          </sc-if>
+          <sc-if value="{{ i.isPlain }}" hint-placeholder-val="{{ true }}">
+            <div style="width:16px;height:16px;flex:none;margin-top:3px;border:1.5px solid var(--color-neutral-400);border-radius:999px"></div>
+            <div style="flex:1;font-size:14.5px;line-height:1.4">{{ i.name }}</div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-import>
+</div>
+
+<div class="dv-opt" id="2d">
+<div class="dv-olabel"><a class="dv-oid" href="#2d">2d</a>Before and during — the URL entry state with the help contents, then the streaming assessment: step 1 (extraction) done, step 2 (suggestions) still arriving.</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:54px 8px 6px;display:flex;align-items:center;gap:4px">
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+    <img src="{{ markSrc }}" alt="" style="width:24px;height:24px">
+    <div style="flex:1;font-family:var(--font-heading);font-size:17px">Recipe</div>
+  </div>
+  <div style="flex:1;overflow:auto;padding:6px 18px 24px">
+    <button style="width:100%;text-align:left;border:2px dashed var(--color-accent-400);background:var(--color-accent-100);border-radius:24px;padding:18px;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="background:var(--color-accent-200)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#b2622d" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M10.5 13.5a4 4 0 005.7 0l3-3a4 4 0 10-5.7-5.7l-1 1"></path><path d="M13.5 10.5a4 4 0 00-5.7 0l-3 3a4 4 0 105.7 5.7l1-1"></path></svg>
+        <div style="flex:1;font-size:14.5px;font-weight:600;line-height:1.4">Tap to enter the address of the page containing the recipe you want to assess</div>
+      </div>
+    </button>
+    <h2 style="margin:22px 0 8px;font-size:24px;line-height:1.1">How MyRecipeWatch works</h2>
+    <p style="margin:0 0 16px;font-size:13.5px;line-height:1.55;color:rgba(32,30,29,0.68)">Here's everything you need to know about assessing your recipes and choosing healthier ingredients.</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:20px;padding:14px;display:flex;gap:12px">
+        <div style="width:30px;height:30px;flex:none;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:15px;display:flex;align-items:center;justify-content:center">1</div>
+        <div style="flex:1"><div style="font-family:var(--font-heading);font-size:16px;margin-bottom:3px">Enter a recipe link</div><div style="font-size:12.5px;line-height:1.5;color:rgba(32,30,29,0.65)">Paste the web address of the page with the recipe, then press Assess.</div></div>
+      </div>
+      <div style="background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:20px;padding:14px;display:flex;gap:12px">
+        <div style="width:30px;height:30px;flex:none;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:15px;display:flex;align-items:center;justify-content:center">2</div>
+        <div style="flex:1"><div style="font-family:var(--font-heading);font-size:16px;margin-bottom:3px">Two simple steps</div><div style="font-size:12.5px;line-height:1.5;color:rgba(32,30,29,0.65)">We extract the recipe, then suggest healthier and more sustainable ingredients.</div></div>
+      </div>
+      <div style="background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:20px;padding:14px;display:flex;gap:12px">
+        <div style="width:30px;height:30px;flex:none;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:15px;display:flex;align-items:center;justify-content:center">3</div>
+        <div style="flex:1"><div style="font-family:var(--font-heading);font-size:16px;margin-bottom:3px">You're in control</div><div style="font-size:12.5px;line-height:1.5;color:rgba(32,30,29,0.65)">Accept, reject or leave a suggestion undecided. Small swaps add up.</div></div>
+      </div>
+    </div>
+    <p style="margin:18px 0 0;padding-top:14px;border-top:1px solid rgba(32,30,29,0.1);font-size:12px;line-height:1.55;color:rgba(32,30,29,0.55)">Don't worry if you forget these instructions; to see them again, press the Help button that appears at the top of the screen while assessing a recipe.</p>
+  </div>
+</div>
+</x-import>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:54px 8px 6px;display:flex;align-items:center;gap:4px">
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+    <img src="{{ markSrc }}" alt="" style="width:24px;height:24px">
+    <div style="flex:1;font-family:var(--font-heading);font-size:17px">Recipe</div>
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--color-accent-700)" style-hover="background:var(--color-accent-200)">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M9.5 9.2a2.6 2.6 0 015 .9c0 1.8-2.5 2-2.5 3.6"></path><path d="M12 17.2h.01"></path></svg>
+    </button>
+  </div>
+  <div style="flex:none;margin:0 16px 12px;display:flex;align-items:center;gap:10px;background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:999px;padding:8px 12px">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b2622d" stroke-width="2.75" stroke-linecap="round" style="flex:none"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8" opacity="0.9"></path></svg>
+    <div style="flex:1;min-width:0;font-size:12.5px;color:rgba(32,30,29,0.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ recipeUrl }}</div>
+  </div>
+  <div style="flex:none;padding:0 18px 14px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#728157" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+      <div style="flex:1;font-size:13.5px;font-weight:700">Recipe extracted from the page text</div>
+      <img src="src/assets/images/brain.svg" alt="Extracted by the language model" title="LLM_FROM_TEXT — extracted by the language model" style="flex:none;width:26px;height:26px;opacity:.4">
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:19px;height:19px;flex:none;border-radius:999px;border:3px solid var(--color-accent-300);border-top-color:var(--color-accent);animation:dw-spin 0.9s linear infinite"></div>
+      <div style="flex:1;font-size:13.5px;font-weight:700;color:var(--color-accent-700)">Assessing ingredients…</div>
+    </div>
+  </div>
+  <div style="flex:1;overflow:auto;padding:0 18px 24px">
+    <h2 style="margin:0 0 4px;font-size:21px;line-height:1.12">{{ recipeTitle }}</h2>
+    <h3 style="margin:10px 0 8px;font-size:14px;font-family:var(--font-heading)">Ingredients</h3>
+    <sc-for list="{{ ings2a }}" as="i" hint-placeholder-count="6">
+      <div style="padding:9px 0;border-bottom:1px solid rgba(32,30,29,0.08);font-size:15px;line-height:1.4">{{ i.name }}</div>
+    </sc-for>
+    <div style="margin-top:18px;display:flex;flex-direction:column;gap:9px">
+      <div style="height:74px;border-radius:20px;background:var(--color-neutral-200);opacity:.85"></div>
+      <div style="height:74px;border-radius:20px;background:var(--color-neutral-200);opacity:.6"></div>
+      <div style="height:74px;border-radius:20px;background:var(--color-neutral-200);opacity:.35"></div>
+    </div>
+  </div>
+</div>
+</x-import>
+</div>
+</div>
+
+<div class="dv-opt" id="2e">
+<div class="dv-olabel"><a class="dv-oid" href="#2e">2e</a>When it goes wrong, and the menu — extraction failure and the "no suggestions" case share one screen pattern; the drawer carries the preferences entry points from <code>Menu.tsx</code>.</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:54px 8px 6px;display:flex;align-items:center;gap:4px">
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+    <img src="{{ markSrc }}" alt="" style="width:24px;height:24px">
+    <div style="flex:1;font-family:var(--font-heading);font-size:17px">Recipe</div>
+    <button style="width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--color-accent-700)" style-hover="background:var(--color-accent-200)">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M9.5 9.2a2.6 2.6 0 015 .9c0 1.8-2.5 2-2.5 3.6"></path><path d="M12 17.2h.01"></path></svg>
+    </button>
+  </div>
+  <div style="flex:none;margin:0 16px 14px;display:flex;align-items:center;gap:10px;background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:999px;padding:8px 10px 8px 12px">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b2622d" stroke-width="2.75" stroke-linecap="round" style="flex:none"><circle cx="12" cy="12" r="9.5"></circle><path d="M12 7.5v5.5M12 16.6h.01"></path></svg>
+    <div style="flex:1;min-width:0;font-size:12.5px;color:rgba(32,30,29,0.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">paywalled-magazine.example/recipes/carbonara</div>
+    <button title="Reset" style="width:34px;height:34px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;color:var(--color-neutral-700);display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5L4 10l5 5"></path><path d="M4 10h10a6 6 0 010 12H8"></path></svg>
+    </button>
+  </div>
+  <div style="flex:1;overflow:auto;padding:0 18px 24px">
+    <div style="background:var(--color-accent-200);border:1px solid var(--color-accent-400);border-radius:24px;padding:18px">
+      <h2 style="margin:0 0 8px;font-size:22px;line-height:1.12;color:var(--color-accent-900)">Encountered errors</h2>
+      <ul style="margin:0;padding-left:20px;font-size:13.5px;line-height:1.55;color:var(--color-accent-900)">
+        <li style="margin-bottom:6px">No recipe could be read from this page — it may be behind a paywall or built entirely from images.</li>
+        <li>A network or system error occured; please try again later.</li>
+      </ul>
+      <div style="display:flex;gap:9px;margin-top:16px">
+        <button style="flex:1;height:44px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:14px;cursor:pointer" style-hover="background:var(--color-accent-600)">Try another address</button>
+        <button style="flex:none;height:44px;padding:0 16px;border:1px solid var(--color-accent-700);border-radius:999px;background:transparent;color:var(--color-accent-900);font-family:var(--font-heading);font-size:14px;cursor:pointer" style-hover="background:var(--color-accent-300)">Retry</button>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:24px;padding:18px">
+      <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700);margin-bottom:6px">Other outcome</div>
+      <h3 style="margin:0 0 6px;font-size:19px;line-height:1.15">Recipe read, nothing to change</h3>
+      <p style="margin:0;font-size:13px;line-height:1.55;color:rgba(32,30,29,0.65)">There are no suggestions for this recipe. The ingredient list stays on screen so the user still gets something back.</p>
+    </div>
+    <p style="margin:16px 0 0;font-size:12px;line-height:1.55;color:rgba(32,30,29,0.5)">Both cases keep the address bar and its reset button, so a second attempt is one tap away.</p>
+  </div>
+</div>
+</x-import>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;position:relative;overflow:hidden;background:var(--color-neutral-800);font-family:var(--font-body)">
+  <div style="position:absolute;inset:0;background:rgba(32,30,29,0.5)"></div>
+  <div style="position:absolute;top:0;bottom:0;left:0;width:312px;background:var(--color-bg);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;padding:54px 0 22px">
+    <div style="padding:14px 20px 18px;display:flex;align-items:center;gap:12px">
+      <img src="{{ markSrc }}" alt="" style="width:42px;height:42px">
+      <div style="flex:1;min-width:0">
+        <div style="font-family:var(--font-heading);font-size:19px;line-height:1.1">Recipe Watch</div>
+        <div style="font-size:11.5px;color:rgba(32,30,29,0.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">anonymous</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px;padding:0 12px">
+      <div style="display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:16px;font-size:15px">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M3.5 11L12 4l8.5 7"></path><path d="M5.5 9.6V20h13V9.6"></path></svg>
+        Home
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:16px;font-size:15px;font-weight:700;background:var(--color-accent-200);color:var(--color-accent-900)">
+        <img src="src/assets/images/chef-hat-fill.svg" alt="" style="flex:none;width:21px;height:21px">
+        Recipe
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:16px;font-size:15px">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><rect x="3" y="5" width="18" height="14" rx="4"></rect><circle cx="9" cy="11" r="2"></circle><path d="M6 16c.7-1.5 4.3-1.5 5 0M14.5 10.5h4M14.5 14h3"></path></svg>
+        Personal Information
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:16px;font-size:15px">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><circle cx="12" cy="12" r="3.2"></circle><path d="M19 12a7 7 0 00-.2-1.6l2-1.2-2-3.4-2 1.1A7 7 0 0015 5.8L14.7 3.5h-4L10.4 5.8a7 7 0 00-1.8 1L6.6 5.8l-2 3.4 2 1.2A7 7 0 004.4 12"></path><path d="M5 12a7 7 0 00.2 1.6l-2 1.2 2 3.4 2-1.1a7 7 0 001.8 1l.3 2.4h4l.3-2.4a7 7 0 001.8-1l2 1.1 2-3.4-2-1.2"></path></svg>
+        Settings
+      </div>
+    </div>
+    <div style="flex:1"></div>
+    <div style="padding:0 12px">
+      <div style="display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:16px;font-size:15px;border-top:1px solid rgba(32,30,29,0.1)">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M10 4.5H6.5a2 2 0 00-2 2v11a2 2 0 002 2H10"></path><path d="M15 8l4 4-4 4M19 12H9"></path></svg>
+        Login
+      </div>
+    </div>
+    <div style="padding:14px 20px 0;text-align:center;font-size:11px;color:rgba(32,30,29,0.4)">v1.4.2 (b110e97)</div>
+  </div>
+</div>
+</x-import>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "take <a class="dv-oid" href="#2a">2a</a> forward and drop the others" · "in <a class="dv-oid" href="#2b">2b</a>, show the suggestion <code>text</code> instead of just the alternative" · "add the personalization and settings screens in this style"</p>
+</section>
+
+<section class="dv-turn" id="t1" data-palette="{{ palette }}">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">MyRecipeWatch — main workflow screen, three directions</span></div>
+<p class="dv-note">Assumptions I made (say the word and I'll change any of them): the screen shows recipe name + ingredients only, never the preparation steps — there's a line linking back to the source page for those. One accepted swap per ingredient, unlimited rejections, and a rejection is styled as struck-through and gone from the queue (tap it to restore in this prototype). Suggestions carry a short "why" plus nutrition deltas, since a swap the user can't justify won't get accepted. Colours and type are the Organic system, warmed toward the DietWise orange mark. All three are live: accept, reject, undo.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Inline swaps — closest to your Ionic list. Each ingredient expands in place; accepted swaps become a sage block inside the row.</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:56px 16px 8px;display:flex;align-items:center;gap:10px">
+    <button style="width:40px;height:40px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+    <img src="{{ markSrc }}" alt="MyRecipeWatch" style="width:26px;height:26px">
+    <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em">MyRecipeWatch</div>
+    <div style="flex:1"></div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700);background:var(--color-accent-200);padding:4px 9px;border-radius:999px">DietWise</div>
+  </div>
+
+  <div style="flex:none;padding:8px 18px 14px">
+    <div style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--color-neutral-700);background:var(--color-neutral-200);padding:4px 10px;border-radius:999px;margin-bottom:10px">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"></path></svg>
+      {{ source }}
+    </div>
+    <h1 style="font-size:27px;line-height:1.1;margin:0 0 8px">{{ recipeName }}</h1>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span style="font-size:12.5px;color:rgba(32,30,29,0.55)">{{ servings }} servings · 6 ingredients</span>
+      <span style="font-size:11.5px;font-weight:700;color:var(--color-accent-2-800);background:var(--color-accent-2-200);padding:3px 9px;border-radius:999px">{{ appliedA }} swap applied</span>
+    </div>
+  </div>
+
+  <div style="flex:1;overflow:auto;background:var(--color-neutral-100);border-radius:28px 28px 0 0;padding-bottom:20px">
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:16px 16px 10px">
+      <div style="flex:1">
+        <h6 style="margin:0 0 2px;font-size:11px;color:var(--color-neutral-700)">Ingredients</h6>
+        <div style="font-size:11.5px;line-height:1.4;color:rgba(32,30,29,0.45)">Preparation steps stay on the original page.</div>
+      </div>
+      <a href="#1a" style="flex:none;font-size:11.5px;font-weight:700;color:var(--color-accent-700);text-decoration:none;padding:4px 0">Open recipe ↗</a>
+    </div>
+    <sc-for list="{{ rowsA }}" as="row" hint-placeholder-count="6">
+      <div style="padding:11px 16px;border-top:1px solid rgba(32,30,29,0.08)">
+        <sc-if value="{{ row.isPlain }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:62px;flex:none;font-size:13px;font-weight:700;color:rgba(32,30,29,0.5)">{{ row.qty }}</div>
+            <div style="flex:1;font-size:16px;font-weight:600;line-height:1.3">{{ row.name }}</div>
+            <sc-if value="{{ row.hasSugg }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ row.onToggle }}" style="flex:none;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--color-accent-2-400);background:var(--color-accent-2-100);color:var(--color-accent-2-800);font-family:var(--font-body);font-size:12.5px;font-weight:700;cursor:pointer" style-hover="background:var(--color-accent-2-200)">
+                {{ row.badge }}
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ row.isAccepted }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--color-accent-2-200);border:1px solid var(--color-accent-2-400);border-radius:16px;padding:11px 13px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+              <span style="font-family:var(--font-heading);font-size:10px;letter-spacing:.09em;text-transform:uppercase;background:var(--color-accent-2-700);color:#f0fae1;padding:3px 8px;border-radius:999px">Swapped</span>
+              <div style="flex:1;font-size:12.5px;color:rgba(32,30,29,0.5);text-decoration:line-through">{{ row.name }}</div>
+              <button onClick="{{ row.onUndo }}" style="border:0;background:transparent;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--color-accent-2-800);cursor:pointer;padding:2px" style-hover="text-decoration:underline">Undo</button>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:12px">
+              <div style="width:62px;flex:none;font-size:13px;font-weight:700;color:var(--color-accent-2-800)">{{ row.accQty }}</div>
+              <div style="flex:1;font-size:16px;font-weight:700;color:var(--color-accent-2-900);line-height:1.3">{{ row.accName }}</div>
+            </div>
+            <sc-if value="{{ row.showWhy }}" hint-placeholder-val="{{ true }}">
+              <div style="margin:5px 0 0 74px;font-size:12.5px;line-height:1.45;color:var(--color-accent-2-800)">{{ row.accReason }}</div>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ row.isOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:9px;margin-top:11px">
+            <sc-for list="{{ row.open }}" as="s" hint-placeholder-count="2">
+              <div style="background:var(--color-bg);border:1px solid var(--color-neutral-300);border-radius:16px;padding:12px 13px;box-shadow:var(--shadow-sm)">
+                <div style="display:flex;align-items:baseline;gap:8px">
+                  <div style="flex:1;font-size:15px;font-weight:700;line-height:1.3">{{ s.name }}</div>
+                  <div style="font-size:12.5px;font-weight:700;color:rgba(32,30,29,0.5)">{{ s.qty }}</div>
+                </div>
+                <sc-if value="{{ s.showWhy }}" hint-placeholder-val="{{ true }}">
+                  <div style="margin-top:4px;font-size:13px;line-height:1.45;color:rgba(32,30,29,0.66)">{{ s.reason }}</div>
+                </sc-if>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">
+                  <sc-for list="{{ s.tagsGood }}" as="t" hint-placeholder-count="2">
+                    <span style="font-size:11px;font-weight:700;background:var(--color-accent-2-200);color:var(--color-accent-2-800);padding:3px 9px;border-radius:999px">{{ t.t }}</span>
+                  </sc-for>
+                  <sc-for list="{{ s.tagsNeutral }}" as="t" hint-placeholder-count="1">
+                    <span style="font-size:11px;font-weight:600;background:var(--color-neutral-200);color:var(--color-neutral-700);padding:3px 9px;border-radius:999px">{{ t.t }}</span>
+                  </sc-for>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:12px">
+                  <button onClick="{{ s.onAccept }}" style="flex:1;height:42px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:14px;cursor:pointer" style-hover="background:var(--color-accent-600)">Swap in</button>
+                  <button onClick="{{ s.onReject }}" style="flex:1;height:42px;border:1px solid var(--color-neutral-400);border-radius:999px;background:transparent;color:var(--color-text);font-family:var(--font-heading);font-size:14px;cursor:pointer" style-hover="background:var(--color-neutral-200)">Not for me</button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ row.hasDismissed }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px;padding-left:74px">
+            <sc-for list="{{ row.dismissed }}" as="d" hint-placeholder-count="1">
+              <button onClick="{{ d.onRestore }}" style="display:inline-flex;align-items:center;gap:5px;font-family:var(--font-body);font-size:11px;font-weight:600;color:rgba(32,30,29,0.45);background:transparent;border:1px dashed var(--color-neutral-400);border-radius:999px;padding:3px 9px;cursor:pointer" style-hover="color:var(--color-text)">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+                <span style="text-decoration:line-through">{{ d.name }}</span>
+              </button>
+            </sc-for>
+            <span style="font-size:10.5px;color:rgba(32,30,29,0.38)">rejected · shown less often</span>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:none;padding:12px 16px 30px;background:var(--color-bg);border-top:1px solid rgba(32,30,29,0.1);display:flex;align-items:center;gap:12px">
+    <div style="flex:1;font-size:12.5px;line-height:1.35;color:rgba(32,30,29,0.55)">{{ appliedA }} of 5 suggested swaps accepted</div>
+    <button style="flex:none;height:46px;padding:0 20px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:15px;cursor:pointer" style-hover="background:var(--color-accent-600)">Save list</button>
+  </div>
+</div>
+</x-import>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Compare sheet — the list stays scannable; tapping an ingredient opens a sheet that puts the alternatives side by side with the numbers that justify them.</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:56px 16px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(32,30,29,0.08)">
+    <button style="width:40px;height:40px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+    <img src="{{ markSrc }}" alt="" style="width:24px;height:24px">
+    <div style="flex:1;font-size:14.5px;font-weight:700">MyRecipeWatch</div>
+    <button style="height:34px;padding:0 12px;flex:none;border:1px solid var(--color-neutral-400);background:transparent;border-radius:999px;font-family:var(--font-body);font-size:12.5px;font-weight:700;cursor:pointer;color:var(--color-text)" style-hover="background:var(--color-neutral-200)">New URL</button>
+  </div>
+
+  <div style="flex:1;overflow:auto">
+    <div style="padding:18px 18px 14px;background:var(--color-surface)">
+      <h1 style="font-size:29px;line-height:1.08;margin:0 0 10px">{{ recipeName }}</h1>
+      <div style="display:flex;flex-wrap:wrap;gap:7px">
+        <span style="font-size:11.5px;font-weight:600;color:var(--color-neutral-800);background:var(--color-neutral-100);padding:4px 10px;border-radius:999px">{{ source }}</span>
+        <span style="font-size:11.5px;font-weight:600;color:var(--color-neutral-800);background:var(--color-neutral-100);padding:4px 10px;border-radius:999px">{{ servings }} servings</span>
+        <span style="font-size:11.5px;font-weight:700;color:var(--color-accent-2-900);background:var(--color-accent-2-300);padding:4px 10px;border-radius:999px">{{ appliedB }} swapped</span>
+      </div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.5;color:rgba(32,30,29,0.55)">We read the ingredients only. Steps stay with the author — <a href="#1b" style="font-weight:700;color:var(--color-accent-700)">open the original</a>.</div>
+    </div>
+
+    <div style="padding:6px 0 24px">
+      <sc-for list="{{ rowsB }}" as="row" hint-placeholder-count="6">
+        <div style="border-bottom:1px solid rgba(32,30,29,0.07)">
+          <sc-if value="{{ row.isPlain }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ row.onToggle }}" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 18px;border:0;background:transparent;text-align:left;font-family:var(--font-body);color:var(--color-text);cursor:pointer" style-hover="background:var(--color-neutral-100)">
+              <div style="width:62px;flex:none;font-size:13px;font-weight:700;color:rgba(32,30,29,0.5)">{{ row.qty }}</div>
+              <div style="flex:1;font-size:16px;font-weight:600;line-height:1.3">{{ row.name }}</div>
+              <sc-if value="{{ row.hasSugg }}" hint-placeholder-val="{{ true }}">
+                <div style="flex:none;display:inline-flex;align-items:center;gap:7px;color:var(--color-accent-2-800)">
+                  <span style="font-size:12px;font-weight:700">{{ row.badge }}</span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M9 6l6 6-6 6"></path></svg>
+                </div>
+              </sc-if>
+              <sc-if value="{{ row.noSugg }}" hint-placeholder-val="{{ false }}">
+                <span style="flex:none;font-size:11.5px;color:rgba(32,30,29,0.35)">no alternatives</span>
+              </sc-if>
+            </button>
+          </sc-if>
+          <sc-if value="{{ row.isAccepted }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 18px;background:var(--color-accent-2-100)">
+              <div style="width:62px;flex:none;font-size:13px;font-weight:700;color:var(--color-accent-2-800)">{{ row.accQty }}</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:7px">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#56633f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                  <div style="font-size:16px;font-weight:700;color:var(--color-accent-2-900);line-height:1.3">{{ row.accName }}</div>
+                </div>
+                <div style="margin-top:3px;font-size:12px;color:rgba(32,30,29,0.5);text-decoration:line-through">{{ row.name }} · {{ row.qty }}</div>
+              </div>
+              <button onClick="{{ row.onUndo }}" style="flex:none;border:0;background:transparent;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--color-accent-2-800);cursor:pointer;padding:2px" style-hover="text-decoration:underline">Undo</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ row.hasDismissed }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 12px 92px">
+              <sc-for list="{{ row.dismissed }}" as="d" hint-placeholder-count="1">
+                <button onClick="{{ d.onRestore }}" style="font-family:var(--font-body);font-size:11px;font-weight:600;color:rgba(32,30,29,0.42);background:transparent;border:1px dashed var(--color-neutral-400);border-radius:999px;padding:3px 9px;cursor:pointer;text-decoration:line-through" style-hover="color:var(--color-text)">{{ d.name }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ true }}">
+    <div onClick="{{ onCloseSheet }}" style="position:absolute;inset:0;z-index:70;background:rgba(32,30,29,0.45)"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;z-index:80;display:flex;flex-direction:column;max-height:78%;background:var(--color-bg);border-radius:28px 28px 0 0;box-shadow:var(--shadow-lg);padding:10px 0 30px">
+      <div style="width:44px;height:5px;border-radius:999px;background:var(--color-neutral-400);margin:0 auto 12px"></div>
+      <div style="padding:0 18px 12px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Alternatives for</div>
+        <h3 style="margin:3px 0 0;font-size:23px;line-height:1.15">{{ sheetName }}</h3>
+        <div style="font-size:12.5px;color:rgba(32,30,29,0.5)">{{ sheetQty }} in the original recipe · pick at most one</div>
+      </div>
+      <div style="display:flex;gap:12px;overflow-x:auto;padding:4px 18px 6px">
+        <sc-for list="{{ sheetOptions }}" as="s" hint-placeholder-count="2">
+          <div style="width:246px;flex:none;background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:20px;padding:13px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column">
+            <div style="font-size:15.5px;font-weight:700;line-height:1.25">{{ s.name }}</div>
+            <div style="margin-top:2px;font-size:12.5px;font-weight:700;color:var(--color-accent-700)">{{ s.qty }}</div>
+            <sc-if value="{{ s.showWhy }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:7px;font-size:12.5px;line-height:1.45;color:rgba(32,30,29,0.66)">{{ s.reason }}</div>
+            </sc-if>
+            <sc-if value="{{ s.hasCmp }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px">
+                <sc-for list="{{ s.cmp }}" as="c" hint-placeholder-count="2">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:11.5px">
+                    <span style="flex:1;color:rgba(32,30,29,0.55)">{{ c.label }}</span>
+                    <span style="color:rgba(32,30,29,0.45);text-decoration:line-through">{{ c.from }}</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#728157" stroke-width="3" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+                    <span style="font-weight:700;color:var(--color-accent-2-800)">{{ c.to }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px">
+              <sc-for list="{{ s.tagsGood }}" as="t" hint-placeholder-count="1">
+                <span style="font-size:10.5px;font-weight:700;background:var(--color-accent-2-200);color:var(--color-accent-2-800);padding:3px 8px;border-radius:999px">{{ t.t }}</span>
+              </sc-for>
+            </div>
+            <div style="flex:1"></div>
+            <div style="display:flex;gap:7px;margin-top:12px">
+              <button onClick="{{ s.onAccept }}" style="flex:1;height:40px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:13.5px;cursor:pointer" style-hover="background:var(--color-accent-600)">Swap in</button>
+              <button onClick="{{ s.onReject }}" title="Reject" style="width:40px;flex:none;height:40px;border:1px solid var(--color-neutral-400);border-radius:999px;background:transparent;color:var(--color-neutral-800);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+              </button>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ sheetAllRejected }}" hint-placeholder-val="{{ false }}">
+          <div style="width:246px;flex:none;border:1px dashed var(--color-neutral-400);border-radius:20px;padding:16px;font-size:12.5px;line-height:1.5;color:rgba(32,30,29,0.5)">You rejected every alternative for this ingredient. We'll suggest these less often.</div>
+        </sc-if>
+      </div>
+      <div style="padding:12px 18px 0">
+        <button onClick="{{ onCloseSheet }}" style="width:100%;height:46px;border:1px solid var(--color-neutral-400);border-radius:999px;background:transparent;color:var(--color-text);font-family:var(--font-heading);font-size:15px;cursor:pointer" style-hover="background:var(--color-neutral-200)">Keep the original</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-import>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Review queue — the app walks the user through one suggestion at a time, brand-forward, with the ingredient list as a live checklist underneath. Fastest for many suggestions.</div>
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;background:var(--color-accent-100);color:var(--color-text);font-family:var(--font-body)">
+  <div style="flex:none;padding:56px 18px 12px;display:flex;align-items:center;gap:10px">
+    <img src="{{ markSrc }}" alt="" style="width:28px;height:28px">
+    <div style="flex:1">
+      <div style="font-size:14.5px;font-weight:700;line-height:1.2">{{ recipeName }}</div>
+      <div style="font-size:11px;color:rgba(32,30,29,0.5)">{{ source }} · ingredients only</div>
+    </div>
+    <button style="width:40px;height:40px;flex:none;border:0;background:transparent;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-accent-200)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h11"></path></svg>
+    </button>
+  </div>
+
+  <div style="flex:none;padding:0 18px 10px;display:flex;align-items:center;gap:8px">
+    <sc-for list="{{ dots }}" as="d" hint-placeholder-count="5">
+      <div style="flex:1;height:6px;border-radius:999px;background:var(--color-accent-2-200);overflow:hidden">
+        <sc-if value="{{ d.done }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;height:100%;background:var(--color-accent-2-600)"></div>
+        </sc-if>
+      </div>
+    </sc-for>
+    <div style="flex:none;font-size:11.5px;font-weight:700;color:var(--color-accent-2-800)">{{ decidedC }}/5</div>
+  </div>
+
+  <sc-if value="{{ hasCard }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:none;padding:6px 18px 0">
+      <div style="background:var(--color-neutral-100);border-radius:28px;box-shadow:var(--shadow-md);padding:18px 18px 16px;position:relative;overflow:hidden">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Instead of</div>
+        <div style="margin-top:2px;font-size:14px;font-weight:600;color:rgba(32,30,29,0.6);text-decoration:line-through">{{ card.ingName }} · {{ card.ingQty }}</div>
+        <h2 style="margin:12px 0 2px;font-size:28px;line-height:1.06">{{ card.name }}</h2>
+        <div style="font-size:14px;font-weight:700;color:var(--color-accent-700)">{{ card.qty }}</div>
+        <sc-if value="{{ card.showWhy }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:10px;font-size:13.5px;line-height:1.5;color:rgba(32,30,29,0.7)">{{ card.reason }}</div>
+        </sc-if>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">
+          <sc-for list="{{ card.tagsGood }}" as="t" hint-placeholder-count="2">
+            <span style="font-size:11.5px;font-weight:700;background:var(--color-accent-2-200);color:var(--color-accent-2-800);padding:4px 10px;border-radius:999px">{{ t.t }}</span>
+          </sc-for>
+          <sc-for list="{{ card.tagsNeutral }}" as="t" hint-placeholder-count="1">
+            <span style="font-size:11.5px;font-weight:600;background:var(--color-neutral-200);color:var(--color-neutral-700);padding:4px 10px;border-radius:999px">{{ t.t }}</span>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:18px">
+          <button onClick="{{ card.onReject }}" style="width:60px;height:60px;flex:none;border:1px solid var(--color-neutral-400);border-radius:999px;background:transparent;color:var(--color-neutral-800);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-neutral-200)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+          <button onClick="{{ card.onAccept }}" style="flex:1;height:60px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px" style-hover="background:var(--color-accent-600)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+            Swap in
+          </button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
+          <div style="flex:1;font-size:11.5px;color:rgba(32,30,29,0.45)">{{ card.position }}</div>
+          <button onClick="{{ card.onKeep }}" style="flex:none;border:0;background:transparent;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--color-neutral-800);cursor:pointer;padding:4px 2px" style-hover="text-decoration:underline">Keep the original</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ doneC }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:none;padding:6px 18px 0">
+      <div style="background:var(--color-accent-2-200);border-radius:28px;padding:22px 18px;text-align:left">
+        <h2 style="margin:0 0 6px;font-size:26px;line-height:1.1;color:var(--color-accent-2-900)">All reviewed</h2>
+        <div style="font-size:13.5px;line-height:1.5;color:var(--color-accent-2-800)">{{ appliedC }} swaps applied to this recipe. Your rejections are remembered, so we'll propose them less often.</div>
+        <button style="margin-top:14px;height:46px;padding:0 20px;border:0;border-radius:999px;background:var(--color-accent);color:#fff2eb;font-family:var(--font-heading);font-size:15px;cursor:pointer" style-hover="background:var(--color-accent-600)">Save adapted list</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="flex:1;overflow:auto;margin-top:14px;background:var(--color-bg);border-radius:28px 28px 0 0;padding:14px 18px 30px">
+    <h6 style="margin:0 0 8px;font-size:11px;color:var(--color-neutral-700)">Your ingredient list</h6>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ listC }}" as="i" hint-placeholder-count="6">
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(32,30,29,0.07)">
+          <sc-if value="{{ i.isSwapped }}" hint-placeholder-val="{{ false }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#56633f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:3px"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+            <div style="flex:1">
+              <div style="font-size:14.5px;font-weight:700;color:var(--color-accent-2-900)">{{ i.accQty }} {{ i.accName }}</div>
+              <div style="font-size:11.5px;color:rgba(32,30,29,0.45);text-decoration:line-through">{{ i.qty }} {{ i.name }}</div>
+            </div>
+            <button onClick="{{ i.onUndo }}" style="flex:none;border:0;background:transparent;font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--color-accent-2-800);cursor:pointer;padding:2px" style-hover="text-decoration:underline">Undo</button>
+          </sc-if>
+          <sc-if value="{{ i.isPlain }}" hint-placeholder-val="{{ true }}">
+            <div style="width:16px;height:16px;flex:none;margin-top:3px;border:1.5px solid var(--color-neutral-400);border-radius:999px"></div>
+            <div style="flex:1;font-size:14.5px;font-weight:600">{{ i.qty }} {{ i.name }}</div>
+            <span style="flex:none;font-size:11px;color:rgba(32,30,29,0.42)">{{ i.status }}</span>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-import>
+</div>
+
+</div>
+<p class="dv-next">Try next: "build out <a class="dv-oid" href="#1b">1b</a> with the URL-paste and extraction states" · "in <a class="dv-oid" href="#1a">1a</a>, make rejection a swipe instead of a button" · "merge <a class="dv-oid" href="#1c">1c</a>'s queue into <a class="dv-oid" href="#1a">1a</a> as a 'review all' mode"</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1420,&quot;height&quot;:1060},&quot;palette&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;cream&quot;,&quot;green&quot;],&quot;default&quot;:&quot;cream&quot;,&quot;tsType&quot;:&quot;'cream'|'green'&quot;,&quot;section&quot;:&quot;Brand&quot;},&quot;markVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;orange&quot;,&quot;green&quot;],&quot;default&quot;:&quot;orange&quot;,&quot;tsType&quot;:&quot;'orange'|'green'&quot;,&quot;section&quot;:&quot;Brand&quot;},&quot;showWhy&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Suggestions&quot;},&quot;maxAlternatives&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:1,&quot;max&quot;:3,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Suggestions&quot;}}">
+class Component extends DCLogic {
+  RECIPE = {
+    name: 'Spaghetti alla Carbonara',
+    source: 'cucina-nostra.example',
+    servings: 4,
+    ingredients: [
+      { id: 'gua', qty: '150 g', name: 'Guanciale', sugg: [
+        { id: 'gua-1', name: 'Smoked turkey breast strips', qty: '150 g', reason: 'Keeps the salty, smoky depth of the cure.',
+          tags: [{ t: '−62% saturated fat' }, { t: '−28% kcal' }], neutral: [],
+          cmp: [{ label: 'Sat. fat', from: '11 g', to: '4 g' }, { label: 'Energy', from: '640 kcal', to: '460 kcal' }] },
+        { id: 'gua-2', name: 'Lean pancetta', qty: '100 g', reason: 'Same cure, smaller amount, rendered slowly.',
+          tags: [{ t: '−30% fat' }], neutral: [{ t: 'same technique' }],
+          cmp: [{ label: 'Fat', from: '14 g', to: '9 g' }] },
+        { id: 'gua-3', name: 'Smoked tofu strips', qty: '150 g', reason: 'Plant-based; brown hard so it still crisps.',
+          tags: [{ t: '−74% sat. fat' }], neutral: [{ t: 'vegetarian' }], cmp: [] }
+      ] },
+      { id: 'pec', qty: '80 g', name: 'Pecorino Romano', sugg: [
+        { id: 'pec-1', name: 'Pecorino + ricotta salata', qty: '40 g + 40 g', reason: 'Half the pecorino, a milder cheese for the body.',
+          tags: [{ t: '−35% salt' }], neutral: [{ t: 'same creaminess' }],
+          cmp: [{ label: 'Salt', from: '3.4 g', to: '2.2 g' }, { label: 'Sat. fat', from: '9 g', to: '7 g' }] },
+        { id: 'pec-2', name: 'Grana Padano', qty: '80 g', reason: 'Less salty than pecorino and still nutty.',
+          tags: [{ t: '−22% salt' }], neutral: [],
+          cmp: [{ label: 'Salt', from: '3.4 g', to: '2.6 g' }] }
+      ] },
+      { id: 'spa', qty: '400 g', name: 'Spaghetti, durum wheat', sugg: [
+        { id: 'spa-1', name: 'Wholegrain spaghetti', qty: '400 g', reason: 'Same cooking time class, far more fibre.',
+          tags: [{ t: '+7 g fibre / serving' }, { t: 'lower GI' }], neutral: [],
+          cmp: [{ label: 'Fibre', from: '3 g', to: '10 g' }] },
+        { id: 'spa-2', name: 'Chickpea spaghetti', qty: '350 g', reason: 'Cooks two minutes faster; firmer bite.',
+          tags: [{ t: '+11 g protein' }], neutral: [{ t: 'gluten-free' }], cmp: [] }
+      ] },
+      { id: 'egg', qty: '4 whole', name: 'Eggs', sugg: [
+        { id: 'egg-1', name: '3 whole eggs + 2 whites', qty: 'same volume', reason: 'Keeps the sauce glossy with less cholesterol.',
+          tags: [{ t: '−180 mg cholesterol' }], neutral: [], cmp: [] }
+      ] },
+      { id: 'sal', qty: '10 g', name: 'Salt, for the pasta water', sugg: [
+        { id: 'sal-1', name: 'Salt', qty: '5 g', reason: 'The cheese already salts the sauce.',
+          tags: [{ t: '−50% added sodium' }], neutral: [], cmp: [] }
+      ] },
+      { id: 'pep', qty: 'to taste', name: 'Black pepper, coarsely ground', sugg: [] }
+    ]
+  };
+
+  state = {
+    openA: 'gua', accA: { spa: 'spa-1' }, rejA: { gua: ['gua-3'] },
+    sheetB: 'pec', accB: { egg: 'egg-1' }, rejB: { spa: ['spa-2'] },
+    accC: {}, rejC: {}, keptC: {},
+    st2a: { s6: 'ACCEPTED', s5: 'REJECTED' }, ing2a: { i3: 's6' }, cooking: false,
+    st2b: { s2: 'REJECTED' }, ing2b: {}, open2b: 'i1', sheet2b: null,
+    st2c: {}, ing2c: {}, kept2c: {},
+    st2f: {}, ing2f: {}, kept2f: {},
+    palette: null
+  };
+
+  get max() { const m = this.props.maxAlternatives ?? 3; return Math.max(1, Math.min(3, m)); }
+  get showWhy() { return this.props.showWhy ?? true; }
+
+  set(patch) { this.setState(patch); }
+
+  accept(ns, ingId, sugId) {
+    const k = 'acc' + ns, p = { [k]: Object.assign({}, this.state[k], { [ingId]: sugId }) };
+    if (ns === 'A') p.openA = null;
+    if (ns === 'B') p.sheetB = null;
+    this.set(p);
+  }
+  undo(ns, ingId) {
+    const k = 'acc' + ns, next = Object.assign({}, this.state[k]);
+    delete next[ingId];
+    this.set({ [k]: next });
+  }
+  reject(ns, ingId, sugId) {
+    const k = 'rej' + ns, cur = this.state[k][ingId] || [];
+    this.set({ [k]: Object.assign({}, this.state[k], { [ingId]: cur.concat([sugId]) }) });
+  }
+  restore(ns, ingId, sugId) {
+    const k = 'rej' + ns, cur = (this.state[k][ingId] || []).filter(x => x !== sugId);
+    this.set({ [k]: Object.assign({}, this.state[k], { [ingId]: cur }) });
+  }
+
+  decorate(ns, ingId, s) {
+    return {
+      id: s.id, name: s.name, qty: s.qty, reason: s.reason,
+      showWhy: this.showWhy,
+      tagsGood: s.tags, tagsNeutral: s.neutral,
+      cmp: s.cmp, hasCmp: s.cmp.length > 0,
+      onAccept: () => this.accept(ns, ingId, s.id),
+      onReject: () => this.reject(ns, ingId, s.id)
+    };
+  }
+
+  rows(ns, openId) {
+    const acc = this.state['acc' + ns], rej = this.state['rej' + ns];
+    return this.RECIPE.ingredients.map(ing => {
+      const rejected = rej[ing.id] || [];
+      const accepted = acc[ing.id] ? ing.sugg.find(s => s.id === acc[ing.id]) : null;
+      const avail = ing.sugg.filter(s => rejected.indexOf(s.id) < 0).slice(0, this.max);
+      return {
+        id: ing.id, qty: ing.qty, name: ing.name,
+        isAccepted: !!accepted, isPlain: !accepted,
+        accName: accepted ? accepted.name : '', accQty: accepted ? accepted.qty : '',
+        accReason: accepted ? accepted.reason : '', showWhy: this.showWhy,
+        hasSugg: !accepted && avail.length > 0,
+        noSugg: !accepted && avail.length === 0,
+        badge: avail.length === 1 ? '1 swap' : avail.length + ' swaps',
+        isOpen: !accepted && avail.length > 0 && openId === ing.id,
+        open: avail.map(s => this.decorate(ns, ing.id, s)),
+        dismissed: rejected.map(id => {
+          const s = ing.sugg.find(x => x.id === id);
+          return { id: id, name: s ? s.name : id, onRestore: () => this.restore(ns, ing.id, id) };
+        }),
+        hasDismissed: rejected.length > 0,
+        onToggle: () => ns === 'A'
+          ? this.set({ openA: this.state.openA === ing.id ? null : ing.id })
+          : this.set({ sheetB: ing.id }),
+        onUndo: () => this.undo(ns, ing.id)
+      };
+    });
+  }
+
+  countAccepted(ns) { return Object.keys(this.state['acc' + ns]).length; }
+
+  queue() {
+    const acc = this.state.accC, rej = this.state.rejC, kept = this.state.keptC;
+    const out = [];
+    this.RECIPE.ingredients.forEach(ing => {
+      if (!ing.sugg.length || acc[ing.id] || kept[ing.id]) return;
+      const avail = ing.sugg.filter(s => (rej[ing.id] || []).indexOf(s.id) < 0).slice(0, this.max);
+      if (avail.length) out.push({ ing: ing, s: avail[0], n: avail.length });
+    });
+    return out;
+  }
+
+  renderVals() {
+    const R = this.RECIPE;
+    const withSugg = R.ingredients.filter(i => i.sugg.length);
+    const q = this.queue();
+    const head = q[0];
+    const decided = withSugg.filter(i => q.every(x => x.ing.id !== i.id)).length;
+    const sheetIng = this.state.sheetB ? R.ingredients.find(i => i.id === this.state.sheetB) : null;
+    let sheetOptions = [], sheetAllRejected = false;
+    if (sheetIng) {
+      const rejected = this.state.rejB[sheetIng.id] || [];
+      const avail = sheetIng.sugg.filter(s => rejected.indexOf(s.id) < 0).slice(0, this.max);
+      sheetOptions = avail.map(s => this.decorate('B', sheetIng.id, s));
+      sheetAllRejected = avail.length === 0;
+    }
+    const palette = this.state.palette ?? this.props.palette ?? 'cream';
+    return Object.assign({
+      palette: palette,
+      isCream: palette === 'cream',
+      isGreen: palette === 'green',
+      onCream: () => this.setState({ palette: 'cream' }),
+      onGreen: () => this.setState({ palette: 'green' }),
+      markSrc: (this.props.markVariant ?? 'orange') === 'green' ? 'assets/mark-green.svg' : 'src/assets/images/DietWise_icon_Orange.svg',
+      recipeName: R.name, source: R.source, servings: R.servings,
+
+      rowsA: this.rows('A', this.state.openA),
+      appliedA: this.countAccepted('A'),
+
+      rowsB: this.rows('B', null),
+      appliedB: this.countAccepted('B'),
+      sheetOpen: !!sheetIng,
+      sheetName: sheetIng ? sheetIng.name : '',
+      sheetQty: sheetIng ? sheetIng.qty : '',
+      sheetOptions: sheetOptions,
+      sheetAllRejected: sheetAllRejected,
+      onCloseSheet: () => this.set({ sheetB: null }),
+
+      hasCard: !!head,
+      doneC: !head,
+      appliedC: this.countAccepted('C'),
+      decidedC: decided,
+      dots: withSugg.map(i => ({ done: q.every(x => x.ing.id !== i.id) })),
+      card: head ? Object.assign(this.decorate('C', head.ing.id, head.s), {
+        ingName: head.ing.name, ingQty: head.ing.qty,
+        position: head.n > 1 ? head.n + ' alternatives for this ingredient' : 'last alternative for this ingredient',
+        onKeep: () => this.set({ keptC: Object.assign({}, this.state.keptC, { [head.ing.id]: true }) })
+      }) : {},
+      listC: R.ingredients.map(ing => {
+        const accId = this.state.accC[ing.id];
+        const accepted = accId ? ing.sugg.find(s => s.id === accId) : null;
+        const pending = q.some(x => x.ing.id === ing.id);
+        return {
+          qty: ing.qty, name: ing.name,
+          isSwapped: !!accepted, isPlain: !accepted,
+          accName: accepted ? accepted.name : '', accQty: accepted ? accepted.qty : '',
+          status: !ing.sugg.length ? '' : (pending ? 'in queue' : 'kept'),
+          onUndo: () => this.undo('C', ing.id)
+        };
+      })
+    }, this.vals2());
+  }
+
+  RE = {
+    url: 'cucina-nostra.example/ricette/spaghetti-alla-carbonara',
+    name: 'Spaghetti alla Carbonara',
+    recipeYield: '4 servings',
+    ingredients: [
+      { id: 'i1', name: '150 g guanciale (or pancetta)' },
+      { id: 'i2', name: '80 g Pecorino Romano, grated' },
+      { id: 'i3', name: '400 g spaghetti' },
+      { id: 'i4', name: '4 large eggs' },
+      { id: 'i5', name: '10 g coarse salt, for the pasta water' },
+      { id: 'i6', name: 'freshly ground black pepper' }
+    ],
+    rating: { encouraged: ['vegetables'], encouragedTotal: 5, limited: ['saturated fat', 'salt', 'refined grains'], limitedTotal: 5 },
+    suggestions: [
+      { id: 's1', ing: 'i1', text: 'Replace the guanciale with lean smoked turkey breast',
+        alternative: 'Lean smoked turkey breast', equivalence: '150 g guanciale ≈ 150 g turkey breast',
+        techniqueNotes: 'Brown it in a dry pan; add a teaspoon of oil only if it sticks.',
+        rationale: 'Keeps the salty, smoky note with a fraction of the saturated fat.',
+        cost: 'MED', deltas: [{ t: '−62% saturated fat' }, { t: '−28% kcal' }], seasonal: false,
+        user: '0/1/4', total: '186/54/402', clears: 'saturated fat', adds: '' },
+      { id: 's2', ing: 'i1', text: 'Use half the guanciale and add smoked paprika',
+        alternative: 'Half guanciale + smoked paprika', equivalence: '75 g guanciale + 1 tsp paprika',
+        techniqueNotes: 'Add the paprika off the heat so it does not turn bitter.',
+        rationale: 'Same dish, less cured meat — the paprika carries the smoke.',
+        cost: 'LO', deltas: [{ t: '−30% saturated fat' }], seasonal: false,
+        user: '1/0/6', total: '241/98/512', clears: '', adds: '' },
+      { id: 's3', ing: 'i1', text: 'Swap the guanciale for smoked tofu strips',
+        alternative: 'Smoked tofu strips', equivalence: '150 g guanciale ≈ 150 g smoked tofu',
+        techniqueNotes: 'Press, cut into lardons and fry hard so the edges crisp.',
+        rationale: 'Plant protein instead of cured pork.',
+        cost: 'MED', deltas: [{ t: '−74% saturated fat' }, { t: 'plant-based' }], seasonal: false,
+        user: '0/2/5', total: '92/214/430', clears: 'saturated fat', adds: 'legumes' },
+      { id: 's4', ing: 'i2', text: 'Halve the pecorino and top it up with ricotta salata',
+        alternative: 'Pecorino + ricotta salata', equivalence: '40 g pecorino + 40 g ricotta salata',
+        techniqueNotes: 'Grate the ricotta salata coarsely so it still melts into the sauce.',
+        rationale: 'Pecorino is the main salt source in this recipe.',
+        cost: 'MED', deltas: [{ t: '−35% salt' }], seasonal: false,
+        user: '0/0/3', total: '164/61/389', clears: 'salt', adds: '' },
+      { id: 's5', ing: 'i2', text: 'Use Grana Padano instead of Pecorino Romano',
+        alternative: 'Grana Padano', equivalence: '80 g pecorino ≈ 80 g Grana Padano',
+        techniqueNotes: 'Nuttier and less sharp — grate finely.',
+        rationale: 'Noticeably less salt per 100 g than pecorino.',
+        cost: 'HI', deltas: [{ t: '−22% salt' }], seasonal: false,
+        user: '0/1/3', total: '77/143/366', clears: '', adds: '' },
+      { id: 's6', ing: 'i3', text: 'Choose wholegrain spaghetti',
+        alternative: 'Wholegrain spaghetti', equivalence: '400 g spaghetti ≈ 400 g wholegrain spaghetti',
+        techniqueNotes: 'Same cooking time class; taste a minute early.',
+        rationale: 'Refined grains are a limited component in your guidelines.',
+        cost: 'LO', deltas: [{ t: '+7 g fibre per serving' }, { t: 'lower GI' }], seasonal: false,
+        user: '2/0/7', total: '388/44/470', clears: 'refined grains', adds: 'wholegrains' },
+      { id: 's7', ing: 'i4', text: 'Use 3 whole eggs and 2 egg whites',
+        alternative: '3 whole eggs + 2 whites', equivalence: 'same volume of sauce',
+        techniqueNotes: 'Whisk the whites in last so the sauce stays glossy.',
+        rationale: 'Keeps the texture with less cholesterol.',
+        cost: 'LO', deltas: [{ t: '−180 mg cholesterol' }], seasonal: false,
+        user: '0/0/2', total: '203/77/398', clears: '', adds: '' },
+      { id: 's8', ing: 'i5', text: 'Halve the salt in the pasta water',
+        alternative: '5 g coarse salt', equivalence: '10 g → 5 g',
+        techniqueNotes: 'The cheese already salts the sauce.',
+        rationale: 'Sodium is a limited component in your guidelines.',
+        cost: 'LO', deltas: [{ t: '−50% added sodium' }], seasonal: false,
+        user: '1/0/4', total: '312/58/441', clears: 'salt', adds: '' },
+      { id: 's9', ing: null, text: 'Serve with a side of seasonal bitter greens',
+        alternative: 'Side of bitter greens', equivalence: '', techniqueNotes: 'Dress with lemon and a little olive oil.',
+        rationale: 'Adds a vegetable portion to a dish that has none.',
+        cost: 'LO', deltas: [{ t: '+1 vegetable portion' }], seasonal: true,
+        user: '0/0/1', total: '129/36/301', clears: '', adds: 'leafy greens' }
+    ]
+  };
+
+  costStr(c) { return c === 'HI' ? '€€€' : c === 'LO' ? '€' : '€€'; }
+
+  setStatus(ns, id, status) {
+    const stK = 'st' + ns, ingK = 'ing' + ns;
+    const st = Object.assign({}, this.state[stK]);
+    const ing = Object.assign({}, this.state[ingK]);
+    const sug = this.RE.suggestions.find(s => s.id === id);
+    const next = st[id] === status ? 'UNDECIDED' : status;
+    st[id] = next;
+    if (sug && sug.ing) {
+      if (next === 'ACCEPTED') {
+        const prev = ing[sug.ing];
+        if (prev && prev !== id) st[prev] = 'UNDECIDED';
+        ing[sug.ing] = id;
+      } else if (ing[sug.ing] === id) {
+        delete ing[sug.ing];
+      }
+    }
+    const patch = { [stK]: st, [ingK]: ing };
+    if (ns === '2b' && next === 'ACCEPTED') { patch.sheet2b = null; patch.open2b = null; }
+    this.setState(patch);
+  }
+
+  dec2(ns, s) {
+    const st = this.state['st' + ns][s.id] || 'UNDECIDED';
+    return {
+      id: s.id, text: s.text, alternative: s.alternative, equivalence: s.equivalence,
+      techniqueNotes: s.techniqueNotes, rationale: s.rationale, deltas: s.deltas,
+      cost: this.costStr(s.cost), seasonal: s.seasonal,
+      hasEquivalence: !!s.equivalence,
+      user: s.user, total: s.total, showWhy: this.showWhy,
+      isRecipeTarget: !s.ing,
+      isAccepted: st === 'ACCEPTED', isRejected: st === 'REJECTED', isUndecided: st === 'UNDECIDED',
+      onAccept: () => this.setStatus(ns, s.id, 'ACCEPTED'),
+      onReject: () => this.setStatus(ns, s.id, 'REJECTED')
+    };
+  }
+
+  rating2(ns) {
+    const acc = this.RE.suggestions.filter(s => this.state['st' + ns][s.id] === 'ACCEPTED');
+    const cleared = acc.map(s => s.clears).filter(Boolean);
+    const added = acc.map(s => s.adds).filter(Boolean);
+    const r = this.RE.rating;
+    const limited = r.limited.filter(x => cleared.indexOf(x) < 0);
+    const encouraged = r.encouraged.concat(added.filter((v, i, a) => a.indexOf(v) === i && r.encouraged.indexOf(v) < 0));
+    const pips = (n, total) => { const out = []; for (let i = 0; i < total; i++) out.push({ on: i < n }); return out; };
+    return {
+      limitedPips: pips(limited.length, r.limitedTotal),
+      encouragedPips: pips(encouraged.length, r.encouragedTotal),
+      limitedText: limited.length ? limited.join(', ') : 'None',
+      encouragedText: encouraged.length ? encouraged.join(', ') : 'None',
+      summary: encouraged.length + ' encouraged · ' + limited.length + ' to limit'
+    };
+  }
+
+  ings2(ns) {
+    const ing = this.state['ing' + ns];
+    return this.RE.ingredients.map(i => {
+      const accId = ing[i.id];
+      const acc = accId ? this.RE.suggestions.find(s => s.id === accId) : null;
+      return {
+        id: i.id, name: i.name,
+        isReplaced: !!acc, isPlain: !acc,
+        alternative: acc ? acc.alternative : '',
+        equivalence: acc ? acc.equivalence : '',
+        techniqueNotes: acc ? acc.techniqueNotes : '',
+        hasNotes: !!(acc && acc.techniqueNotes) && this.showWhy,
+        onUndo: () => this.setStatus(ns, accId, 'ACCEPTED')
+      };
+    });
+  }
+
+  rows2(ns, openId) {
+    const st = this.state['st' + ns], ing = this.state['ing' + ns];
+    return this.RE.ingredients.map(i => {
+      const all = this.RE.suggestions.filter(s => s.ing === i.id);
+      const accId = ing[i.id];
+      const acc = accId ? all.find(s => s.id === accId) : null;
+      const avail = all.filter(s => st[s.id] !== 'REJECTED' && s.id !== accId).slice(0, this.max);
+      const rejected = all.filter(s => st[s.id] === 'REJECTED');
+      return {
+        id: i.id, name: i.name,
+        isReplaced: !!acc, isPlain: !acc,
+        alternative: acc ? acc.alternative : '', equivalence: acc ? acc.equivalence : '',
+        techniqueNotes: acc ? acc.techniqueNotes : '',
+        hasNotes: !!(acc && acc.techniqueNotes) && this.showWhy,
+        hasSugg: !acc && avail.length > 0,
+        noSugg: !acc && all.length === 0,
+        badge: avail.length === 1 ? '1 alternative' : avail.length + ' alternatives',
+        isOpen: !acc && avail.length > 0 && openId === i.id,
+        open: avail.map(s => this.dec2(ns, s)),
+        dismissed: rejected.map(s => ({ name: s.alternative, onRestore: () => this.setStatus(ns, s.id, 'REJECTED') })),
+        hasDismissed: rejected.length > 0,
+        onToggle: () => this.setState({ open2b: this.state.open2b === i.id ? null : i.id }),
+        onCompare: () => this.setState({ sheet2b: i.id }),
+        onUndo: () => this.setStatus(ns, accId, 'ACCEPTED')
+      };
+    });
+  }
+
+  ingsQ(ns) {
+    const ing = this.state['ing' + ns], kept = this.state['kept' + ns], st = this.state['st' + ns];
+    return this.RE.ingredients.map(i => {
+      const accId = ing[i.id];
+      const acc = accId ? this.RE.suggestions.find(s => s.id === accId) : null;
+      const all = this.RE.suggestions.filter(s => s.ing === i.id);
+      const allRejected = all.length > 0 && all.every(s => st[s.id] === 'REJECTED');
+      const keptOrig = !acc && (!!kept[i.id] || allRejected);
+      return {
+        id: i.id, name: i.name,
+        isReplaced: !!acc, isKept: keptOrig, isPlain: !acc && !keptOrig,
+        alternative: acc ? acc.alternative : '',
+        keptNote: kept[i.id] ? 'kept as in the recipe' : 'kept — all alternatives rejected',
+        onUndo: acc
+          ? () => this.setStatus(ns, accId, 'ACCEPTED')
+          : () => {
+              const k = Object.assign({}, kept); delete k[i.id];
+              const s2 = Object.assign({}, st);
+              all.forEach(s => { if (s2[s.id] === 'REJECTED') delete s2[s.id]; });
+              this.setState({ ['kept' + ns]: k, ['st' + ns]: s2 });
+            }
+      };
+    });
+  }
+
+  vals2f() {
+    const RE = this.RE, st = this.state.st2f, ing = this.state.ing2f, kept = this.state.kept2f;
+    const groups = RE.ingredients.filter(i => RE.suggestions.some(s => s.ing === i.id)).map(i => i.id)
+      .concat(RE.suggestions.some(s => !s.ing) ? ['recipe'] : []);
+    const doneG = g => {
+      if (kept[g]) return true;
+      const all = RE.suggestions.filter(s => (g === 'recipe' ? !s.ing : s.ing === g));
+      if (g !== 'recipe' && ing[g]) return true;
+      if (g === 'recipe' && all.some(s => st[s.id] === 'ACCEPTED')) return true;
+      return all.every(s => st[s.id] === 'REJECTED');
+    };
+    const cur = groups.filter(g => !doneG(g))[0] || null;
+    const all = cur ? RE.suggestions.filter(s => (cur === 'recipe' ? !s.ing : s.ing === cur)) : [];
+    const avail = all.filter(s => st[s.id] !== 'REJECTED').slice(0, this.max);
+    const rejected = all.filter(s => st[s.id] === 'REJECTED');
+    const ingObj = cur && cur !== 'recipe' ? RE.ingredients.find(i => i.id === cur) : null;
+    const left = groups.filter(g => !doneG(g)).length - 1;
+    return {
+      has2f: !!cur, done2f: !cur,
+      dots2f: groups.map(g => ({ done: doneG(g) })),
+      progress2f: groups.filter(doneG).length + '/' + groups.length,
+      stepLabel2f: cur ? 'Step ' + (groups.indexOf(cur) + 1) + ' of ' + groups.length : '',
+      target2f: cur ? (ingObj ? ingObj.name : 'the whole recipe') : '',
+      opts2f: avail.map(s => this.dec2('2f', s)),
+      empty2f: avail.length === 0,
+      count2f: avail.length === 1 ? '1 alternative' : avail.length + ' alternatives',
+      rejected2f: rejected.map(s => ({ name: s.alternative, onRestore: () => this.setStatus('2f', s.id, 'REJECTED') })),
+      hasRejected2f: rejected.length > 0,
+      remaining2f: left > 0 ? left + (left === 1 ? ' ingredient left after this' : ' ingredients left after this') : 'last one',
+      onKeep2f: () => this.setState({ kept2f: Object.assign({}, kept, { [cur]: true }) }),
+      applied2f: Object.keys(ing).length,
+      ings2f: this.ingsQ('2f')
+    };
+  }
+
+  queue2() {
+    const st = this.state.st2c, ing = this.state.ing2c, kept = this.state.kept2c;
+    return this.RE.suggestions.filter(s => {
+      if (st[s.id] === 'REJECTED' || st[s.id] === 'ACCEPTED') return false;
+      if (s.ing && (ing[s.ing] || kept[s.ing])) return false;
+      if (!s.ing && kept.recipe) return false;
+      return true;
+    });
+  }
+
+  vals2() {
+    return Object.assign(this.vals2base(), this.vals2f());
+  }
+
+  vals2base() {
+    const RE = this.RE;
+    const sheetIng = this.state.sheet2b ? RE.ingredients.find(i => i.id === this.state.sheet2b) : null;
+    const st2b = this.state.st2b;
+    const q = this.queue2();
+    const head = q[0];
+    const groups = ['i1', 'i2', 'i3', 'i4', 'i5', 'recipe'];
+    const doneGroup = g => g === 'recipe'
+      ? (this.state.kept2c.recipe || this.state.st2c.s9 === 'ACCEPTED' || this.state.st2c.s9 === 'REJECTED')
+      : (this.state.ing2c[g] || this.state.kept2c[g] || !q.some(s => s.ing === g));
+    const sugs = RE.suggestions.map(s => this.dec2('2a', s));
+    return {
+      recipeUrl: RE.url, recipeTitle: RE.name, recipeYield: RE.recipeYield,
+
+      sugs2a: sugs.filter(s => !s.isRejected),
+      rejected2a: sugs.filter(s => s.isRejected),
+      hasRejected2a: sugs.some(s => s.isRejected),
+      rejectedCount2a: sugs.filter(s => s.isRejected).length,
+      ings2a: this.ings2('2a'),
+      rating2a: this.rating2('2a'),
+      applied2a: Object.keys(this.state.ing2a).length,
+      cooking: this.state.cooking,
+      cookingOff: !this.state.cooking,
+      onToggleCooking: () => this.setState({ cooking: !this.state.cooking }),
+      intervention: 'Your future self will thank you for this simple swap — why not start now?',
+
+      rows2b: this.rows2('2b', this.state.open2b),
+      rating2b: this.rating2('2b'),
+      applied2b: Object.keys(this.state.ing2b).length,
+      sheetOpen2b: !!sheetIng,
+      sheetTitle2b: sheetIng ? sheetIng.name : '',
+      sheetOpts2b: sheetIng
+        ? RE.suggestions.filter(s => s.ing === sheetIng.id && st2b[s.id] !== 'REJECTED').slice(0, this.max).map(s => this.dec2('2b', s))
+        : [],
+      sheetEmpty2b: !!sheetIng && RE.suggestions.filter(s => s.ing === sheetIng.id && st2b[s.id] !== 'REJECTED').length === 0,
+      onCloseSheet2b: () => this.setState({ sheet2b: null }),
+
+      has2c: !!head,
+      done2c: !head,
+      applied2c: Object.keys(this.state.ing2c).length,
+      decided2c: groups.filter(doneGroup).length,
+      dots2c: groups.map(g => ({ done: doneGroup(g) })),
+      card2c: head ? Object.assign(this.dec2('2c', head), {
+        targetName: head.ing ? (RE.ingredients.find(i => i.id === head.ing) || {}).name : 'the whole recipe',
+        remaining: q.length + ' left in the queue',
+        onKeep: () => this.setState({ kept2c: Object.assign({}, this.state.kept2c, { [head.ing || 'recipe']: true }) })
+      }) : {},
+      ings2c: this.ingsQ('2c')
+    };
+  }
+}
+</script>
+</body>
+</html>

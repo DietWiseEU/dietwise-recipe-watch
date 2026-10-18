@@ -1,8 +1,8 @@
-import { defaultClientConditions, defineConfig, loadEnv } from 'vite';
+import { defaultClientConditions, defineConfig, loadEnv, type Plugin } from 'vite';
 import eslintPlugin from '@nabla/vite-plugin-eslint';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { readFileSync } from 'fs';
+import { cpSync, existsSync, readFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { configDefaults } from 'vitest/config';
 
@@ -29,6 +29,32 @@ function readGitHash(env: Record<string, string>): string {
 	}
 }
 
+const UI_MOCKS_DIR = 'ui';
+
+/**
+ * Copies the UI mocks, when the project has a `ui` folder, next to the built app so that the web
+ * deployment can serve them under /ui. They are plain static files, unrelated to the app bundle.
+ */
+function copyUiMocks(): Plugin {
+	let source = '';
+	let destination = '';
+
+	return {
+		name: 'copy-ui-mocks',
+		apply: 'build',
+		configResolved(config) {
+			source = path.resolve(config.root, UI_MOCKS_DIR);
+			destination = path.resolve(config.root, config.build.outDir, UI_MOCKS_DIR);
+		},
+		closeBundle() {
+			if (!existsSync(source)) {
+				return;
+			}
+			cpSync(source, destination, { recursive: true });
+		},
+	};
+}
+
 /**
  * @see https://vitejs.dev/config/
  */
@@ -51,7 +77,12 @@ export default defineConfig(({ mode }) => {
 		base: basePath,
 		// The ESLint plugin leaves behind a worker thread that keeps the process alive, so it is
 		// left out of test runs; `npm run lint` lints the whole project anyway.
-		plugins: [react(), ...(mode === 'test' ? [] : [eslintPlugin()])],
+		plugins: [
+			react(),
+			// The UI mocks ride along with the mobile preview: both belong to the web artifact only.
+			...(includeMobilePreview ? [copyUiMocks()] : []),
+			...(mode === 'test' ? [] : [eslintPlugin()]),
+		],
 		define: {
 			__APP_VERSION__: JSON.stringify(appVersion),
 			__APP_GIT_HASH__: JSON.stringify(gitHash),
