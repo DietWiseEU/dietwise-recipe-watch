@@ -16,6 +16,8 @@ export interface RecipeExtractionAndAssessmentParam {
 
 export interface StatisticsParam {
 	suggestionId: string;
+	/** The assessment that showed the suggestion, when the server assigned it an Intervention. */
+	assessmentId?: string;
 }
 
 export interface StatisticsResponse {

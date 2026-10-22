@@ -1,6 +1,6 @@
 import { getValidAccessToken } from '@/auth/authService';
 import { postSuggestionStatistics } from '@/recipe/api';
-import type { SuggestionStatus } from '@/recipe/model';
+import type { StatisticsParam, SuggestionStatus } from '@/recipe/model';
 import type { StatisticsAction } from '@/recipe/api';
 
 const SUGGESTION_STATISTICS_TIMEOUT_MS = 8000;
@@ -29,7 +29,7 @@ export function statisticsActionsForSuggestionTransition(
 
 export async function notifySuggestionStatistics(
 	apiServerHost: string,
-	suggestionId: string,
+	statisticsParam: StatisticsParam,
 	currentStatus: SuggestionStatus,
 	nextStatus: SuggestionStatus,
 ) {
@@ -44,18 +44,18 @@ export async function notifySuggestionStatistics(
 	}
 
 	for (const statisticsAction of statisticsActions) {
-		await postSuggestionStatistics(apiServerHost, accessToken, statisticsAction, { suggestionId });
+		await postSuggestionStatistics(apiServerHost, accessToken, statisticsAction, statisticsParam);
 	}
 }
 
 export async function waitForSuggestionStatisticsWithTimeout(
 	apiServerHost: string,
-	suggestionId: string,
+	statisticsParam: StatisticsParam,
 	currentStatus: SuggestionStatus,
 	nextStatus: SuggestionStatus,
 ) {
 	await Promise.race([
-		notifySuggestionStatistics(apiServerHost, suggestionId, currentStatus, nextStatus),
+		notifySuggestionStatistics(apiServerHost, statisticsParam, currentStatus, nextStatus),
 		new Promise<void>((_, reject) => {
 			window.setTimeout(
 				() => reject(new Error('Suggestion statistics timeout')),

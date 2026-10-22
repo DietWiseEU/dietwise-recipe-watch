@@ -32,14 +32,19 @@ const RecipesComponent: React.FC = () => {
 			dispatch(createSuggestionStatusAction(suggestionKey, 'UNDECIDED'));
 			setSuggestionInFlight(suggestionKey, true);
 			try {
-				await waitForSuggestionStatisticsWithTimeout(apiServerHost, suggestionId, 'ACCEPTED', 'UNDECIDED');
+				await waitForSuggestionStatisticsWithTimeout(
+					apiServerHost,
+					{ suggestionId, assessmentId: mainState.assessmentId },
+					'ACCEPTED',
+					'UNDECIDED',
+				);
 			} catch (error) {
 				console.error('Unable to notify suggestion statistics', error);
 			} finally {
 				setSuggestionInFlight(suggestionKey, false);
 			}
 		},
-		[apiServerHost, dispatch, isSuggestionInFlight, setSuggestionInFlight],
+		[apiServerHost, dispatch, isSuggestionInFlight, mainState.assessmentId, setSuggestionInFlight],
 	);
 
 	if (mainState.recipes?.length) {

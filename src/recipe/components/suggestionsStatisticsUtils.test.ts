@@ -7,6 +7,8 @@ import {
 	waitForSuggestionStatisticsWithTimeout,
 } from './suggestionsStatisticsUtils';
 
+const ASSESSMENT_ID = '3e0c7a52-1b6d-4f8e-9a2c-5d4b3a2f1e0d';
+
 vi.mock('@/auth/authService', () => ({
 	getValidAccessToken: vi.fn(),
 }));
@@ -64,7 +66,7 @@ describe('statisticsActionsForSuggestionTransition', () => {
 	});
 
 	it('notifySuggestionStatistics skips auth and POST when transition emits no actions', async () => {
-		await notifySuggestionStatistics('http://example.com', 's-1', 'UNDECIDED', 'UNDECIDED');
+		await notifySuggestionStatistics('http://example.com', { suggestionId: 's-1' }, 'UNDECIDED', 'UNDECIDED');
 
 		expect(getValidAccessToken).not.toHaveBeenCalled();
 		expect(postSuggestionStatistics).not.toHaveBeenCalled();
@@ -73,7 +75,7 @@ describe('statisticsActionsForSuggestionTransition', () => {
 	it('notifySuggestionStatistics skips POST when access token is unavailable', async () => {
 		vi.mocked(getValidAccessToken).mockResolvedValue(undefined);
 
-		await notifySuggestionStatistics('http://example.com', 's-1', 'UNDECIDED', 'ACCEPTED');
+		await notifySuggestionStatistics('http://example.com', { suggestionId: 's-1' }, 'UNDECIDED', 'ACCEPTED');
 
 		expect(getValidAccessToken).toHaveBeenCalledOnce();
 		expect(postSuggestionStatistics).not.toHaveBeenCalled();
@@ -86,7 +88,7 @@ describe('statisticsActionsForSuggestionTransition', () => {
 			events.push(action);
 		});
 
-		await notifySuggestionStatistics('http://example.com', 's-1', 'REJECTED', 'ACCEPTED');
+		await notifySuggestionStatistics('http://example.com', { suggestionId: 's-1' }, 'REJECTED', 'ACCEPTED');
 
 		expect(getValidAccessToken).toHaveBeenCalledOnce();
 		expect(postSuggestionStatistics).toHaveBeenCalledTimes(2);
@@ -107,12 +109,44 @@ describe('statisticsActionsForSuggestionTransition', () => {
 		expect(events).toEqual(['decreaseTimesRejected', 'increaseTimesAccepted']);
 	});
 
+	it('notifySuggestionStatistics posts the assessmentId with every action', async () => {
+		vi.mocked(getValidAccessToken).mockResolvedValue('token-123');
+
+		await notifySuggestionStatistics(
+			'http://example.com',
+			{ suggestionId: 's-1', assessmentId: ASSESSMENT_ID },
+			'ACCEPTED',
+			'REJECTED',
+		);
+
+		expect(postSuggestionStatistics).toHaveBeenCalledTimes(2);
+		expect(postSuggestionStatistics).toHaveBeenNthCalledWith(
+			1,
+			'http://example.com',
+			'token-123',
+			'decreaseTimesAccepted',
+			{ suggestionId: 's-1', assessmentId: ASSESSMENT_ID },
+		);
+		expect(postSuggestionStatistics).toHaveBeenNthCalledWith(
+			2,
+			'http://example.com',
+			'token-123',
+			'increaseTimesRejected',
+			{ suggestionId: 's-1', assessmentId: ASSESSMENT_ID },
+		);
+	});
+
 	it('waitForSuggestionStatisticsWithTimeout resolves when notification finishes before timeout', async () => {
 		vi.useFakeTimers();
 		vi.mocked(getValidAccessToken).mockResolvedValue('token-123');
 		vi.mocked(postSuggestionStatistics).mockResolvedValue(undefined);
 
-		const promise = waitForSuggestionStatisticsWithTimeout('http://example.com', 's-1', 'UNDECIDED', 'ACCEPTED');
+		const promise = waitForSuggestionStatisticsWithTimeout(
+			'http://example.com',
+			{ suggestionId: 's-1' },
+			'UNDECIDED',
+			'ACCEPTED',
+		);
 		await vi.runAllTimersAsync();
 
 		await expect(promise).resolves.toBeUndefined();
@@ -128,7 +162,12 @@ describe('statisticsActionsForSuggestionTransition', () => {
 				}),
 		);
 
-		const promise = waitForSuggestionStatisticsWithTimeout('http://example.com', 's-1', 'UNDECIDED', 'ACCEPTED');
+		const promise = waitForSuggestionStatisticsWithTimeout(
+			'http://example.com',
+			{ suggestionId: 's-1' },
+			'UNDECIDED',
+			'ACCEPTED',
+		);
 		const expectation = expect(promise).rejects.toThrow('Suggestion statistics timeout');
 		await vi.advanceTimersByTimeAsync(8000);
 

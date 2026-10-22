@@ -1,6 +1,6 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider as JotaiProvider, createStore } from 'jotai';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	createMessageReceivedAction,
 	createPrepareToAssessRecipeAction,
@@ -16,6 +16,10 @@ vi.mock('react-i18next', () => ({
 	useTranslation: () => ({
 		t: (key: string) => key,
 	}),
+}));
+
+vi.mock('@/auth/authService', () => ({
+	getValidAccessToken: vi.fn().mockResolvedValue('token-123'),
 }));
 
 const ASSESSMENT_ID = '3e0c7a52-1b6d-4f8e-9a2c-5d4b3a2f1e0d';
@@ -45,6 +49,14 @@ const SUGGESTION: Suggestion = {
 	text: 'Use olive oil instead of butter',
 };
 const SUGGESTION_KEY = keyOfSuggestion(SUGGESTION);
+const OTHER_SUGGESTION: Suggestion = {
+	...SUGGESTION,
+	id: 's2',
+	alternative: 'sunflower oil',
+	ruleId: 'rule-s2',
+	recommendation: 'recommendation-s2',
+	text: 'Use sunflower oil instead of butter',
+};
 
 function assess(store: ReturnType<typeof createStore>, intervention?: Intervention) {
 	store.set(mainStateAtom, createPrepareToAssessRecipeAction('https://example.test/recipe', 'en'));
@@ -69,7 +81,7 @@ function assess(store: ReturnType<typeof createStore>, intervention?: Interventi
 		mainStateAtom,
 		createMessageReceivedAction({
 			type: 'SUGGESTIONS',
-			suggestions: [SUGGESTION],
+			suggestions: [SUGGESTION, OTHER_SUGGESTION],
 			...(intervention ? { assessmentId: ASSESSMENT_ID, intervention } : {}),
 		}),
 	);
@@ -88,6 +100,17 @@ function renderAssessed(intervention?: Intervention) {
 }
 
 describe('SuggestionsComponent', () => {
+	beforeEach(() => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockImplementation(() => Promise.resolve(new Response(null, { status: 204 }))),
+		);
+	});
+
+	afterEach(() => {
+		vi.unstubAllGlobals();
+	});
+
 	it('shows the text of the Intervention the server assigned', () => {
 		renderAssessed({ id: 1, text: INTERVENTION_TEXT });
 
@@ -129,7 +152,43 @@ describe('SuggestionsComponent', () => {
 		expect(cookingModeButton().getAttribute('aria-pressed')).toBe('true');
 		expect(screen.getByRole('status').textContent).toBe(INTERVENTION_TEXT);
 	});
+
+	it('sends the assessmentId with the statistics of accepting a Suggestion in place of another', async () => {
+		renderAssessed({ id: 1, text: INTERVENTION_TEXT });
+
+		await acceptAndWaitForStatistics(0, 1);
+		await acceptAndWaitForStatistics(1, 3);
+
+		expect(postedStatistics()).toEqual([
+			['increaseTimesAccepted', { suggestionId: 's1', assessmentId: ASSESSMENT_ID }],
+			['decreaseTimesAccepted', { suggestionId: 's1', assessmentId: ASSESSMENT_ID }],
+			['increaseTimesAccepted', { suggestionId: 's2', assessmentId: ASSESSMENT_ID }],
+		]);
+	});
+
+	it('sends no assessmentId with the statistics when the server assigned no Intervention', async () => {
+		renderAssessed();
+
+		await acceptAndWaitForStatistics(0, 1);
+
+		expect(postedStatistics()).toEqual([['increaseTimesAccepted', { suggestionId: 's1' }]]);
+	});
 });
+
+async function acceptAndWaitForStatistics(suggestionIndex: number, expectedTotalStatistics: number) {
+	fireEvent.click(document.querySelectorAll('ion-button[color="success"]')[suggestionIndex]);
+	await waitFor(() => expect(postedStatistics()).toHaveLength(expectedTotalStatistics));
+}
+
+function postedStatistics() {
+	return vi
+		.mocked(fetch)
+		.mock.calls.filter(([url]) => String(url).includes('/statistics/'))
+		.map(([url, init]) => [
+			String(url).substring(String(url).lastIndexOf('/') + 1),
+			JSON.parse(init?.body as string),
+		]);
+}
 
 function cookingModeButton() {
 	const button = screen.getByText('recipe.keepScreenOn').closest('ion-button');

@@ -74,14 +74,20 @@ const SuggestionsComponent: React.FC = () => {
 								if (previousAcceptedSuggestion) {
 									await waitForSuggestionStatisticsWithTimeout(
 										apiServerHost,
-										previousAcceptedSuggestion.suggestion.id,
+										{
+											suggestionId: previousAcceptedSuggestion.suggestion.id,
+											assessmentId: mainState.assessmentId,
+										},
 										'ACCEPTED',
 										'UNDECIDED',
 									);
 								}
 								await waitForSuggestionStatisticsWithTimeout(
 									apiServerHost,
-									suggestionState.suggestion.id,
+									{
+										suggestionId: suggestionState.suggestion.id,
+										assessmentId: mainState.assessmentId,
+									},
 									status,
 									nextStatus,
 								);
