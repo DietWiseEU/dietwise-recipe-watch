@@ -8,7 +8,6 @@ import { createSuggestionStatusAction } from '@/recipe/actions';
 import SuggestionComponent from './SuggestionComponent';
 import CookingModeToggle from './CookingModeToggle';
 import type { SuggestionStatus } from '@/recipe/model';
-import { randomInterventionKey } from './interventions';
 import { waitForSuggestionStatisticsWithTimeout } from './suggestionsStatisticsUtils';
 import { useSuggestionInFlight } from './useSuggestionInFlight';
 import { useKeepScreenAwake } from '@/recipe/useKeepScreenAwake';
@@ -20,15 +19,13 @@ const SuggestionsComponent: React.FC = () => {
 	const apiServerHost = useAtomValue(apiServerHostAtom);
 	const { isSuggestionInFlight, setSuggestionInFlight } = useSuggestionInFlight();
 	const [presentAlert] = useIonAlert();
-	// Re-pick a random banner each time a new assessment completes. suggestionKeys is a fresh
-	// array per assessment and is left untouched by accept/reject, so the banner stays stable
-	// while the user browses suggestions.
-	const [bannerForKeys, setBannerForKeys] = useState(mainState.suggestionKeys);
-	const [interventionKey, setInterventionKey] = useState(randomInterventionKey);
+	// Leave cooking mode each time a new assessment completes. suggestionKeys is a fresh array per
+	// assessment and is left untouched by accept/reject, so cooking mode stays on while the user
+	// browses suggestions.
+	const [cookingModeForKeys, setCookingModeForKeys] = useState(mainState.suggestionKeys);
 	const [cookingMode, setCookingMode] = useState(false);
-	if (bannerForKeys !== mainState.suggestionKeys) {
-		setBannerForKeys(mainState.suggestionKeys);
-		setInterventionKey(randomInterventionKey());
+	if (cookingModeForKeys !== mainState.suggestionKeys) {
+		setCookingModeForKeys(mainState.suggestionKeys);
 		setCookingMode(false);
 	}
 	useKeepScreenAwake(cookingMode);
@@ -41,9 +38,11 @@ const SuggestionsComponent: React.FC = () => {
 						<h2 className="suggestions-title">{t('recipe.titleOfSuggestions')}</h2>
 						<CookingModeToggle active={cookingMode} onToggle={() => setCookingMode((on) => !on)} />
 					</div>
-					<div className="intervention-banner" role="status">
-						{t(interventionKey)}
-					</div>
+					{mainState.intervention?.text ? (
+						<div className="intervention-banner" role="status">
+							{mainState.intervention.text}
+						</div>
+					) : null}
 				</div>
 				<IonList>
 					{mainState.suggestionKeys.map((suggestionKey) => {

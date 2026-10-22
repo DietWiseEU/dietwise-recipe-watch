@@ -113,6 +113,8 @@ export function reducer(state: MainData, action: MainAction): MainData {
 				suggestionKeys: aggregateState?.keys,
 				suggestions: aggregateState?.suggestions,
 				ingredientState: {},
+				assessmentId: action.message.assessmentId,
+				intervention: action.message.intervention,
 			};
 		}
 		case 'ScoringMessageReceivedAction': {

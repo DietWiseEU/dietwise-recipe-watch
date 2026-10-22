@@ -39,7 +39,7 @@ import HelpContentsComponent from '@/recipe/help/HelpContentsComponent';
 import './RecipePage.css';
 
 const RecipePage: React.FC = () => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [mainState, dispatch] = useAtom(mainStateAtom);
 	const setSuggestionInFlight = useSetAtom(suggestionInFlightAtom);
 	const apiServerHost = useAtomValue(apiServerHostAtom);
@@ -58,6 +58,7 @@ const RecipePage: React.FC = () => {
 					apiServerHost,
 					url || '',
 					lang,
+					i18n.language,
 					(message) => {
 						// createMessageReceivedAction returns null for a keep-alive message, which is no
 						// state transition, only the server saying the assessment is still running.
@@ -77,7 +78,7 @@ const RecipePage: React.FC = () => {
 				dispatch(createRecipeAssessmentFailedAction(error));
 			}
 		},
-		[dispatch, apiServerHost],
+		[dispatch, apiServerHost, i18n.language],
 	);
 
 	const resetCallback = useCallback(() => {

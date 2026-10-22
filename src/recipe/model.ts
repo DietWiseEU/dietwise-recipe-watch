@@ -10,6 +10,8 @@ export interface RecipeExtractionAndAssessmentParam {
 	viewport?: Viewport;
 	/** The language of the page. */
 	lang: string;
+	/** The language of the user interface, in which the server sends the Intervention. */
+	uiLang: string;
 }
 
 export interface StatisticsParam {
@@ -141,9 +143,19 @@ export interface MoreThanOneRecipesAssessmentMessage {
 	numberOfRecipes: number;
 }
 
+/** A motivational message shown above the Suggestions; the "no Intervention" arm has no text. */
+export interface Intervention {
+	id: number;
+	text: string | null;
+}
+
 export interface SuggestionsRecipeAssessmentMessage {
 	type: 'SUGGESTIONS';
 	suggestions?: Suggestion[];
+	/** Present only when the server assigned an Intervention to the assessment. */
+	assessmentId?: string;
+	/** Present only when the server assigned an Intervention to the assessment. */
+	intervention?: Intervention;
 }
 
 export interface ScoringRecipeAssessmentMessage {
@@ -194,6 +206,10 @@ export interface MainData {
 	/** The extracted content of the recipe page. */
 	pageText?: string;
 	scoringData?: ScoringData;
+	/** The id the server gave to this assessment, if it assigned an Intervention to it. */
+	assessmentId?: string;
+	/** The Intervention the server assigned to this assessment. */
+	intervention?: Intervention;
 }
 
 export function keyOfSuggestion(s: Suggestion): string {

@@ -4,11 +4,19 @@ import {
 	createMessageReceivedAction,
 	createPrepareToAssessRecipeAction,
 	createRecipeAssessmentFailedAction,
+	createRecipeAssessmentCompletedAction,
+	createSuggestionStatusAction,
 } from './actions';
 import type { RecipeAndDetectionType, RecipeAssessmentMessage } from './model';
 import type { MainAction } from './actions';
+import type { Suggestion } from './model';
+import { keyOfIngredientSuggestion } from './model';
 
 const URL = 'https://example.com/recipe';
+const ASSESSMENT_ID = '3e0c7a52-1b6d-4f8e-9a2c-5d4b3a2f1e0d';
+const INTERVENTION = { id: 2, text: 'Healthiness guaranteed.' };
+const INGREDIENT_ID = 'i1';
+const SUGGESTION_KEY = keyOfIngredientSuggestion('s1', INGREDIENT_ID);
 
 const pending = () => reducer(createInitialState(), createPrepareToAssessRecipeAction(URL, 'en'));
 
@@ -23,6 +31,65 @@ const aRecipe: RecipeAndDetectionType = {
 	recipe: { name: 'Fasolada', recipeIngredients: [], recipeInstructions: [] },
 	detectionType: 'JSONLD',
 };
+
+function createSuggestion(id: string): Suggestion {
+	return {
+		id,
+		alternative: `alt-${id}`,
+		target: {
+			type: 'INGREDIENT',
+			ingredient: INGREDIENT_ID,
+		},
+		ruleId: `rule-${id}`,
+		recommendation: `recommendation-${id}`,
+		alternativeComponentNames: [],
+		totalSuggestionStats: {
+			timesSuggested: 1,
+			timesAccepted: 0,
+			timesRejected: 0,
+		},
+		userSuggestionStats: {
+			timesSuggested: 1,
+			timesAccepted: 0,
+			timesRejected: 0,
+		},
+		text: `text-${id}`,
+	};
+}
+
+function pendingState() {
+	return reducer(createInitialState(), createPrepareToAssessRecipeAction('https://example.test/recipe', 'en'));
+}
+
+function assessedState() {
+	const withRecipe = reducer(
+		pendingState(),
+		createMessageReceivedAction({
+			type: 'RECIPES',
+			recipes: [
+				{
+					recipe: {
+						name: 'omelet',
+						recipeIngredients: [{ id: INGREDIENT_ID, nameInRecipe: 'eggs' }],
+						recipeInstructions: [],
+					},
+					detectionType: 'JSONLD',
+				},
+			],
+			pageText: 'omelet',
+		})!,
+	);
+	const withSuggestions = reducer(
+		withRecipe,
+		createMessageReceivedAction({
+			type: 'SUGGESTIONS',
+			suggestions: [createSuggestion('s1')],
+			assessmentId: ASSESSMENT_ID,
+			intervention: INTERVENTION,
+		})!,
+	);
+	return reducer(withSuggestions, createRecipeAssessmentCompletedAction());
+}
 
 describe('reducer', () => {
 	it('reports a broken stream as an interruption rather than as a problem with the recipe', () => {
@@ -68,4 +135,43 @@ describe('reducer', () => {
 		expect(retried.status).toBe('PENDING');
 		expect(retried.interrupted).toBeFalsy();
 	});
+
+	it('keeps the assessmentId and the Intervention of the SUGGESTIONS message', () => {
+		const next = reducer(
+			pendingState(),
+			createMessageReceivedAction({
+				type: 'SUGGESTIONS',
+				suggestions: [createSuggestion('s1')],
+				assessmentId: ASSESSMENT_ID,
+				intervention: INTERVENTION,
+			})!,
+		);
+
+		expect(next.assessmentId).toBe(ASSESSMENT_ID);
+		expect(next.intervention).toEqual(INTERVENTION);
+	});
+
+	it('forgets the assessmentId and the Intervention when a new assessment starts', () => {
+		const next = reducer(
+			assessedState(),
+			createPrepareToAssessRecipeAction('https://example.test/other-recipe', 'en'),
+		);
+
+		expect(next.assessmentId).toBeUndefined();
+		expect(next.intervention).toBeUndefined();
+	});
+
+	it.each(['ACCEPTED', 'REJECTED'] as const)(
+		'keeps the assessmentId and the Intervention when a Suggestion becomes %s and UNDECIDED again',
+		(status) => {
+			const decided = reducer(assessedState(), createSuggestionStatusAction(SUGGESTION_KEY, status));
+			const undecided = reducer(decided, createSuggestionStatusAction(SUGGESTION_KEY, 'UNDECIDED'));
+
+			expect(decided.suggestions?.[SUGGESTION_KEY].status).toBe(status);
+			expect(decided.assessmentId).toBe(ASSESSMENT_ID);
+			expect(decided.intervention).toEqual(INTERVENTION);
+			expect(undecided.assessmentId).toBe(ASSESSMENT_ID);
+			expect(undecided.intervention).toEqual(INTERVENTION);
+		},
+	);
 });

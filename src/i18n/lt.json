@@ -111,13 +111,6 @@
 			"inControl": "Jūs sprendžiate, kuriuos pakeitimus priimti. Maži pakeitimai gali turėti didelės įtakos jūsų sveikatai ir planetai."
 		}
 	},
-	"interventions": {
-		"1": "Ateities tu padėkos tau už šį paprastą pakeitimą – kodėl nepradėti dabar?",
-		"2": "Garantuotai sveikiau.",
-		"3": "Tai šiek tiek kitaip, bet pabandyk!",
-		"4": "Esame čia tam, kad įkvėptume – pabandyk šį paprastą pakeitimą ir pats pamatyk rezultatą!",
-		"5": "Galbūt dvejoji keisti įprastus ingredientus. Tačiau gali būti, kad tau patiks."
-	},
 	"ingredient": {
 		"equivalence": "Lygiavertiškumas:",
 		"techniqueNotes": "Pastebėjimai:"

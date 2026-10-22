@@ -111,13 +111,6 @@
 			"inControl": "You decide which changes to accept. Small swaps can make a big difference in your health and the planet."
 		}
 	},
-	"interventions": {
-		"1": "Your future self will thank you for this simple swap - why not start now?",
-		"2": "Healthiness guaranteed.",
-		"3": "It’s a little different, but give it a shot!",
-		"4": "We’re here to empower you - try this simple swap and see the impact yourself!",
-		"5": "You might feel hesitant to replace familiar ingredients. But you might like it."
-	},
 	"ingredient": {
 		"equivalence": "Equivalence:",
 		"techniqueNotes": "Notes:"

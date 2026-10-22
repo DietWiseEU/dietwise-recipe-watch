@@ -111,13 +111,6 @@
 			"inControl": "Jij beslist welke veranderingen je accepteert. Kleine aanpassingen kunnen een groot verschil maken voor je gezondheid en de planeet."
 		}
 	},
-	"interventions": {
-		"1": "Je toekomstige zelf zal je dankbaar zijn voor deze simpele vervanging - waarom niet nu beginnen?",
-		"2": "Gegarandeerd gezonder.",
-		"3": "Het is een beetje anders, maar geef het een kans!",
-		"4": "Wij zijn hier om je te inspireren - probeer deze simpele vervanging en ervaar de impact zelf!",
-		"5": "Misschien twijfel je om vertrouwde ingrediënten te vervangen. Maar je zou het wel eens lekker kunnen vinden."
-	},
 	"ingredient": {
 		"equivalence": "Equivalent:",
 		"techniqueNotes": "Opmerkingen:"

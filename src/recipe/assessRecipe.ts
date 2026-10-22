@@ -10,6 +10,7 @@ export async function assessRecipe(
 	apiServerHost: string,
 	url: string,
 	lang: string,
+	uiLang: string,
 	onMessage?: (message: RecipeAssessmentMessage) => void,
 	onError?: (error: unknown) => void,
 	onComplete?: () => void,
@@ -21,6 +22,7 @@ export async function assessRecipe(
 			url,
 			// viewPort would go here
 			lang,
+			uiLang,
 		} as RecipeExtractionAndAssessmentParam,
 		{
 			onMessage,
