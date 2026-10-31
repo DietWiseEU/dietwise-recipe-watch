@@ -1,5 +1,149 @@
 /* For information on how to create your own theme, please refer to:
 http://ionicframework.com/docs/theming/ */
+
+/*
+ * Theme tokens (the "Organic" design system): every colour, font, spacing, radius and shadow of the app
+ * derives from these. Ramps go from light (100) to dark (900); 500 is the role's base.
+ */
+:root {
+	--color-bg: #f5ead8;
+	--color-surface: #ebddc5;
+	--color-text: #201e1d;
+	--color-accent: #c67139;
+	--color-accent-2: #7a8a5e;
+	--color-divider: color-mix(in srgb, var(--color-text) 16%, transparent);
+
+	--color-neutral-100: #f9f4ed;
+	--color-neutral-200: #eee7db;
+	--color-neutral-300: #dcd3c4;
+	--color-neutral-400: #c0b6a5;
+	--color-neutral-500: #a19786;
+	--color-neutral-600: #82796a;
+	--color-neutral-700: #645c50;
+	--color-neutral-800: #474238;
+	--color-neutral-900: #2e2b25;
+
+	--color-accent-100: #fff2eb;
+	--color-accent-200: #ffe1d0;
+	--color-accent-300: #ffc6a5;
+	--color-accent-400: #f6a06b;
+	--color-accent-500: #d67f48;
+	--color-accent-600: #b2622d;
+	--color-accent-700: #8c491a;
+	--color-accent-800: #643312;
+	--color-accent-900: #402310;
+
+	--color-accent-2-100: #f0fae1;
+	--color-accent-2-200: #e1eecc;
+	--color-accent-2-300: #ccdbb2;
+	--color-accent-2-400: #aebf92;
+	--color-accent-2-500: #8fa073;
+	--color-accent-2-600: #728157;
+	--color-accent-2-700: #56633f;
+	--color-accent-2-800: #3d472b;
+	--color-accent-2-900: #272e1b;
+
+	/* The fonts are bundled with the app (see the @fontsource-variable imports in App.tsx) */
+	--font-heading: 'Alegreya Variable', serif;
+	--font-heading-weight: 700;
+	--font-body: 'Roboto Variable', system-ui, sans-serif;
+
+	--space-1: 4.4px;
+	--space-2: 8.8px;
+	--space-3: 13.2px;
+	--space-4: 17.6px;
+	--space-6: 26.4px;
+	--space-8: 35.2px;
+
+	--radius-sm: 8px;
+	--radius-md: 16px;
+	--radius-lg: 28px;
+
+	--shadow-sm: 0 1px 2px color-mix(in srgb, var(--color-neutral-900) 14%, transparent);
+	--shadow-md: 0 3px 10px color-mix(in srgb, var(--color-neutral-900) 16%, transparent);
+	--shadow-lg: 0 12px 32px color-mix(in srgb, var(--color-neutral-900) 22%, transparent);
+}
+
+/*
+ * Ionic's variables, mapped onto the theme tokens. Ionic needs some colours as "r,g,b" triplets, which CSS
+ * cannot derive from a colour, so each *-rgb value must be kept in step with the token next to it.
+ */
+:root {
+	--ion-font-family: var(--font-body);
+
+	--ion-background-color: var(--color-bg);
+	--ion-background-color-rgb: 245, 234, 216;
+	--ion-text-color: var(--color-text);
+	--ion-text-color-rgb: 32, 30, 29;
+
+	/* The darker accent keeps primary-coloured text and labels readable (WCAG AA, 4.5:1) */
+	--ion-color-primary: var(--color-accent-700);
+	--ion-color-primary-rgb: 140, 73, 26;
+	--ion-color-primary-contrast: var(--color-bg);
+	--ion-color-primary-contrast-rgb: 245, 234, 216;
+	--ion-color-primary-shade: var(--color-accent-800);
+	--ion-color-primary-tint: var(--color-accent-600);
+
+	--ion-color-secondary: var(--color-accent-2);
+	--ion-color-secondary-rgb: 122, 138, 94;
+	--ion-color-secondary-contrast: var(--color-bg);
+	--ion-color-secondary-contrast-rgb: 245, 234, 216;
+	--ion-color-secondary-shade: var(--color-accent-2-600);
+	--ion-color-secondary-tint: var(--color-accent-2-500);
+
+	/* Step N of the background goes N/1000 of the way towards the text colour, and vice versa */
+	--ion-background-color-step-50: color-mix(in srgb, var(--color-text) 5%, var(--color-bg));
+	--ion-background-color-step-100: color-mix(in srgb, var(--color-text) 10%, var(--color-bg));
+	--ion-background-color-step-150: color-mix(in srgb, var(--color-text) 15%, var(--color-bg));
+	--ion-background-color-step-200: color-mix(in srgb, var(--color-text) 20%, var(--color-bg));
+	--ion-background-color-step-250: color-mix(in srgb, var(--color-text) 25%, var(--color-bg));
+	--ion-background-color-step-300: color-mix(in srgb, var(--color-text) 30%, var(--color-bg));
+	--ion-background-color-step-350: color-mix(in srgb, var(--color-text) 35%, var(--color-bg));
+	--ion-background-color-step-400: color-mix(in srgb, var(--color-text) 40%, var(--color-bg));
+	--ion-background-color-step-450: color-mix(in srgb, var(--color-text) 45%, var(--color-bg));
+	--ion-background-color-step-500: color-mix(in srgb, var(--color-text) 50%, var(--color-bg));
+	--ion-background-color-step-550: color-mix(in srgb, var(--color-text) 55%, var(--color-bg));
+	--ion-background-color-step-600: color-mix(in srgb, var(--color-text) 60%, var(--color-bg));
+	--ion-background-color-step-650: color-mix(in srgb, var(--color-text) 65%, var(--color-bg));
+	--ion-background-color-step-700: color-mix(in srgb, var(--color-text) 70%, var(--color-bg));
+	--ion-background-color-step-750: color-mix(in srgb, var(--color-text) 75%, var(--color-bg));
+	--ion-background-color-step-800: color-mix(in srgb, var(--color-text) 80%, var(--color-bg));
+	--ion-background-color-step-850: color-mix(in srgb, var(--color-text) 85%, var(--color-bg));
+	--ion-background-color-step-900: color-mix(in srgb, var(--color-text) 90%, var(--color-bg));
+	--ion-background-color-step-950: color-mix(in srgb, var(--color-text) 95%, var(--color-bg));
+
+	--ion-text-color-step-50: color-mix(in srgb, var(--color-bg) 5%, var(--color-text));
+	--ion-text-color-step-100: color-mix(in srgb, var(--color-bg) 10%, var(--color-text));
+	--ion-text-color-step-150: color-mix(in srgb, var(--color-bg) 15%, var(--color-text));
+	--ion-text-color-step-200: color-mix(in srgb, var(--color-bg) 20%, var(--color-text));
+	--ion-text-color-step-250: color-mix(in srgb, var(--color-bg) 25%, var(--color-text));
+	--ion-text-color-step-300: color-mix(in srgb, var(--color-bg) 30%, var(--color-text));
+	--ion-text-color-step-350: color-mix(in srgb, var(--color-bg) 35%, var(--color-text));
+	--ion-text-color-step-400: color-mix(in srgb, var(--color-bg) 40%, var(--color-text));
+	--ion-text-color-step-450: color-mix(in srgb, var(--color-bg) 45%, var(--color-text));
+	--ion-text-color-step-500: color-mix(in srgb, var(--color-bg) 50%, var(--color-text));
+	--ion-text-color-step-550: color-mix(in srgb, var(--color-bg) 55%, var(--color-text));
+	--ion-text-color-step-600: color-mix(in srgb, var(--color-bg) 60%, var(--color-text));
+	--ion-text-color-step-650: color-mix(in srgb, var(--color-bg) 65%, var(--color-text));
+	--ion-text-color-step-700: color-mix(in srgb, var(--color-bg) 70%, var(--color-text));
+	--ion-text-color-step-750: color-mix(in srgb, var(--color-bg) 75%, var(--color-text));
+	--ion-text-color-step-800: color-mix(in srgb, var(--color-bg) 80%, var(--color-text));
+	--ion-text-color-step-850: color-mix(in srgb, var(--color-bg) 85%, var(--color-text));
+	--ion-text-color-step-900: color-mix(in srgb, var(--color-bg) 90%, var(--color-text));
+	--ion-text-color-step-950: color-mix(in srgb, var(--color-bg) 95%, var(--color-text));
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ion-title {
+	font-family: var(--font-heading);
+	font-weight: var(--font-heading-weight);
+}
+
 :root {
 	--dietwise-light-green: #00d3bb;
 	--dietwise-very-light-green: #00f2d7;
@@ -9,9 +153,9 @@ http://ionicframework.com/docs/theming/ */
 	--dietwise-gold: #ffdc73;
 
 	--ion-color-dwlightgreen: #00d3bb;
-	--ion-color-dwlightgreen-rgb: 0,211,187;
+	--ion-color-dwlightgreen-rgb: 0, 211, 187;
 	--ion-color-dwlightgreen-contrast: #000000;
-	--ion-color-dwlightgreen-contrast-rgb: 0,0,0;
+	--ion-color-dwlightgreen-contrast-rgb: 0, 0, 0;
 	--ion-color-dwlightgreen-shade: #00baa5;
 	--ion-color-dwlightgreen-tint: #1ad7c2;
 
@@ -22,9 +166,9 @@ http://ionicframework.com/docs/theming/ */
 	--dietwise-body-text: var(--ion-color-step-750);
 
 	--ion-color-lightmedium: #deddda;
-	--ion-color-lightmedium-rgb: 222,221,218;
+	--ion-color-lightmedium-rgb: 222, 221, 218;
 	--ion-color-lightmedium-contrast: #000000;
-	--ion-color-lightmedium-contrast-rgb: 0,0,0;
+	--ion-color-lightmedium-contrast-rgb: 0, 0, 0;
 	--ion-color-lightmedium-shade: #c3c2c0;
 	--ion-color-lightmedium-tint: #e1e0de;
 }

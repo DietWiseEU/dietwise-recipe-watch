@@ -30,6 +30,10 @@ import '@ionic/react/css/display.css';
 /* import '@ionic/react/css/palettes/dark.class.css'; */
 /* import '@ionic/react/css/palettes/dark.system.css'; */
 
+/* Theme fonts, bundled with the app */
+import '@fontsource-variable/alegreya';
+import '@fontsource-variable/roboto';
+
 /* Theme variables */
 import './theme/variables.css';
 
