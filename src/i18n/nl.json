@@ -56,7 +56,7 @@
 		}
 	},
 	"recipe": {
-		"title": "MyRecipeWatch Recept",
+		"title": "Recept",
 		"helpTitle": "Help",
 		"welcomeHeading": "Welkom op de receptbeoordelingspagina",
 		"welcomeFooter": "Maak u geen zorgen als u deze instructies vergeet; druk op de Help-knop die bovenaan het scherm verschijnt tijdens het beoordelen van een recept om ze opnieuw te zien!",
@@ -69,6 +69,8 @@
 		"disclaimer": "De volgende inhoud is afkomstig van de website op het door u ingevoerde adres en het intellectuele eigendom ervan is zoals gespecificeerd op diezelfde pagina.",
 		"titleOfSuggestions": "Suggesties - Advies",
 		"keepScreenOn": "Scherm aan houden",
+		"screenStaysOn": "Het scherm blijft aan terwijl u kookt",
+		"screenMaySleep": "Het scherm mag weer uitgaan",
 		"anonymousRecipeTemplateTitle": "Recept #{{index, number}}",
 		"emptySuggestionsFromServer": "Er zijn geen suggesties voor dit recept.",
 		"assessmentInterrupted": "De verbinding werd verbroken voordat de beoordeling voltooid was.",

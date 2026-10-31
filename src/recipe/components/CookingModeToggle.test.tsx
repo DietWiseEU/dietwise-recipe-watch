@@ -28,6 +28,12 @@ describe('CookingModeToggle', () => {
 		expect(button?.getAttribute('aria-pressed')).toBe('true');
 	});
 
+	it('names the button for assistive technology even when the label is hidden', () => {
+		render(<CookingModeToggle active={false} onToggle={vi.fn()} />);
+
+		expect(findButton()?.getAttribute('aria-label')).toBe('recipe.keepScreenOn');
+	});
+
 	it('invokes onToggle when pressed', () => {
 		const onToggle = vi.fn();
 		render(<CookingModeToggle active={false} onToggle={onToggle} />);

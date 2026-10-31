@@ -56,7 +56,7 @@
 		}
 	},
 	"recipe": {
-		"title": "MyRecipeWatch",
+		"title": "Receptas",
 		"helpTitle": "Pagalba",
 		"welcomeHeading": "Sveiki atvykę į receptų vertinimo puslapį",
 		"welcomeFooter": "Jei pamiršite instrukcijas, jas vėl pamatyti galite paspaudus mygtuką \"Pagalba\", kuris atsiras jūsų ekrano viršuje vertinant receptą",
@@ -69,6 +69,8 @@
 		"disclaimer": "Toliau pateiktas turinys yra iš jūsų įvestu adresu esančios svetainės, o jo intelektinė nuosavybė yra ta, kurią nurodo tas pats puslapis.",
 		"titleOfSuggestions": "Pasiūlymai - Patarimai",
 		"keepScreenOn": "Ekranas lieka įjungtas",
+		"screenStaysOn": "Ekranas liks įjungtas, kol gaminate",
+		"screenMaySleep": "Ekranas vėl gali užgesti",
 		"anonymousRecipeTemplateTitle": "Receptas #{{index, number}}",
 		"emptySuggestionsFromServer": "Šiam receptui pasiūlymų nėra",
 		"assessmentInterrupted": "Ryšys nutrūko nebaigus vertinimo.",

@@ -7,6 +7,25 @@
 	gap: 12px;
 }
 
+.recipe-page__title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.recipe-page__title-text {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.recipe-page__title-icon {
+	width: 24px;
+	height: 24px;
+	flex-shrink: 0;
+}
+
 .recipe-page__split {
 	flex: 1 1 auto;
 	min-height: 0;

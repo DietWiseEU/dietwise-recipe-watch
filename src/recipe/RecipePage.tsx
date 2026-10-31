@@ -9,11 +9,12 @@ import {
 	IonPage,
 	IonTitle,
 	IonToolbar,
+	useIonToast,
 } from '@ionic/react';
 import { helpCircleOutline } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { mainStateAtom, suggestionInFlightAtom } from '@/recipe/atoms';
+import { cookingModeAtom, mainStateAtom, suggestionInFlightAtom } from '@/recipe/atoms';
 import { apiServerHostAtom } from '@/config/atoms';
 import {
 	createPrepareToAssessRecipeAction,
@@ -24,8 +25,10 @@ import {
 } from '@/recipe/actions';
 import { assessRecipe } from '@/recipe/assessRecipe';
 import type { CancellationFunction } from '@/recipe/assessRecipe';
-import { useLogRating } from '@/recipe/useLogRating';
+import dietWiseIconOrange from '@/assets/images/DietWise_icon_Orange.svg';
 import { useKeepScreenAwake } from '@/recipe/useKeepScreenAwake';
+import { useLogRating } from '@/recipe/useLogRating';
+import CookingModeToggle from '@/recipe/components/CookingModeToggle';
 import UrlContainer from '@/recipe/components/UrlContainer';
 import UrlModal from '@/recipe/components/UrlModal';
 import HelpModal from '@/recipe/help/HelpModal';
@@ -45,6 +48,21 @@ const RecipePage: React.FC = () => {
 	const apiServerHost = useAtomValue(apiServerHostAtom);
 	const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
 	const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+	const [cookingMode, setCookingMode] = useAtom(cookingModeAtom);
+	useKeepScreenAwake(cookingMode);
+	const [presentToast, dismissToast] = useIonToast();
+	// Nothing on the screen changes when cooking mode does, so a toast confirms it. A toast still showing would keep
+	// the next one from appearing, so it goes first.
+	const toggleCookingMode = useCallback(() => {
+		setCookingMode(!cookingMode);
+		void dismissToast().then(() =>
+			presentToast({
+				message: t(cookingMode ? 'recipe.screenMaySleep' : 'recipe.screenStaysOn'),
+				duration: 2000,
+				position: 'bottom',
+			}),
+		);
+	}, [cookingMode, setCookingMode, dismissToast, presentToast, t]);
 
 	useLogRating(mainState);
 
@@ -108,12 +126,20 @@ const RecipePage: React.FC = () => {
 					</IonButtons>
 					{assessing || hasOutcome ? (
 						<IonButtons slot="end">
+							{mainState.suggestionKeys?.length ? (
+								<CookingModeToggle active={cookingMode} onToggle={toggleCookingMode} />
+							) : null}
 							<IonButton onClick={() => setIsHelpModalOpen(true)}>
 								<IonIcon slot="icon-only" icon={helpCircleOutline}></IonIcon>
 							</IonButton>
 						</IonButtons>
 					) : null}
-					<IonTitle>{t('recipe.title')}</IonTitle>
+					<IonTitle>
+						<span className="recipe-page__title">
+							<img className="recipe-page__title-icon" src={dietWiseIconOrange} alt="" />
+							<span className="recipe-page__title-text">{t('recipe.title')}</span>
+						</span>
+					</IonTitle>
 				</IonToolbar>
 			</IonHeader>
 

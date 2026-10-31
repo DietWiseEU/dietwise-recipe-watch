@@ -1,6 +1,7 @@
 import { IonButton, IonIcon } from '@ionic/react';
 import { sunny, sunnyOutline } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
+import './CookingModeToggle.css';
 
 interface CookingModeToggleProps {
 	active: boolean;
@@ -12,13 +13,14 @@ const CookingModeToggle: React.FC<CookingModeToggleProps> = ({ active, onToggle 
 	return (
 		<IonButton
 			className="cooking-mode-toggle"
-			size="small"
+			color="primary"
 			fill={active ? 'solid' : 'outline'}
+			aria-label={t('recipe.keepScreenOn')}
 			aria-pressed={active ? 'true' : 'false'}
 			onClick={onToggle}
 		>
 			<IonIcon slot="start" icon={active ? sunny : sunnyOutline} />
-			{t('recipe.keepScreenOn')}
+			<span className="cooking-mode-toggle__label">{t('recipe.keepScreenOn')}</span>
 		</IonButton>
 	);
 };

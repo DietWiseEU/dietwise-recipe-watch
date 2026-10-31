@@ -1,0 +1,27 @@
+ion-button.cooking-mode-toggle {
+	--border-radius: 999px;
+	--border-width: 1px;
+	--padding-start: 12px;
+	--padding-end: 12px;
+	height: 34px;
+	font-size: 11.5px;
+	font-weight: 700;
+	letter-spacing: normal;
+	text-transform: none;
+}
+
+/* Narrow screens keep only the icon, so that the title fits; the button's aria-label still names it */
+@media (max-width: 399.98px) {
+	.cooking-mode-toggle__label {
+		display: none;
+	}
+
+	ion-button.cooking-mode-toggle {
+		--padding-start: 8px;
+		--padding-end: 8px;
+	}
+
+	ion-button.cooking-mode-toggle ion-icon {
+		margin: 0;
+	}
+}

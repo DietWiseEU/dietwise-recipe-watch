@@ -1,7 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider as JotaiProvider, createStore } from 'jotai';
-import { act } from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Capacitor } from '@capacitor/core';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import { assessRecipe } from '@/recipe/assessRecipe';
@@ -10,7 +9,8 @@ import {
 	createRecipeAssessmentCompletedAction,
 	createRecipeAssessmentFailedAction,
 } from '@/recipe/actions';
-import { mainStateAtom } from '@/recipe/atoms';
+import { cookingModeAtom, mainStateAtom } from '@/recipe/atoms';
+import { assess } from '@/recipe/testAssessment';
 import RecipePage from './RecipePage';
 
 vi.mock('react-i18next', () => ({
@@ -18,6 +18,7 @@ vi.mock('react-i18next', () => ({
 		t: (key: string) => key,
 		i18n: { language: 'nl' },
 	}),
+	Trans: ({ i18nKey }: { i18nKey: string }) => i18nKey,
 }));
 
 vi.mock('@capacitor-community/keep-awake', () => ({
@@ -31,32 +32,66 @@ vi.mock('@/recipe/assessRecipe', () => ({
 	assessRecipe: vi.fn(() => Promise.resolve(() => {})),
 }));
 
+vi.mock('@/auth/authService', () => ({
+	getValidAccessToken: vi.fn().mockResolvedValue('token-123'),
+}));
+
+// The rating log is a development aid that prints to the console; it has no bearing on the page.
+vi.mock('@/recipe/useLogRating', () => ({
+	useLogRating: () => {},
+}));
+
 const URL = 'https://example.com/recipe';
 
-// jsdom has no ResizeObserver; the split pane only needs it to exist, none of these tests
-// assert on the layout it drives.
-class SilentResizeObserver {
+// jsdom has no ResizeObserver; the page only uses it to lay out the recipe and the suggestions.
+class InertResizeObserver {
 	observe() {}
-	unobserve() {}
 	disconnect() {}
+}
+
+function renderPage(store = createStore()) {
+	render(
+		<JotaiProvider store={store}>
+			<RecipePage />
+		</JotaiProvider>,
+	);
+	return store;
+}
+
+function toolbarCookingModeButton() {
+	return document.querySelector('ion-header:not([collapse]) ion-toolbar ion-button.cooking-mode-toggle');
+}
+
+/** Once ion-button has loaded, it moves its aria-* attributes onto the native button inside it and keeps them in sync. */
+function cookingModePressed() {
+	const button = toolbarCookingModeButton();
+	return (
+		button?.getAttribute('aria-pressed') ??
+		button?.shadowRoot?.querySelector('button')?.getAttribute('aria-pressed')
+	);
+}
+
+function toastMessages() {
+	return [...document.querySelectorAll('ion-toast')].map((toast) => (toast as HTMLIonToastElement).message);
 }
 
 describe('RecipePage', () => {
 	beforeEach(() => {
-		vi.stubGlobal('ResizeObserver', SilentResizeObserver);
+		vi.stubGlobal('ResizeObserver', InertResizeObserver);
 		vi.mocked(KeepAwake.keepAwake).mockClear();
 		vi.mocked(KeepAwake.allowSleep).mockClear();
 		vi.mocked(assessRecipe).mockClear();
 		vi.spyOn(Capacitor, 'isNativePlatform').mockReturnValue(true);
 	});
 
+	afterEach(() => {
+		vi.unstubAllGlobals();
+		// Ionic presents toasts outside the rendered container, where cleanup does not reach
+		document.querySelectorAll('ion-toast').forEach((toast) => toast.remove());
+	});
+
 	it('holds the screen awake for as long as the assessment is pending', () => {
-		const store = createStore();
-		render(
-			<JotaiProvider store={store}>
-				<RecipePage />
-			</JotaiProvider>,
-		);
+		const store = renderPage();
 
 		expect(KeepAwake.keepAwake).not.toHaveBeenCalled();
 
@@ -76,11 +111,7 @@ describe('RecipePage', () => {
 		store.set(mainStateAtom, createPrepareToAssessRecipeAction(URL, 'el'));
 		store.set(mainStateAtom, createRecipeAssessmentFailedAction(new Error('Load failed')));
 
-		render(
-			<JotaiProvider store={store}>
-				<RecipePage />
-			</JotaiProvider>,
-		);
+		renderPage(store);
 
 		expect(screen.getByText('recipe.assessmentInterrupted')).toBeTruthy();
 
@@ -107,11 +138,7 @@ describe('RecipePage', () => {
 		store.set(mainStateAtom, createPrepareToAssessRecipeAction(URL, 'en'));
 		store.set(mainStateAtom, createRecipeAssessmentFailedAction(new Error('Load failed')));
 
-		render(
-			<JotaiProvider store={store}>
-				<RecipePage />
-			</JotaiProvider>,
-		);
+		renderPage(store);
 		await act(async () => {
 			fireEvent.click(screen.getByText('recipe.retry'));
 		});
@@ -131,12 +158,71 @@ describe('RecipePage', () => {
 			message: { type: 'ERROR', errors: ['No recipe found on that page'] },
 		});
 
-		render(
-			<JotaiProvider store={store}>
-				<RecipePage />
-			</JotaiProvider>,
-		);
+		renderPage(store);
 
 		expect(screen.queryByText('recipe.assessmentInterrupted')).toBeNull();
+	});
+
+	it('shows the app icon beside the title in the toolbar', () => {
+		renderPage();
+
+		const title = document.querySelector('ion-header:not([collapse]) ion-title');
+		expect(title?.textContent).toBe('recipe.title');
+		expect(title?.querySelector('img')?.getAttribute('alt')).toBe('');
+	});
+
+	it('offers no cooking mode before there are suggestions', () => {
+		renderPage();
+
+		expect(toolbarCookingModeButton()).toBeNull();
+	});
+
+	it('offers cooking mode in the toolbar once there are suggestions', () => {
+		const store = createStore();
+		assess(store);
+		renderPage(store);
+
+		const button = toolbarCookingModeButton();
+		expect(button?.textContent).toBe('recipe.keepScreenOn');
+		expect(screen.getAllByText('recipe.keepScreenOn')).toHaveLength(1);
+	});
+
+	it('turns cooking mode on and off from the toolbar', async () => {
+		const store = createStore();
+		assess(store);
+		renderPage(store);
+
+		fireEvent.click(toolbarCookingModeButton()!);
+		expect(store.get(cookingModeAtom)).toBe(true);
+		await waitFor(() => expect(cookingModePressed()).toBe('true'));
+
+		fireEvent.click(toolbarCookingModeButton()!);
+		expect(store.get(cookingModeAtom)).toBe(false);
+		await waitFor(() => expect(cookingModePressed()).toBe('false'));
+	});
+
+	it('confirms each change of cooking mode with a toast', async () => {
+		const store = createStore();
+		assess(store);
+		renderPage(store);
+
+		fireEvent.click(toolbarCookingModeButton()!);
+		await waitFor(() => expect(toastMessages()).toEqual(['recipe.screenStaysOn']));
+
+		fireEvent.click(toolbarCookingModeButton()!);
+		// The second toast replaces the first while it is still showing
+		await waitFor(() => expect(toastMessages().at(-1)).toBe('recipe.screenMaySleep'));
+	});
+
+	it('shows cooking mode off after another assessment', async () => {
+		const store = createStore();
+		assess(store);
+		renderPage(store);
+		fireEvent.click(toolbarCookingModeButton()!);
+		await waitFor(() => expect(cookingModePressed()).toBe('true'));
+
+		act(() => assess(store));
+
+		await waitFor(() => expect(cookingModePressed()).toBe('false'));
 	});
 });
