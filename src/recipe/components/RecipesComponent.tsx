@@ -5,6 +5,7 @@ import { mainStateAtom } from '@/recipe/atoms';
 import { createSuggestionStatusAction } from '@/recipe/actions';
 import type { MainDataStatus, Recipe, RecipeDetectionType, SuggestionState } from '@/recipe/model';
 import { useTranslation } from 'react-i18next';
+import { hasSingleRecipe } from './recipesComponentUtils';
 import RecipeComponent from './RecipeComponent';
 import { waitForSuggestionStatisticsWithTimeout } from './suggestionsStatisticsUtils';
 import { useSuggestionInFlight } from './useSuggestionInFlight';
@@ -58,7 +59,7 @@ const RecipesComponent: React.FC = () => {
 						}
 						index={index}
 						recipe={r}
-						rating={mainState.recipes?.length === 1 ? mainState.rating : undefined}
+						showTitle={!hasSingleRecipe(mainState)}
 						detectionType={mainState.detectionTypes?.[index]}
 						suggestions={mainState.suggestions}
 						ingredientState={mainState.ingredientState}

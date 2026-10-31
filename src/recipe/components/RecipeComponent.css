@@ -9,7 +9,7 @@
 
 .sticky-ingredients-title {
 	position: sticky;
-	top: var(--recipe-title-height, 3rem);
+	top: var(--recipe-title-height, 0);
 	z-index: 10;
 	background: var(--ion-background-color, #fff);
 	margin: 0;

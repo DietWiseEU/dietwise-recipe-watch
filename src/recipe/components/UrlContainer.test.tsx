@@ -42,6 +42,22 @@ describe('UrlContainer', () => {
 		expect(container.querySelector('ion-button')).toBeNull();
 	});
 
+	it('shows no status icon once the assessment is complete', () => {
+		const { container } = render(
+			<UrlContainer onClick={vi.fn()} onReset={vi.fn()} url="https://example.com" status="FAILURE" />,
+		);
+
+		expect(container.querySelector('ion-icon:not([slot="icon-only"])')).toBeNull();
+	});
+
+	it('names the reset button for screen readers', () => {
+		const { container } = render(
+			<UrlContainer onClick={vi.fn()} onReset={vi.fn()} url="https://example.com" status="SUCCESS" />,
+		);
+
+		expect(container.querySelector('ion-button')?.getAttribute('aria-label')).toBe('recipe.startOver');
+	});
+
 	it('does not render a reset button before an assessment starts', () => {
 		const { container } = render(
 			<UrlContainer onClick={vi.fn()} onReset={vi.fn()} url={undefined} status="INITIAL" />,

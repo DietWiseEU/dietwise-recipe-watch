@@ -29,6 +29,7 @@ import dietWiseIconOrange from '@/assets/images/DietWise_icon_Orange.svg';
 import { useKeepScreenAwake } from '@/recipe/useKeepScreenAwake';
 import { useLogRating } from '@/recipe/useLogRating';
 import CookingModeToggle from '@/recipe/components/CookingModeToggle';
+import RecipeHeader from '@/recipe/components/RecipeHeader';
 import UrlContainer from '@/recipe/components/UrlContainer';
 import UrlModal from '@/recipe/components/UrlModal';
 import HelpModal from '@/recipe/help/HelpModal';
@@ -36,7 +37,7 @@ import InterruptedNotice from '@/recipe/components/InterruptedNotice';
 import SplitPane from '@/recipe/components/SplitPane';
 import RecipesComponent from '@/recipe/components/RecipesComponent';
 import SuggestionsComponent from '@/recipe/components/SuggestionsComponent';
-import { hasRecipesContent } from './components/recipesComponentUtils';
+import { hasRecipesContent, hasSingleRecipe } from './components/recipesComponentUtils';
 import { hasSuggestionsContent } from '@/recipe/components/suggestionsComponentUtils';
 import HelpContentsComponent from '@/recipe/help/HelpContentsComponent';
 import './RecipePage.css';
@@ -152,12 +153,16 @@ const RecipePage: React.FC = () => {
 				</IonHeader>
 
 				<div className="recipe-page__content">
-					<UrlContainer
-						onClick={() => setIsUrlModalOpen(true)}
-						onReset={resetCallback}
-						url={mainState.url}
-						status={mainState.status}
-					/>
+					{hasSingleRecipe(mainState) ? (
+						<RecipeHeader onEditUrl={() => setIsUrlModalOpen(true)} onReset={resetCallback} />
+					) : (
+						<UrlContainer
+							onClick={() => setIsUrlModalOpen(true)}
+							onReset={resetCallback}
+							url={mainState.url}
+							status={mainState.status}
+						/>
+					)}
 					{mainState.interrupted ? <InterruptedNotice onRetry={retryCallback} /> : null}
 					{!assessing && !hasOutcome ? (
 						<>

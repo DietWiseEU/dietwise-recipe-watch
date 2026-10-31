@@ -65,6 +65,7 @@
 		"welcomeHeading": "Welcome to the Recipe assessment page",
 		"welcomeFooter": "Don't worry if you forget these instructions; to see them again, press the Help button that will appear at the top of the screen while assessing a recipe!",
 		"enterUrl": "Tap to enter the address of the page containing the recipe you want to assess",
+		"startOver": "Start over with a new recipe",
 		"enterUrlModalTitle": "Enter address",
 		"ASSESS": "ASSESS",
 		"urlPlaceholder": "Enter the address here",

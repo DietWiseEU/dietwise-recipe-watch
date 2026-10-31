@@ -22,11 +22,6 @@ const SuggestionsComponent: React.FC = () => {
 			<div className="sugestions-pane">
 				<div className="sticky-suggestions-header">
 					<h2 className="suggestions-title">{t('recipe.titleOfSuggestions')}</h2>
-					{mainState.intervention?.text ? (
-						<div className="intervention-banner" role="status">
-							{mainState.intervention.text}
-						</div>
-					) : null}
 				</div>
 				<IonList>
 					{mainState.suggestionKeys.map((suggestionKey) => {

@@ -171,6 +171,16 @@ describe('RecipePage', () => {
 		expect(title?.querySelector('img')?.getAttribute('alt')).toBe('');
 	});
 
+	it('shows the recipe in a header in place of the address bar once it is known', () => {
+		const store = createStore();
+		assess(store);
+		renderPage(store);
+
+		expect(document.querySelector('.url-container')).toBeNull();
+		expect(screen.getAllByText('omelet')).toHaveLength(1);
+		expect(screen.getByText('https://example.test/recipe')).toBeTruthy();
+	});
+
 	it('offers no cooking mode before there are suggestions', () => {
 		renderPage();
 

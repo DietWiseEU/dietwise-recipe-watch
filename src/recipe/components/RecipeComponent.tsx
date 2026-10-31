@@ -2,10 +2,8 @@ import { IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 import { addIcons } from 'ionicons';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { IngredientStateType, Rating, Recipe, RecipeDetectionType, SuggestionState } from '@/recipe/model';
+import type { IngredientStateType, Recipe, RecipeDetectionType, SuggestionState } from '@/recipe/model';
 import IngredientComponent from './IngredientComponent';
-import RatingComponent from './RatingComponent';
-import { MAX_RATING } from '@/recipe/reducers/calculateRating';
 import brainIcon from '@/assets/images/brain.svg';
 import jsonLdIcon from '@/assets/images/json-ld.svg';
 import './RecipeComponent.css';
@@ -18,7 +16,7 @@ addIcons({
 export interface RecipeComponentProps {
 	index: number;
 	recipe: Recipe;
-	rating?: Rating;
+	showTitle: boolean;
 	detectionType: RecipeDetectionType | undefined;
 	suggestions: { [key: string]: SuggestionState } | undefined;
 	ingredientState: IngredientStateType | undefined;
@@ -51,27 +49,29 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 		return () => {
 			resizeObserver.disconnect();
 			window.removeEventListener('resize', updateTitleHeight);
+			section.style.removeProperty('--recipe-title-height');
 		};
-	}, []);
+	}, [props.showTitle]);
 
 	return (
 		<section ref={sectionRef}>
-			<h2 ref={titleRef} className="sticky-recipe-title">
-				<div className="ion-display-flex ion-align-items-center ion-justify-content-between">
-					{props.recipe.name
-						? props.recipe.name
-						: t('recipe.anonymousRecipeTemplateTitle', { index: props.index + 1 })}
-					{props.detectionType ? (
-						<IonIcon
-							icon={props.detectionType === 'JSONLD' ? 'jsonld' : 'brain'}
-							aria-hidden="true"
-							color="medium"
-							size="large"
-						/>
-					) : null}
-				</div>
-				{props.rating ? <RatingComponent rating={props.rating} max={MAX_RATING} /> : null}
-			</h2>
+			{props.showTitle ? (
+				<h2 ref={titleRef} className="sticky-recipe-title">
+					<div className="ion-display-flex ion-align-items-center ion-justify-content-between">
+						{props.recipe.name
+							? props.recipe.name
+							: t('recipe.anonymousRecipeTemplateTitle', { index: props.index + 1 })}
+						{props.detectionType ? (
+							<IonIcon
+								icon={props.detectionType === 'JSONLD' ? 'jsonld' : 'brain'}
+								aria-hidden="true"
+								color="medium"
+								size="large"
+							/>
+						) : null}
+					</div>
+				</h2>
+			) : null}
 			{props.recipe.recipeIngredients?.length > 0 ? (
 				<>
 					<h3 className="sticky-ingredients-title">{t('recipe.titleOfIngredients')}</h3>

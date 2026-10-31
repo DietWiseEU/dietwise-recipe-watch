@@ -1,5 +1,5 @@
 import { IonButton, IonIcon, IonSpinner } from '@ionic/react';
-import { alertCircle, arrowUndo, checkmarkCircle, helpCircle } from 'ionicons/icons';
+import { arrowUndo } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 import type { MainDataStatus } from '@/recipe/model';
 import './UrlContainer.css';
@@ -20,15 +20,6 @@ const UrlContainer: React.FC<UrlContainerProps> = (props) => {
 			{typeof props.url === 'string' ? (
 				<>
 					{props.status === 'PENDING' ? <IonSpinner className="min-width-64px" /> : null}
-					{props.status === 'SUCCESS' ? (
-						<IonIcon icon={checkmarkCircle} color="success" size="large" className="min-width-64px" />
-					) : null}
-					{props.status === 'FAILURE' ? (
-						<IonIcon icon={alertCircle} color="danger" size="large" className="min-width-64px" />
-					) : null}
-					{props.status === 'SELECT_RECIPE' ? (
-						<IonIcon icon={helpCircle} color="warning" size="large" className="min-width-64px" />
-					) : null}
 					<span className="url-container__url ion-text-nowrap overflow-hidden text-overflow-ellipsis">
 						{props.url}
 					</span>
@@ -36,6 +27,7 @@ const UrlContainer: React.FC<UrlContainerProps> = (props) => {
 						<IonButton
 							className="url-container__reset"
 							fill="clear"
+							aria-label={t('recipe.startOver')}
 							onClick={(e) => {
 								e.stopPropagation();
 								props.onReset();
