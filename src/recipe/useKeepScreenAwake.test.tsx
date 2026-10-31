@@ -78,4 +78,53 @@ describe('useKeepScreenAwake', () => {
 
 		expect(callSequence().at(-1)).toBe('keepAwake');
 	});
+
+	it('leaves the screen awake when one of two holding consumers lets go', () => {
+		const { rerender } = render(
+			<>
+				<Consumer active={true} />
+				<Consumer active={false} />
+			</>,
+		);
+
+		// Cooking mode is turned on while the assessment is still running, then the assessment completes.
+		rerender(
+			<>
+				<Consumer active={true} />
+				<Consumer active={true} />
+			</>,
+		);
+		rerender(
+			<>
+				<Consumer active={false} />
+				<Consumer active={true} />
+			</>,
+		);
+
+		expect(callSequence().at(-1)).toBe('keepAwake');
+	});
+
+	it('lets the screen sleep once the last holding consumer lets go', () => {
+		const { rerender } = render(
+			<>
+				<Consumer active={true} />
+				<Consumer active={true} />
+			</>,
+		);
+
+		rerender(
+			<>
+				<Consumer active={false} />
+				<Consumer active={true} />
+			</>,
+		);
+		rerender(
+			<>
+				<Consumer active={false} />
+				<Consumer active={false} />
+			</>,
+		);
+
+		expect(callSequence().at(-1)).toBe('allowSleep');
+	});
 });
