@@ -40,8 +40,8 @@ const HelpContentsComponent: React.FC = () => {
 							<li>
 								<span className="ion-display-inline-flex ion-align-items-center gap-10px">
 									<span>{t('recipe.help.explainRejectButton')}</span>
-									<span className="sim-button sim-button-warn">
-										<IonIcon icon={close} color="warning" />
+									<span className="sim-button sim-button-reject">
+										<IonIcon icon={close} color="medium" />
 									</span>
 								</span>
 							</li>

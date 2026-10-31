@@ -12,6 +12,9 @@ http://ionicframework.com/docs/theming/ */
 	--color-accent: #c67139;
 	--color-accent-2: #7a8a5e;
 	--color-divider: color-mix(in srgb, var(--color-text) 16%, transparent);
+	--color-notice: #ffdc73;
+	--color-notice-text: var(--color-text);
+	--color-danger: #a63a2c;
 
 	--color-neutral-100: #f9f4ed;
 	--color-neutral-200: #eee7db;
@@ -91,6 +94,48 @@ http://ionicframework.com/docs/theming/ */
 	--ion-color-secondary-shade: var(--color-accent-2-600);
 	--ion-color-secondary-tint: var(--color-accent-2-500);
 
+	--ion-color-success: var(--color-accent-2-700);
+	--ion-color-success-rgb: 86, 99, 63;
+	--ion-color-success-contrast: var(--color-bg);
+	--ion-color-success-contrast-rgb: 245, 234, 216;
+	--ion-color-success-shade: var(--color-accent-2-800);
+	--ion-color-success-tint: var(--color-accent-2-600);
+
+	--ion-color-warning: var(--color-notice);
+	--ion-color-warning-rgb: 255, 220, 115;
+	--ion-color-warning-contrast: var(--color-notice-text);
+	--ion-color-warning-contrast-rgb: 32, 30, 29;
+	--ion-color-warning-shade: color-mix(in srgb, var(--color-notice) 88%, black);
+	--ion-color-warning-tint: color-mix(in srgb, var(--color-notice) 90%, white);
+
+	--ion-color-danger: var(--color-danger);
+	--ion-color-danger-rgb: 166, 58, 44;
+	--ion-color-danger-contrast: var(--color-bg);
+	--ion-color-danger-contrast-rgb: 245, 234, 216;
+	--ion-color-danger-shade: color-mix(in srgb, var(--color-danger) 88%, black);
+	--ion-color-danger-tint: color-mix(in srgb, var(--color-danger) 90%, white);
+
+	--ion-color-medium: var(--color-neutral-700);
+	--ion-color-medium-rgb: 100, 92, 80;
+	--ion-color-medium-contrast: var(--color-bg);
+	--ion-color-medium-contrast-rgb: 245, 234, 216;
+	--ion-color-medium-shade: var(--color-neutral-800);
+	--ion-color-medium-tint: var(--color-neutral-600);
+
+	--ion-color-dark: var(--color-text);
+	--ion-color-dark-rgb: 32, 30, 29;
+	--ion-color-dark-contrast: var(--color-bg);
+	--ion-color-dark-contrast-rgb: 245, 234, 216;
+	--ion-color-dark-shade: color-mix(in srgb, var(--color-text) 88%, black);
+	--ion-color-dark-tint: var(--color-neutral-900);
+
+	--ion-color-light: var(--color-surface);
+	--ion-color-light-rgb: 235, 221, 197;
+	--ion-color-light-contrast: var(--color-text);
+	--ion-color-light-contrast-rgb: 32, 30, 29;
+	--ion-color-light-shade: var(--color-neutral-300);
+	--ion-color-light-tint: var(--color-neutral-200);
+
 	/* Step N of the background goes N/1000 of the way towards the text colour, and vice versa */
 	--ion-background-color-step-50: color-mix(in srgb, var(--color-text) 5%, var(--color-bg));
 	--ion-background-color-step-100: color-mix(in srgb, var(--color-text) 10%, var(--color-bg));
@@ -145,48 +190,9 @@ ion-title {
 }
 
 :root {
-	--dietwise-light-green: #00d3bb;
-	--dietwise-very-light-green: #00f2d7;
-	--dietwise-dark-green: #638672;
-	--dietwise-light-orange: #fcc594;
-	--dietwise-very-light-orange: #f5ece4;
-	--dietwise-gold: #ffdc73;
-
-	--ion-color-dwlightgreen: #00d3bb;
-	--ion-color-dwlightgreen-rgb: 0, 211, 187;
-	--ion-color-dwlightgreen-contrast: #000000;
-	--ion-color-dwlightgreen-contrast-rgb: 0, 0, 0;
-	--ion-color-dwlightgreen-shade: #00baa5;
-	--ion-color-dwlightgreen-tint: #1ad7c2;
-
 	/* Shared accents of the explanatory screens (help, onboarding) */
-	--dietwise-accent: var(--dietwise-dark-green);
-	--dietwise-badge-background: rgba(var(--ion-color-dwlightgreen-rgb), 0.14);
-	--dietwise-callout-background: rgba(var(--ion-color-dwlightgreen-rgb), 0.07);
-	--dietwise-body-text: var(--ion-color-step-750);
-
-	--ion-color-lightmedium: #deddda;
-	--ion-color-lightmedium-rgb: 222, 221, 218;
-	--ion-color-lightmedium-contrast: #000000;
-	--ion-color-lightmedium-contrast-rgb: 0, 0, 0;
-	--ion-color-lightmedium-shade: #c3c2c0;
-	--ion-color-lightmedium-tint: #e1e0de;
-}
-
-.ion-color-dwlightgreen {
-	--ion-color-base: var(--ion-color-dwlightgreen);
-	--ion-color-base-rgb: var(--ion-color-dwlightgreen-rgb);
-	--ion-color-contrast: var(--ion-color-dwlightgreen-contrast);
-	--ion-color-contrast-rgb: var(--ion-color-dwlightgreen-contrast-rgb);
-	--ion-color-shade: var(--ion-color-dwlightgreen-shade);
-	--ion-color-tint: var(--ion-color-dwlightgreen-tint);
-}
-
-.ion-color-lightmedium {
-	--ion-color-base: var(--ion-color-lightmedium);
-	--ion-color-base-rgb: var(--ion-color-lightmedium-rgb);
-	--ion-color-contrast: var(--ion-color-lightmedium-contrast);
-	--ion-color-contrast-rgb: var(--ion-color-lightmedium-contrast-rgb);
-	--ion-color-shade: var(--ion-color-lightmedium-shade);
-	--ion-color-tint: var(--ion-color-lightmedium-tint);
+	--dietwise-accent: var(--color-accent-2-800);
+	--dietwise-badge-background: var(--color-accent-2-200);
+	--dietwise-callout-background: var(--color-accent-2-100);
+	--dietwise-body-text: var(--color-neutral-800);
 }

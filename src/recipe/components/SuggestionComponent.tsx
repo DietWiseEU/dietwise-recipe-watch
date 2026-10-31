@@ -70,7 +70,7 @@ const SuggestionComponent: React.FC<SuggestionComponentProps> = ({
 				<IonButton
 					slot="end"
 					size="small"
-					color="warning"
+					color="medium"
 					fill={rejectButtonFill}
 					disabled={disabled}
 					onClick={rejectCallback}

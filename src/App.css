@@ -1,13 +1,13 @@
 /* Keep sections ordered alphabetically to avoid chaos */
 
 /* Borders */
-.border-top-1px-lightmedium {
-	border-top: 1px solid var(--ion-color-lightmedium);
+.border-top-1px-divider {
+	border-top: 1px solid var(--color-divider);
 }
 
 /* Color */
 .color-gold {
-	color: var(--dietwise-gold);
+	color: var(--color-notice);
 }
 .color-medium {
 	color: var(--ion-color-medium);

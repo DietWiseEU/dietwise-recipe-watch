@@ -65,7 +65,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 						<IonIcon
 							icon={props.detectionType === 'JSONLD' ? 'jsonld' : 'brain'}
 							aria-hidden="true"
-							color="lightmedium"
+							color="medium"
 							size="large"
 						/>
 					) : null}

@@ -21,7 +21,7 @@ const UrlContainer: React.FC<UrlContainerProps> = (props) => {
 				<>
 					{props.status === 'PENDING' ? <IonSpinner className="min-width-64px" /> : null}
 					{props.status === 'SUCCESS' ? (
-						<IonIcon icon={checkmarkCircle} color="dwlightgreen" size="large" className="min-width-64px" />
+						<IonIcon icon={checkmarkCircle} color="success" size="large" className="min-width-64px" />
 					) : null}
 					{props.status === 'FAILURE' ? (
 						<IonIcon icon={alertCircle} color="danger" size="large" className="min-width-64px" />

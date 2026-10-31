@@ -136,7 +136,7 @@ const RecipePage: React.FC = () => {
 					{!assessing && !hasOutcome ? (
 						<>
 							<HelpContentsComponent />
-							<p className="ion-margin-horizontal ion-padding-vertical border-top-1px-lightmedium">
+							<p className="ion-margin-horizontal ion-padding-vertical border-top-1px-divider">
 								{t('recipe.welcomeFooter')}
 							</p>
 						</>

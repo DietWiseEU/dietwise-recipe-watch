@@ -55,7 +55,7 @@ describe('HelpContentsComponent', () => {
 		const { container } = render(<HelpContentsComponent />);
 
 		expect(container.querySelectorAll('.sim-button-success ion-icon')).toHaveLength(1);
-		expect(container.querySelectorAll('.sim-button-warn ion-icon')).toHaveLength(1);
+		expect(container.querySelectorAll('.sim-button-reject ion-icon')).toHaveLength(1);
 	});
 
 	it('only asks for strings that exist', () => {
