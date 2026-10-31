@@ -1,15 +1,4 @@
-import type { Cost, Recipe, Suggestion, SuggestionStats, SuggestionStatus } from '@/recipe/model';
-
-export interface HasSuggestionsArgument {
-	recipes?: Recipe[];
-	suggestionKeys?: string[];
-	emptySuggestionsFromServer?: boolean;
-	errors?: string[];
-}
-
-export const hasSuggestionsContent = (props: HasSuggestionsArgument): boolean => {
-	return Boolean(props.suggestionKeys?.length || props.emptySuggestionsFromServer || (props.errors && props.recipes));
-};
+import type { Cost, Suggestion, SuggestionStats, SuggestionStatus } from '@/recipe/model';
 
 export function isOutsideSeasonalityRange(suggestion: Suggestion, currentMonth = new Date().getMonth() + 1): boolean {
 	const seasonality = suggestion.seasonality;

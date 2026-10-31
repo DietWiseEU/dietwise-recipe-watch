@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import type { Suggestion } from '@/recipe/model';
 import {
 	formatStats,
-	hasSuggestionsContent,
 	isMonthWithinRange,
 	isOutsideSeasonalityRange,
 	recommendationForDisplay,
@@ -29,10 +28,6 @@ const baseSuggestion: Suggestion = {
 };
 
 describe('suggestionsComponentUtils', () => {
-	it('reports suggestions content when suggestion keys exist', () => {
-		expect(hasSuggestionsContent({ suggestionKeys: ['s-1'] })).toBe(true);
-	});
-
 	it('formats stats unchanged when no local decision is applied', () => {
 		expect(formatStats(baseSuggestion.totalSuggestionStats, undefined)).toBe('4/1/10');
 	});

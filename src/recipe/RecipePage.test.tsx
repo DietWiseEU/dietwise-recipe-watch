@@ -10,7 +10,7 @@ import {
 	createRecipeAssessmentFailedAction,
 } from '@/recipe/actions';
 import { cookingModeAtom, mainStateAtom } from '@/recipe/atoms';
-import { assess } from '@/recipe/testAssessment';
+import { SUGGESTION, assess } from '@/recipe/testAssessment';
 import RecipePage from './RecipePage';
 
 vi.mock('react-i18next', () => ({
@@ -179,6 +179,18 @@ describe('RecipePage', () => {
 		expect(document.querySelector('.url-container')).toBeNull();
 		expect(screen.getAllByText('omelet')).toHaveLength(1);
 		expect(screen.getByText('https://example.test/recipe')).toBeTruthy();
+	});
+
+	it('shows the suggestions in one scrolling list with the ingredients', async () => {
+		const store = createStore();
+		assess(store);
+		renderPage(store);
+
+		const ingredient = screen.getByText('butter');
+		const suggestion = await screen.findByText(SUGGESTION.text);
+		expect(document.querySelector('.split-pane')).toBeNull();
+		expect(ingredient.closest('.recipe-page__scroll')).toBe(suggestion.closest('.recipe-page__scroll'));
+		expect(ingredient.closest('.recipe-page__scroll')).not.toBeNull();
 	});
 
 	it('offers no cooking mode before there are suggestions', () => {

@@ -56,11 +56,7 @@
 		}
 	},
 	"recipe": {
-<<<<<<< HEAD
-		"title": "MyRecipeWatch",
-=======
 		"title": "Recipe",
->>>>>>> b114203 (Cooking-mode state moves to an atom; the toggle goes in the toolbar)
 		"helpTitle": "Help",
 		"welcomeHeading": "Welcome to the Recipe assessment page",
 		"welcomeFooter": "Don't worry if you forget these instructions; to see them again, press the Help button that will appear at the top of the screen while assessing a recipe!",
@@ -72,7 +68,6 @@
 		"encounteredErrors": "Oops! One or more errors occurred:",
 		"titleOfIngredients": "Ingredients",
 		"disclaimer": "The following content comes from the website at the address you have entered and its intellectual property is that specified by the same page.",
-		"titleOfSuggestions": "Suggestions",
 		"keepScreenOn": "Keep screen on",
 		"screenStaysOn": "The screen will stay on while you cook",
 		"screenMaySleep": "The screen can sleep again",

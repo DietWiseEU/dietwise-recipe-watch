@@ -34,11 +34,8 @@ import UrlContainer from '@/recipe/components/UrlContainer';
 import UrlModal from '@/recipe/components/UrlModal';
 import HelpModal from '@/recipe/help/HelpModal';
 import InterruptedNotice from '@/recipe/components/InterruptedNotice';
-import SplitPane from '@/recipe/components/SplitPane';
 import RecipesComponent from '@/recipe/components/RecipesComponent';
-import SuggestionsComponent from '@/recipe/components/SuggestionsComponent';
-import { hasRecipesContent, hasSingleRecipe } from './components/recipesComponentUtils';
-import { hasSuggestionsContent } from '@/recipe/components/suggestionsComponentUtils';
+import { hasSingleRecipe } from './components/recipesComponentUtils';
 import HelpContentsComponent from '@/recipe/help/HelpContentsComponent';
 import './RecipePage.css';
 
@@ -115,9 +112,6 @@ const RecipePage: React.FC = () => {
 	// stops being serviced, the connection is dropped and the user is left with a network error.
 	useKeepScreenAwake(assessing);
 
-	const topPaneContent = hasRecipesContent(mainState) ? <RecipesComponent /> : null;
-	const bottomPaneContent = hasSuggestionsContent(mainState) ? <SuggestionsComponent /> : null;
-
 	return (
 		<IonPage>
 			<IonHeader>
@@ -164,15 +158,17 @@ const RecipePage: React.FC = () => {
 						/>
 					)}
 					{mainState.interrupted ? <InterruptedNotice onRetry={retryCallback} /> : null}
-					{!assessing && !hasOutcome ? (
-						<>
-							<HelpContentsComponent />
-							<p className="ion-margin-horizontal ion-padding-vertical border-top-1px-divider">
-								{t('recipe.welcomeFooter')}
-							</p>
-						</>
-					) : null}
-					<SplitPane className="recipe-page__split" top={topPaneContent} bottom={bottomPaneContent} />
+					<div className="recipe-page__scroll">
+						{!assessing && !hasOutcome ? (
+							<>
+								<HelpContentsComponent />
+								<p className="ion-margin-horizontal ion-padding-vertical border-top-1px-divider">
+									{t('recipe.welcomeFooter')}
+								</p>
+							</>
+						) : null}
+						<RecipesComponent />
+					</div>
 				</div>
 
 				<UrlModal

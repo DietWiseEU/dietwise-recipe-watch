@@ -26,9 +26,15 @@
 	flex-shrink: 0;
 }
 
-.recipe-page__split {
+.recipe-page__scroll {
 	flex: 1 1 auto;
 	min-height: 0;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.recipes-pane {
+	padding: 0 16px 10px;
 }
 
 .recipe-pane {

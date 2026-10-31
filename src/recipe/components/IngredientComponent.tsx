@@ -9,7 +9,7 @@ export interface IngredientComponentProps {
 	ingredient: Ingredient;
 	acceptedSuggestion: SuggestionState | undefined;
 	acceptedSuggestionDisabled?: boolean;
-	onMarkUndecided: (suggestionKey: string, suggestionId: string) => void | Promise<void>;
+	onMarkUndecided: (suggestionKey: string) => void | Promise<void>;
 }
 
 export interface IngredientSuggestionProps {
@@ -57,12 +57,7 @@ const IngredientComponent: React.FC<IngredientComponentProps> = ({
 					color="dark"
 					fill="outline"
 					disabled={acceptedSuggestionDisabled}
-					onClick={() =>
-						onMarkUndecided(
-							keyOfSuggestion(acceptedSuggestion.suggestion),
-							acceptedSuggestion.suggestion.id,
-						)
-					}
+					onClick={() => onMarkUndecided(keyOfSuggestion(acceptedSuggestion.suggestion))}
 				>
 					<IonIcon slot="icon-only" icon={removeOutline}></IonIcon>
 				</IonButton>

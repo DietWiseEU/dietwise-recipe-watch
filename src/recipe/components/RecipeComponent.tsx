@@ -1,9 +1,16 @@
 import { IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 import { addIcons } from 'ionicons';
-import { useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { IngredientStateType, Recipe, RecipeDetectionType, SuggestionState } from '@/recipe/model';
+import type {
+	IngredientStateType,
+	Recipe,
+	RecipeDetectionType,
+	SuggestionState,
+	SuggestionStatus,
+} from '@/recipe/model';
 import IngredientComponent from './IngredientComponent';
+import SuggestionComponent from './SuggestionComponent';
 import brainIcon from '@/assets/images/brain.svg';
 import jsonLdIcon from '@/assets/images/json-ld.svg';
 import './RecipeComponent.css';
@@ -18,10 +25,13 @@ export interface RecipeComponentProps {
 	recipe: Recipe;
 	showTitle: boolean;
 	detectionType: RecipeDetectionType | undefined;
+	/** The Suggestions for every recipe, in the order the server sent them. */
+	suggestionKeys: string[] | undefined;
 	suggestions: { [key: string]: SuggestionState } | undefined;
 	ingredientState: IngredientStateType | undefined;
 	isSuggestionInFlight: (suggestionKey: string) => boolean;
-	onMarkUndecided: (suggestionKey: string, suggestionId: string) => void | Promise<void>;
+	onChangeSuggestionStatus: (suggestionKey: string, nextStatus: SuggestionStatus) => void | Promise<void>;
+	onInfoClicked: (header: string, message: string) => void;
 }
 
 const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentProps) => {
@@ -52,6 +62,12 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 			section.style.removeProperty('--recipe-title-height');
 		};
 	}, [props.showTitle]);
+
+	const suggestionKeysOf = (ingredientId: string) =>
+		props.suggestionKeys?.filter((suggestionKey) => {
+			const target = props.suggestions?.[suggestionKey]?.suggestion.target;
+			return target?.type === 'INGREDIENT' && target.ingredient === ingredientId;
+		}) ?? [];
 
 	return (
 		<section ref={sectionRef}>
@@ -85,15 +101,36 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 								? props.suggestions?.[acceptedSuggestionId]
 								: undefined;
 							return (
-								<IngredientComponent
-									key={ingredient.id}
-									ingredient={ingredient}
-									acceptedSuggestion={acceptedSuggestion}
-									acceptedSuggestionDisabled={Boolean(
-										acceptedSuggestionId && props.isSuggestionInFlight(acceptedSuggestionId),
-									)}
-									onMarkUndecided={props.onMarkUndecided}
-								/>
+								<Fragment key={ingredient.id}>
+									<IngredientComponent
+										ingredient={ingredient}
+										acceptedSuggestion={acceptedSuggestion}
+										acceptedSuggestionDisabled={Boolean(
+											acceptedSuggestionId && props.isSuggestionInFlight(acceptedSuggestionId),
+										)}
+										onMarkUndecided={(suggestionKey) =>
+											props.onChangeSuggestionStatus(suggestionKey, 'UNDECIDED')
+										}
+									/>
+									{suggestionKeysOf(ingredient.id).map((suggestionKey) => {
+										const suggestionState = props.suggestions![suggestionKey];
+										return (
+											<SuggestionComponent
+												key={suggestionKey}
+												suggestion={suggestionState.suggestion}
+												status={suggestionState.status}
+												disabled={props.isSuggestionInFlight(suggestionKey)}
+												onAction={(action) =>
+													props.onChangeSuggestionStatus(
+														suggestionKey,
+														suggestionState.status === action ? 'UNDECIDED' : action,
+													)
+												}
+												onInfoClicked={props.onInfoClicked}
+											/>
+										);
+									})}
+								</Fragment>
 							);
 						})}
 					</IonList>
