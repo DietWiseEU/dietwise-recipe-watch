@@ -187,7 +187,7 @@ describe('RecipePage', () => {
 		renderPage(store);
 
 		const ingredient = screen.getByText('butter');
-		const suggestion = await screen.findByText(SUGGESTION.text);
+		const suggestion = await screen.findByRole('heading', { name: SUGGESTION.alternative });
 		expect(document.querySelector('.split-pane')).toBeNull();
 		expect(ingredient.closest('.recipe-page__scroll')).toBe(suggestion.closest('.recipe-page__scroll'));
 		expect(ingredient.closest('.recipe-page__scroll')).not.toBeNull();

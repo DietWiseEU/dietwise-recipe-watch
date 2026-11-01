@@ -194,7 +194,6 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 													<SuggestionComponent
 														key={suggestionKey}
 														suggestion={suggestionState.suggestion}
-														status={suggestionState.status}
 														disabled={props.isSuggestionInFlight(suggestionKey)}
 														onAction={(action) =>
 															decide(

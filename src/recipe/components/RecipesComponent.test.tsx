@@ -116,11 +116,11 @@ describe('RecipesComponent', () => {
 		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
 		renderRecipes(store);
 
-		const texts = ['butter', 'Use olive oil instead of butter', 'Use sunflower oil instead of butter', 'sugar'];
+		const texts = ['butter', 'olive oil', 'sunflower oil', 'sugar'];
 		const positions = texts.map((text) => document.body.textContent!.indexOf(text));
 		expect(positions.every((position) => position >= 0)).toBe(true);
 		expect(positions).toEqual([...positions].sort((a, b) => a - b));
-		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+		expect(shownAlternatives()).toEqual(['olive oil', 'sunflower oil']);
 	});
 
 	it('shows how many alternatives each ingredient has', () => {
@@ -139,8 +139,8 @@ describe('RecipesComponent', () => {
 
 		fireEvent.click(screen.getByText('ingredient.alternatives:1'));
 
-		expect(document.body.textContent).toContain('Use honey instead of sugar');
-		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
+		expect(shownAlternatives()).toContain('honey');
+		expect(shownAlternatives()).not.toContain('olive oil');
 	});
 
 	it('closes the open ingredient', () => {
@@ -149,7 +149,7 @@ describe('RecipesComponent', () => {
 		fireEvent.click(screen.getByText('ingredient.alternatives:2'));
 
 		expect(document.body.textContent).toContain('butter');
-		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
+		expect(shownAlternatives()).not.toContain('olive oil');
 	});
 
 	it('shows no alternatives under an ingredient once one of them is accepted', () => {
@@ -159,7 +159,7 @@ describe('RecipesComponent', () => {
 		renderRecipes(store);
 
 		expect(document.body.textContent).toContain('olive oil');
-		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+		expect(shownAlternatives()).not.toContain('sunflower oil');
 		expect(screen.queryByText(/^ingredient\.alternatives/)).toBeNull();
 	});
 
@@ -169,15 +169,15 @@ describe('RecipesComponent', () => {
 		fireEvent.click(rejectButtons()[0]);
 		await waitFor(() => expect(postedStatistics()).toHaveLength(1));
 
-		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
+		expect(shownAlternatives()).not.toContain('olive oil');
 		expect(screen.getByText('ingredient.alternatives:1')).toBeTruthy();
 
 		fireEvent.click(screen.getByText('olive oil'));
 		await waitFor(() => expect(postedStatistics()).toHaveLength(2));
 
 		expect(store.get(mainStateAtom).suggestions?.[keyOfSuggestion(SUGGESTION)].status).toBe('UNDECIDED');
-		expect(document.body.textContent).toContain('Use olive oil instead of butter');
-		expect(screen.queryByText('olive oil')).toBeNull();
+		expect(shownAlternatives()).toContain('olive oil');
+		expect(screen.queryByLabelText('ingredient.reconsider')).toBeNull();
 	});
 
 	it('offers no alternatives for an ingredient once all of them are rejected', () => {
@@ -199,8 +199,8 @@ describe('RecipesComponent', () => {
 
 		fireEvent.click(screen.getByText('ingredient.skip'));
 
-		expect(document.body.textContent).toContain('Use honey instead of sugar');
-		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
+		expect(shownAlternatives()).toContain('honey');
+		expect(shownAlternatives()).not.toContain('olive oil');
 		expect(screen.getAllByText('ingredient.skipped')).toHaveLength(1);
 		expect(screen.getByText('ingredient.alternatives:2')).toBeTruthy();
 		expect(store.get(mainStateAtom).suggestions?.[keyOfSuggestion(SUGGESTION)].status).toBe('UNDECIDED');
@@ -215,8 +215,8 @@ describe('RecipesComponent', () => {
 		fireEvent.click(screen.getByText('ingredient.alternatives:1'));
 		fireEvent.click(screen.getByText('ingredient.skip'));
 
-		expect(document.body.textContent).toContain('Use olive oil instead of butter');
-		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+		expect(shownAlternatives()).toContain('olive oil');
+		expect(shownAlternatives()).not.toContain('honey');
 	});
 
 	it('opens no ingredient once every ingredient with alternatives is skipped', () => {
@@ -227,8 +227,8 @@ describe('RecipesComponent', () => {
 		fireEvent.click(screen.getByText('ingredient.skip'));
 		fireEvent.click(screen.getByText('ingredient.skip'));
 
-		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
-		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+		expect(shownAlternatives()).not.toContain('olive oil');
+		expect(shownAlternatives()).not.toContain('honey');
 		expect(screen.getAllByText('ingredient.skipped')).toHaveLength(2);
 	});
 
@@ -241,8 +241,8 @@ describe('RecipesComponent', () => {
 		fireEvent.click(screen.getByText('ingredient.alternatives:1'));
 		fireEvent.click(screen.getByText('ingredient.skip'));
 
-		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
-		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+		expect(shownAlternatives()).not.toContain('honey');
+		expect(shownAlternatives()).not.toContain('sunflower oil');
 	});
 
 	it('reopens a skipped ingredient on tap, and no longer marks it skipped', () => {
@@ -253,8 +253,8 @@ describe('RecipesComponent', () => {
 		fireEvent.click(screen.getByText('ingredient.skip'));
 		fireEvent.click(screen.getByText('ingredient.alternatives:2'));
 
-		expect(document.body.textContent).toContain('Use olive oil instead of butter');
-		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+		expect(shownAlternatives()).toContain('olive oil');
+		expect(shownAlternatives()).not.toContain('honey');
 		expect(screen.queryByText('ingredient.skipped')).toBeNull();
 	});
 
@@ -266,8 +266,8 @@ describe('RecipesComponent', () => {
 
 		await acceptAndWaitForStatistics(0, 1);
 
-		expect(document.body.textContent).toContain('Use honey instead of sugar');
-		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+		expect(shownAlternatives()).toContain('honey');
+		expect(shownAlternatives()).not.toContain('sunflower oil');
 	});
 
 	it('opens the next ingredient with alternatives once the last one is rejected, when the user wants that', async () => {
@@ -279,13 +279,13 @@ describe('RecipesComponent', () => {
 		fireEvent.click(rejectButtons()[0]);
 		await waitFor(() => expect(postedStatistics()).toHaveLength(1));
 
-		expect(document.body.textContent).toContain('Use sunflower oil instead of butter');
-		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+		expect(shownAlternatives()).toContain('sunflower oil');
+		expect(shownAlternatives()).not.toContain('honey');
 
 		fireEvent.click(rejectButtons()[0]);
 		await waitFor(() => expect(postedStatistics()).toHaveLength(2));
 
-		expect(document.body.textContent).toContain('Use honey instead of sugar');
+		expect(shownAlternatives()).toContain('honey');
 	});
 
 	it('opens no other ingredient once an alternative is accepted, when the user does not want that', async () => {
@@ -296,8 +296,8 @@ describe('RecipesComponent', () => {
 
 		await acceptAndWaitForStatistics(0, 1);
 
-		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
-		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+		expect(shownAlternatives()).not.toContain('honey');
+		expect(shownAlternatives()).not.toContain('sunflower oil');
 	});
 
 	it('says when every ingredient is reviewed, with how many alternatives were accepted and skipped', async () => {
@@ -310,7 +310,7 @@ describe('RecipesComponent', () => {
 		fireEvent.click(screen.getByText('ingredient.skip'));
 		await acceptAndWaitForStatistics(0, 1);
 
-		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+		expect(shownAlternatives()).not.toContain('sunflower oil');
 		expect(screen.getByRole('status').textContent).toBe(
 			'ingredient.allReviewed · ingredient.acceptedCount:1 · ingredient.skippedCount:1',
 		);
@@ -401,12 +401,21 @@ describe('RecipesComponent', () => {
 	});
 });
 
+/** The names of the alternatives shown for the user to decide on. */
+function shownAlternatives() {
+	return screen.queryAllByRole('heading', { level: 4 }).map((heading) => heading.textContent);
+}
+
+function buttonsLabelled(label: string) {
+	return [...document.querySelectorAll('ion-button')].filter((button) => button.textContent === label);
+}
+
 function rejectButtons() {
-	return document.querySelectorAll('ion-button[color="medium"][slot="end"]');
+	return buttonsLabelled('ingredient.reject');
 }
 
 async function acceptAndWaitForStatistics(suggestionIndex: number, expectedTotalStatistics: number) {
-	fireEvent.click(document.querySelectorAll('ion-button[color="success"]')[suggestionIndex]);
+	fireEvent.click(buttonsLabelled('ingredient.accept')[suggestionIndex]);
 	await waitFor(() => expect(postedStatistics()).toHaveLength(expectedTotalStatistics));
 }
 
