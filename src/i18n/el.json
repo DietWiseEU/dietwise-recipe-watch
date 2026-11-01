@@ -115,7 +115,11 @@
 	},
 	"ingredient": {
 		"equivalence": "Ισοδυναμία:",
-		"techniqueNotes": "Σημειώσεις:"
+		"techniqueNotes": "Σημειώσεις:",
+		"alternatives_one": "{{count}} εναλλακτικό",
+		"alternatives_other": "{{count}} εναλλακτικά",
+		"noSuggestions": "χωρίς προτάσεις",
+		"reconsider": "Απορρίφθηκε: {{alternative}}. Πατήστε για επανεξέταση."
 	},
 	"settings": {
 		"title": "MyRecipeWatch Ρυθμίσεις",

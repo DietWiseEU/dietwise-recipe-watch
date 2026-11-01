@@ -115,7 +115,11 @@
 	},
 	"ingredient": {
 		"equivalence": "Equivalent:",
-		"techniqueNotes": "Opmerkingen:"
+		"techniqueNotes": "Opmerkingen:",
+		"alternatives_one": "{{count}} alternatief",
+		"alternatives_other": "{{count}} alternatieven",
+		"noSuggestions": "geen suggesties",
+		"reconsider": "Afgewezen: {{alternative}}. Tik om te heroverwegen."
 	},
 	"settings": {
 		"title": "MyRecipeWatch Instellingen",

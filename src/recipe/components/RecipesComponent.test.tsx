@@ -15,7 +15,8 @@ import RecipesComponent from './RecipesComponent';
 
 vi.mock('react-i18next', () => ({
 	useTranslation: () => ({
-		t: (key: string) => key,
+		t: (key: string, options?: { count?: number }) =>
+			options?.count === undefined ? key : `${key}:${options.count}`,
 	}),
 }));
 
@@ -53,6 +54,11 @@ function renderAssessed(intervention?: Intervention) {
 	const store = createStore();
 	assess(store, intervention);
 	return renderRecipes(store);
+}
+
+function assessWithSuggestions(store: ReturnType<typeof createStore>, suggestions: Suggestion[]) {
+	store.set(mainStateAtom, createMessageReceivedAction({ type: 'SUGGESTIONS', suggestions })!);
+	store.set(mainStateAtom, createRecipeAssessmentCompletedAction());
 }
 
 /** An assessment that has extracted a recipe with butter and sugar. */
@@ -95,41 +101,93 @@ describe('RecipesComponent', () => {
 		vi.unstubAllGlobals();
 	});
 
-	it('shows each suggestion under the ingredient it replaces', () => {
+	it('opens the first ingredient with suggestions and shows them under it', () => {
 		const store = storeWithButterAndSugar();
-		store.set(
-			mainStateAtom,
-			createMessageReceivedAction({
-				type: 'SUGGESTIONS',
-				suggestions: [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION],
-			})!,
-		);
-		store.set(mainStateAtom, createRecipeAssessmentCompletedAction());
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
 		renderRecipes(store);
 
-		const texts = [
-			'butter',
-			'Use olive oil instead of butter',
-			'Use sunflower oil instead of butter',
-			'sugar',
-			'Use honey instead of sugar',
-		];
+		const texts = ['butter', 'Use olive oil instead of butter', 'Use sunflower oil instead of butter', 'sugar'];
 		const positions = texts.map((text) => document.body.textContent!.indexOf(text));
 		expect(positions.every((position) => position >= 0)).toBe(true);
 		expect(positions).toEqual([...positions].sort((a, b) => a - b));
+		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
 	});
 
-	it('sends the assessmentId with the statistics of accepting a Suggestion in place of another', async () => {
-		renderAssessed({ id: 1, text: INTERVENTION_TEXT });
+	it('shows how many alternatives each ingredient has', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
 
-		await acceptAndWaitForStatistics(0, 1);
-		await acceptAndWaitForStatistics(1, 3);
+		expect(screen.getByText('ingredient.alternatives:2')).toBeTruthy();
+		expect(screen.getByText('ingredient.alternatives:1')).toBeTruthy();
+	});
 
-		expect(postedStatistics()).toEqual([
-			['increaseTimesAccepted', { suggestionId: 's1', assessmentId: ASSESSMENT_ID }],
-			['decreaseTimesAccepted', { suggestionId: 's1', assessmentId: ASSESSMENT_ID }],
-			['increaseTimesAccepted', { suggestionId: 's2', assessmentId: ASSESSMENT_ID }],
-		]);
+	it('opens one ingredient at a time', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.alternatives:1'));
+
+		expect(document.body.textContent).toContain('Use honey instead of sugar');
+		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
+	});
+
+	it('closes the open ingredient', () => {
+		renderAssessed();
+
+		fireEvent.click(screen.getByText('ingredient.alternatives:2'));
+
+		expect(document.body.textContent).toContain('butter');
+		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
+	});
+
+	it('shows no alternatives under an ingredient once one of them is accepted', () => {
+		const store = createStore();
+		assess(store);
+		store.set(mainStateAtom, createSuggestionStatusAction(keyOfSuggestion(SUGGESTION), 'ACCEPTED'));
+		renderRecipes(store);
+
+		expect(document.body.textContent).toContain('olive oil');
+		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+		expect(screen.queryByText(/^ingredient\.alternatives/)).toBeNull();
+	});
+
+	it('moves a rejected suggestion out of the list, from where it can be reconsidered', async () => {
+		const store = renderAssessed();
+
+		fireEvent.click(rejectButtons()[0]);
+		await waitFor(() => expect(postedStatistics()).toHaveLength(1));
+
+		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
+		expect(screen.getByText('ingredient.alternatives:1')).toBeTruthy();
+
+		fireEvent.click(screen.getByText('olive oil'));
+		await waitFor(() => expect(postedStatistics()).toHaveLength(2));
+
+		expect(store.get(mainStateAtom).suggestions?.[keyOfSuggestion(SUGGESTION)].status).toBe('UNDECIDED');
+		expect(document.body.textContent).toContain('Use olive oil instead of butter');
+		expect(screen.queryByText('olive oil')).toBeNull();
+	});
+
+	it('offers no alternatives for an ingredient once all of them are rejected', () => {
+		const store = createStore();
+		assess(store);
+		store.set(mainStateAtom, createSuggestionStatusAction(keyOfSuggestion(SUGGESTION), 'REJECTED'));
+		store.set(mainStateAtom, createSuggestionStatusAction(keyOfSuggestion(OTHER_SUGGESTION), 'REJECTED'));
+		renderRecipes(store);
+
+		expect(screen.queryByText(/^ingredient\.alternatives/)).toBeNull();
+		expect(screen.getByText('olive oil')).toBeTruthy();
+		expect(screen.getByText('sunflower oil')).toBeTruthy();
+	});
+
+	it('says which ingredients have no suggestions', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION]);
+		renderRecipes(store);
+
+		expect(screen.getAllByText('ingredient.noSuggestions')).toHaveLength(1);
 	});
 
 	it('sends no assessmentId with the statistics when the server assigned no Intervention', async () => {
@@ -189,6 +247,10 @@ describe('RecipesComponent', () => {
 		expect(screen.getByText('No recipe found on that page')).toBeTruthy();
 	});
 });
+
+function rejectButtons() {
+	return document.querySelectorAll('ion-button[color="medium"][slot="end"]');
+}
 
 async function acceptAndWaitForStatistics(suggestionIndex: number, expectedTotalStatistics: number) {
 	fireEvent.click(document.querySelectorAll('ion-button[color="success"]')[suggestionIndex]);
