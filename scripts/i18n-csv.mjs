@@ -2,8 +2,15 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const DEFAULT_TEMPLATE = 'src/i18n/en.json';
+/** The plural forms i18next knows, as the suffixes of plural keys, in CLDR order. */
+const PLURAL_FORMS = ['zero', 'one', 'two', 'few', 'many', 'other'];
+/** Counts 0 to this reach every plural form a whole count has in the app's languages. */
+const LARGEST_SAMPLE_COUNT = 1000;
+/** How many runs of counts a plural form's note lists before it trails off. */
+const NOTE_RUNS = 4;
 
 function main() {
 	const [command, ...args] = process.argv.slice(2);
@@ -32,24 +39,32 @@ function exportCsv(options) {
 	const outputPath = resolveRequiredPath(options.output, 'Missing --output for export.');
 	const sourcePath = options.source ? resolvePath(options.source) : null;
 
-	const template = readJson(templatePath);
-	const localized = sourcePath ? readJson(sourcePath) : null;
+	const { csv, count } = csvFromTranslations({
+		template: readJson(templatePath),
+		localized: sourcePath ? readJson(sourcePath) : null,
+		language: options.language,
+	});
 
-	const templateEntries = flattenTranslations(template);
+	writeText(outputPath, csv);
+	console.log(`Wrote ${count} translations to ${outputPath}`);
+}
+
+export function csvFromTranslations({ template, localized, language }) {
+	const pluralForms = pluralFormsOf(language);
+	const templateEntries = flattenTranslations(withPluralForms(template, pluralForms));
 	const localizedEntries = localized ? flattenTranslations(localized) : new Map();
 
 	if (localized) {
 		assertSameKeys(templateEntries, localizedEntries, 'localized JSON');
 	}
 
-	const rows = [['code', 'english', 'localized']];
+	const rows = [['code', 'english', 'localized', 'note']];
 
 	for (const [code, english] of templateEntries.entries()) {
-		rows.push([code, english, localizedEntries.get(code) ?? '']);
+		rows.push([code, english, localizedEntries.get(code) ?? '', noteOf(code, templateEntries, pluralForms)]);
 	}
 
-	writeText(outputPath, rows.map(toCsvLine).join('\n') + '\n');
-	console.log(`Wrote ${rows.length - 1} translations to ${outputPath}`);
+	return { csv: rows.map(toCsvLine).join('\n') + '\n', count: rows.length - 1 };
 }
 
 function importCsv(options) {
@@ -57,9 +72,20 @@ function importCsv(options) {
 	const inputPath = resolveRequiredPath(options.input, 'Missing --input for import.');
 	const outputPath = resolveRequiredPath(options.output, 'Missing --output for import.');
 
-	const template = readJson(templatePath);
-	const templateEntries = flattenTranslations(template);
-	const csvRows = parseCsv(readText(inputPath));
+	const { translations, count } = translationsFromCsv({
+		template: readJson(templatePath),
+		csv: readText(inputPath),
+		language: options.language,
+	});
+
+	writeText(outputPath, `${JSON.stringify(translations, null, '\t')}\n`);
+	console.log(`Wrote ${count} translations to ${outputPath}`);
+}
+
+export function translationsFromCsv({ template, csv, language }) {
+	const languageTemplate = withPluralForms(template, pluralFormsOf(language));
+	const templateEntries = flattenTranslations(languageTemplate);
+	const csvRows = parseCsv(csv);
 
 	if (csvRows.length === 0) {
 		fail('CSV input is empty.');
@@ -125,9 +151,96 @@ function importCsv(options) {
 		}
 	}
 
-	const localizedJson = buildFromTemplate(template, [], localizedEntries);
-	writeText(outputPath, `${JSON.stringify(localizedJson, null, '\t')}\n`);
-	console.log(`Wrote ${localizedEntries.size} translations to ${outputPath}`);
+	return { translations: buildFromTemplate(languageTemplate, [], localizedEntries), count: localizedEntries.size };
+}
+
+/**
+ * The plural forms that whole counts use in the language, each with a note for translators on the counts that use it.
+ */
+function pluralFormsOf(language) {
+	if (!language) {
+		fail('Missing --language.');
+	}
+	if (Intl.PluralRules.supportedLocalesOf(language).length === 0) {
+		fail(`Unknown language "${language}".`);
+	}
+
+	const rules = new Intl.PluralRules(language);
+	const countsOfForm = new Map();
+	for (let count = 0; count <= LARGEST_SAMPLE_COUNT; count += 1) {
+		const form = rules.select(count);
+		countsOfForm.set(form, [...(countsOfForm.get(form) ?? []), count]);
+	}
+
+	return new Map(
+		PLURAL_FORMS.filter((form) => countsOfForm.has(form)).map((form) => [
+			form,
+			`plural form for count ${describeCounts(countsOfForm.get(form))}`,
+		]),
+	);
+}
+
+/** Describes ascending counts as runs, e.g. "2–9, 22–29, …" or "0, 2 and above". */
+function describeCounts(counts) {
+	const runs = [];
+	for (const count of counts) {
+		const lastRun = runs.at(-1);
+		if (lastRun && lastRun.last === count - 1) {
+			lastRun.last = count;
+		} else {
+			runs.push({ first: count, last: count });
+		}
+	}
+
+	const described = runs.slice(0, NOTE_RUNS).map(({ first, last }) => {
+		if (last === LARGEST_SAMPLE_COUNT) {
+			return `${first} and above`;
+		}
+		return first === last ? `${first}` : `${first}–${last}`;
+	});
+	return runs.length > NOTE_RUNS ? `${described.join(', ')}, …` : described.join(', ');
+}
+
+/** The plural form and the key without it, if the key is one form of a plural, i.e. it has an "other" sibling. */
+function pluralKeyOf(key, hasSibling) {
+	const separator = key.lastIndexOf('_');
+	const base = key.slice(0, separator);
+	const form = key.slice(separator + 1);
+	return separator > 0 && PLURAL_FORMS.includes(form) && hasSibling(`${base}_other`) ? { base, form } : null;
+}
+
+/**
+ * The template with each plural replaced by the plural forms of the language. A form English lacks gets the English
+ * text of "other".
+ */
+function withPluralForms(templateNode, pluralForms) {
+	if (typeof templateNode === 'string' || !templateNode || typeof templateNode !== 'object') {
+		return templateNode;
+	}
+
+	const result = {};
+	for (const [key, child] of Object.entries(templateNode)) {
+		const pluralKey = pluralKeyOf(key, (sibling) => Object.hasOwn(templateNode, sibling));
+		if (!pluralKey) {
+			result[key] = withPluralForms(child, pluralForms);
+			continue;
+		}
+		// The first English form of the plural puts all the forms of the language in its place.
+		if (Object.hasOwn(result, `${pluralKey.base}_other`)) {
+			continue;
+		}
+		for (const form of pluralForms.keys()) {
+			result[`${pluralKey.base}_${form}`] =
+				templateNode[`${pluralKey.base}_${form}`] ?? templateNode[`${pluralKey.base}_other`];
+		}
+	}
+	return result;
+}
+
+function noteOf(code, entries, pluralForms) {
+	const prefix = code.slice(0, code.lastIndexOf('.') + 1);
+	const pluralKey = pluralKeyOf(code.slice(prefix.length), (sibling) => entries.has(`${prefix}${sibling}`));
+	return pluralKey ? pluralForms.get(pluralKey.form) : '';
 }
 
 function flattenTranslations(value, prefix = '', entries = new Map()) {
@@ -327,18 +440,29 @@ function writeText(filePath, content) {
 
 function printHelp() {
 	console.log(`Usage:
-  node scripts/i18n-csv.mjs export --output <file.csv> [--template src/i18n/en.json] [--source <localized.json>]
-  node scripts/i18n-csv.mjs import --input <file.csv> --output <localized.json> [--template src/i18n/en.json]
+  node scripts/i18n-csv.mjs export --language <code> --output <file.csv> [--template src/i18n/en.json] [--source <localized.json>]
+  node scripts/i18n-csv.mjs import --language <code> --input <file.csv> --output <localized.json> [--template src/i18n/en.json]
+
+--language is the code of the language translated into, e.g. el, lt or nl. Each plural string gets a row for every
+plural form a whole count uses in that language, which may be more forms than English has: Lithuanian has
+<key>_one, <key>_few and <key>_other. A form English lacks shows the English plural ("other") text. The "note" column
+says which counts use each plural form; import ignores it.
 
 Examples:
-  npm run i18n:csv:export -- --output translations/el.csv --source src/i18n/el.json
-  npm run i18n:csv:export -- --output translations/nl.csv
-  npm run i18n:csv:import -- --input translations/nl.csv --output src/i18n/nl.json`);
+  npm run i18n:csv:export -- --language el --output translations/el.csv --source src/i18n/el.json
+  npm run i18n:csv:export -- --language nl --output translations/nl.csv
+  npm run i18n:csv:import -- --language nl --input translations/nl.csv --output src/i18n/nl.json`);
 }
 
 function fail(message) {
-	console.error(message);
-	process.exit(1);
+	throw new Error(message);
 }
 
-main();
+if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
+	try {
+		main();
+	} catch (error) {
+		console.error(error.message);
+		process.exit(1);
+	}
+}

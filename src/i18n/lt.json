@@ -118,7 +118,6 @@
 		"techniqueNotes": "Pastebėjimai:",
 		"alternatives_one": "{{count}} alternatyva",
 		"alternatives_few": "{{count}} alternatyvos",
-		"alternatives_many": "{{count}} alternatyvos",
 		"alternatives_other": "{{count}} alternatyvų",
 		"noSuggestions": "pasiūlymų nėra",
 		"reconsider": "Atmesta: {{alternative}}. Palieskite, kad persvarstytumėte."
