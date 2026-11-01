@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider as JotaiProvider, createStore } from 'jotai';
 import { describe, expect, it, vi } from 'vitest';
 import {
@@ -10,12 +10,19 @@ import { mainStateAtom } from '@/recipe/atoms';
 import type { Intervention } from '@/recipe/model';
 import { keyOfSuggestion } from '@/recipe/model';
 import { SUGGESTION, assess } from '@/recipe/testAssessment';
+import { settingsAtom } from '@/settings/atoms';
+import { DEFAULT_SETTINGS } from '@/settings/model';
+import { saveSettings } from '@/settings/storage';
 import RecipeHeader from './RecipeHeader';
 
 vi.mock('react-i18next', () => ({
 	useTranslation: () => ({
 		t: (key: string, options?: { index?: number }) => (options?.index ? `${key} ${options.index}` : key),
 	}),
+}));
+
+vi.mock('@/settings/storage', () => ({
+	saveSettings: vi.fn(() => Promise.resolve()),
 }));
 
 const INTERVENTION_TEXT = 'Your future self will thank you for this simple swap - why not start now?';
@@ -118,6 +125,37 @@ describe('RecipeHeader', () => {
 		expect(screen.getByRole('button', { name: 'recipe.rating.score' })).toBeTruthy();
 	});
 
+	it('shows whether accepting an alternative opens the next ingredient, as the settings say', async () => {
+		const store = createStore();
+		await store.set(settingsAtom, { ...DEFAULT_SETTINGS, autoAdvance: false });
+		assess(store);
+		renderHeader(store);
+
+		const checkbox = autoAdvanceCheckbox();
+		expect(checkbox.textContent).toBe('recipe.autoAdvance');
+		expect(checkbox.checked).toBe(false);
+	});
+
+	it('saves the choice whether accepting an alternative opens the next ingredient', async () => {
+		const store = createStore();
+		await store.set(settingsAtom, { ...DEFAULT_SETTINGS, autoAdvance: true });
+		assess(store);
+		renderHeader(store);
+		// Ionic handles the click only once Stencil has hydrated the checkbox, a moment after it renders.
+		await waitFor(() => expect(autoAdvanceCheckbox().classList.contains('hydrated')).toBe(true));
+
+		fireEvent.click(autoAdvanceCheckbox());
+
+		await waitFor(() => expect(saveSettings).toHaveBeenLastCalledWith({ ...DEFAULT_SETTINGS, autoAdvance: false }));
+		expect(autoAdvanceCheckbox().checked).toBe(false);
+	});
+
+	it('offers no choice of opening the next ingredient before there are alternatives', () => {
+		renderHeader(storeWithExtractedRecipe('omelet'));
+
+		expect(document.querySelector('ion-checkbox')).toBeNull();
+	});
+
 	it('shows the text of the Intervention the server assigned', () => {
 		renderAssessed({ id: 1, text: INTERVENTION_TEXT });
 
@@ -153,3 +191,9 @@ describe('RecipeHeader', () => {
 		expect(screen.getByRole('status').textContent).toBe(INTERVENTION_TEXT);
 	});
 });
+
+function autoAdvanceCheckbox() {
+	const checkbox = document.querySelector('ion-checkbox');
+	if (!checkbox) throw new Error('No auto-advance checkbox');
+	return checkbox;
+}

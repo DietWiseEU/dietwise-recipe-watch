@@ -111,7 +111,8 @@
 			"rating": "De sterrenbeoordeling (1-10) geeft aan hoe goed een recept aansluit bij de voedingsrichtlijnen. Een hogere score betekent dat de algemene balans van ingrediënten beter overeenkomt met de aanbevolen voedingsnormen. De suggesties van onze AI zijn bedoeld om je te helpen je recepten aan te passen voor een hogere score en een betere voedingsbalans van je maaltijd.",
 			"inControlTitle": "Jij hebt de controle",
 			"inControl": "Jij beslist welke veranderingen je accepteert. Kleine aanpassingen kunnen een groot verschil maken voor je gezondheid en de planeet."
-		}
+		},
+		"autoAdvance": "Automatisch verder"
 	},
 	"ingredient": {
 		"equivalence": "Equivalent:",
@@ -122,7 +123,12 @@
 		"reconsider": "Afgewezen: {{alternative}}. Tik om te heroverwegen.",
 		"skip": "Overslaan",
 		"skipped": "overgeslagen",
-		"skipHint": "Onbeslist laten en het volgende ingrediënt openen"
+		"skipHint": "Onbeslist laten en het volgende ingrediënt openen",
+		"allReviewed": "Alle ingrediënten bekeken",
+		"acceptedCount_one": "{{count}} alternatief geaccepteerd",
+		"acceptedCount_other": "{{count}} alternatieven geaccepteerd",
+		"skippedCount_one": "{{count}} overgeslagen — tik erop om het opnieuw te bekijken",
+		"skippedCount_other": "{{count}} overgeslagen — tik er een aan om het opnieuw te bekijken"
 	},
 	"settings": {
 		"title": "MyRecipeWatch Instellingen",

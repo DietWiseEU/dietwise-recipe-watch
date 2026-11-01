@@ -74,3 +74,8 @@
 	text-align: center;
 	box-shadow: var(--shadow-sm);
 }
+
+.recipe-header__auto-advance {
+	margin-top: 6px;
+	font-size: 13px;
+}

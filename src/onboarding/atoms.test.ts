@@ -15,19 +15,19 @@ describe('onboardingSeenAtom', () => {
 
 	it('reads the flag out of the settings', async () => {
 		const store = createStore();
-		await store.set(settingsAtom, { language: 'en', onboardingSeen: true });
+		await store.set(settingsAtom, { language: 'en', onboardingSeen: true, autoAdvance: true });
 
 		expect(store.get(onboardingSeenAtom)).toBe(true);
 	});
 
 	it('persists the flag without losing the other settings', async () => {
 		const store = createStore();
-		await store.set(settingsAtom, { language: 'el', onboardingSeen: false });
+		await store.set(settingsAtom, { language: 'el', onboardingSeen: false, autoAdvance: false });
 		vi.mocked(saveSettings).mockClear();
 
 		await store.set(onboardingSeenAtom, true);
 
 		expect(store.get(onboardingSeenAtom)).toBe(true);
-		expect(saveSettings).toHaveBeenCalledWith({ language: 'el', onboardingSeen: true });
+		expect(saveSettings).toHaveBeenCalledWith({ language: 'el', onboardingSeen: true, autoAdvance: false });
 	});
 });

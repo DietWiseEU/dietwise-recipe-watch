@@ -111,7 +111,8 @@
 			"rating": "Žvaigždučių įvertinimas (1–10) parodo, kiek receptas atitinka nustatytas mitybos gaires. Kuo aukštesnis balas, tuo geriau bendras ingredientų balansas atitinka rekomenduojamus mitybos standartus. Mūsų dirbtinio intelekto pasiūlymai yra skirti padėti jums pakoreguoti receptus, kad jie gautų aukštesnį įvertinimą ir pagerintų bendrą patiekalo maistinę vertę.",
 			"inControlTitle": "Jūs kontroliuojate situaciją",
 			"inControl": "Jūs sprendžiate, kuriuos pakeitimus priimti. Maži pakeitimai gali turėti didelės įtakos jūsų sveikatai ir planetai."
-		}
+		},
+		"autoAdvance": "Automatiškai pereiti"
 	},
 	"ingredient": {
 		"equivalence": "Lygiavertiškumas:",
@@ -123,7 +124,14 @@
 		"reconsider": "Atmesta: {{alternative}}. Palieskite, kad persvarstytumėte.",
 		"skip": "Praleisti",
 		"skipped": "praleista",
-		"skipHint": "Palikti nenuspręstą ir atidaryti kitą ingredientą"
+		"skipHint": "Palikti nenuspręstą ir atidaryti kitą ingredientą",
+		"allReviewed": "Visi ingredientai peržiūrėti",
+		"acceptedCount_one": "{{count}} alternatyva priimta",
+		"acceptedCount_few": "{{count}} alternatyvos priimtos",
+		"acceptedCount_other": "{{count}} alternatyvų priimta",
+		"skippedCount_one": "{{count}} praleistas — palieskite jį, kad peržiūrėtumėte",
+		"skippedCount_few": "{{count}} praleisti — palieskite vieną, kad peržiūrėtumėte",
+		"skippedCount_other": "{{count}} praleista — palieskite vieną, kad peržiūrėtumėte"
 	},
 	"settings": {
 		"title": "MyRecipeWatch Nustatymai",

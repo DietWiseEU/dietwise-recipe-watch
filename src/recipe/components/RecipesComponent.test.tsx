@@ -11,6 +11,8 @@ import { mainStateAtom } from '@/recipe/atoms';
 import type { Intervention, Suggestion } from '@/recipe/model';
 import { keyOfSuggestion } from '@/recipe/model';
 import { ASSESSMENT_ID, OTHER_SUGGESTION, SUGGESTION, assess } from '@/recipe/testAssessment';
+import { settingsAtom } from '@/settings/atoms';
+import { DEFAULT_SETTINGS } from '@/settings/model';
 import RecipesComponent from './RecipesComponent';
 
 vi.mock('react-i18next', () => ({
@@ -22,6 +24,10 @@ vi.mock('react-i18next', () => ({
 
 vi.mock('@/auth/authService', () => ({
 	getValidAccessToken: vi.fn().mockResolvedValue('token-123'),
+}));
+
+vi.mock('@/settings/storage', () => ({
+	saveSettings: vi.fn(() => Promise.resolve()),
 }));
 
 const INTERVENTION_TEXT = 'Healthiness guaranteed.';
@@ -59,6 +65,10 @@ function renderAssessed(intervention?: Intervention) {
 function assessWithSuggestions(store: ReturnType<typeof createStore>, suggestions: Suggestion[]) {
 	store.set(mainStateAtom, createMessageReceivedAction({ type: 'SUGGESTIONS', suggestions })!);
 	store.set(mainStateAtom, createRecipeAssessmentCompletedAction());
+}
+
+async function preferAutoAdvance(store: ReturnType<typeof createStore>, autoAdvance: boolean) {
+	await store.set(settingsAtom, { ...DEFAULT_SETTINGS, autoAdvance });
 }
 
 /** An assessment that has extracted a recipe with butter and sugar. */
@@ -246,6 +256,83 @@ describe('RecipesComponent', () => {
 		expect(document.body.textContent).toContain('Use olive oil instead of butter');
 		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
 		expect(screen.queryByText('ingredient.skipped')).toBeNull();
+	});
+
+	it('opens the next ingredient with alternatives once one is accepted, when the user wants that', async () => {
+		const store = storeWithButterAndSugar();
+		await preferAutoAdvance(store, true);
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		await acceptAndWaitForStatistics(0, 1);
+
+		expect(document.body.textContent).toContain('Use honey instead of sugar');
+		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+	});
+
+	it('opens the next ingredient with alternatives once the last one is rejected, when the user wants that', async () => {
+		const store = storeWithButterAndSugar();
+		await preferAutoAdvance(store, true);
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(rejectButtons()[0]);
+		await waitFor(() => expect(postedStatistics()).toHaveLength(1));
+
+		expect(document.body.textContent).toContain('Use sunflower oil instead of butter');
+		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+
+		fireEvent.click(rejectButtons()[0]);
+		await waitFor(() => expect(postedStatistics()).toHaveLength(2));
+
+		expect(document.body.textContent).toContain('Use honey instead of sugar');
+	});
+
+	it('opens no other ingredient once an alternative is accepted, when the user does not want that', async () => {
+		const store = storeWithButterAndSugar();
+		await preferAutoAdvance(store, false);
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		await acceptAndWaitForStatistics(0, 1);
+
+		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+	});
+
+	it('says when every ingredient is reviewed, with how many alternatives were accepted and skipped', async () => {
+		const store = storeWithButterAndSugar();
+		await preferAutoAdvance(store, true);
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+		expect(screen.queryByText(/ingredient\.allReviewed/)).toBeNull();
+
+		fireEvent.click(screen.getByText('ingredient.skip'));
+		await acceptAndWaitForStatistics(0, 1);
+
+		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+		expect(screen.getByRole('status').textContent).toBe(
+			'ingredient.allReviewed · ingredient.acceptedCount:1 · ingredient.skippedCount:1',
+		);
+	});
+
+	it('says when every ingredient is reviewed, leaving out the skipped ones when there are none', async () => {
+		const store = createStore();
+		await preferAutoAdvance(store, true);
+		assess(store);
+		renderRecipes(store);
+
+		await acceptAndWaitForStatistics(0, 1);
+
+		expect(screen.getByRole('status').textContent).toBe('ingredient.allReviewed · ingredient.acceptedCount:1');
+	});
+
+	it('says nothing of reviewing a recipe that has no alternatives', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, []);
+		renderRecipes(store);
+
+		expect(screen.queryByText(/ingredient\.allReviewed/)).toBeNull();
 	});
 
 	it('says which ingredients have no suggestions', () => {

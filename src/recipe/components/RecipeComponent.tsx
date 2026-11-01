@@ -30,6 +30,8 @@ export interface RecipeComponentProps {
 	suggestionKeys: string[] | undefined;
 	suggestions: { [key: string]: SuggestionState } | undefined;
 	ingredientState: IngredientStateType | undefined;
+	/** Whether accepting an alternative, or rejecting the last one, opens the next ingredient with alternatives. */
+	autoAdvance: boolean;
 	isSuggestionInFlight: (suggestionKey: string) => boolean;
 	onChangeSuggestionStatus: (suggestionKey: string, nextStatus: SuggestionStatus) => void | Promise<void>;
 	onInfoClicked: (header: string, message: string) => void;
@@ -92,6 +94,9 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 			)?.id ?? null
 		);
 	};
+	/** Whether the user skipped the ingredient and it still has undecided Suggestions. */
+	const remainsSkipped = (ingredientId: string) =>
+		skippedIngredientIds.has(ingredientId) && hasUndecidedSuggestions(ingredientId);
 	const skip = (ingredientId: string) => {
 		const skipped = new Set(skippedIngredientIds).add(ingredientId);
 		setSkippedIngredientIds(skipped);
@@ -103,6 +108,27 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 		setSkippedIngredientIds(skipped);
 		setChosenOpenIngredientId(open ? null : ingredientId);
 	};
+
+	const decide = (
+		ingredientId: string,
+		suggestionKey: string,
+		nextStatus: SuggestionStatus,
+		undecidedSuggestionCount: number,
+	) => {
+		const decidesIngredient =
+			nextStatus === 'ACCEPTED' || (nextStatus === 'REJECTED' && undecidedSuggestionCount === 1);
+		if (props.autoAdvance && decidesIngredient) {
+			setChosenOpenIngredientId(nextIngredientIdAfter(ingredientId, skippedIngredientIds));
+		}
+		return props.onChangeSuggestionStatus(suggestionKey, nextStatus);
+	};
+
+	const ingredients = props.recipe.recipeIngredients ?? [];
+	const allReviewed =
+		ingredients.some((ingredient) => suggestionKeysOf(ingredient.id).length > 0) &&
+		ingredients.every((ingredient) => !hasUndecidedSuggestions(ingredient.id) || remainsSkipped(ingredient.id));
+	const acceptedCount = ingredients.filter((ingredient) => props.ingredientState?.[ingredient.id]).length;
+	const skippedCount = ingredients.filter((ingredient) => remainsSkipped(ingredient.id)).length;
 
 	const openIngredientId =
 		chosenOpenIngredientId === undefined
@@ -158,11 +184,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 										suggestionCount={suggestionKeys.length}
 										undecidedSuggestionCount={undecidedSuggestionKeys.length}
 										open={open}
-										skipped={
-											!open &&
-											skippedIngredientIds.has(ingredient.id) &&
-											hasUndecidedSuggestions(ingredient.id)
-										}
+										skipped={!open && remainsSkipped(ingredient.id)}
 										onToggle={() => toggle(ingredient.id, open)}
 									/>
 									{open
@@ -175,11 +197,13 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 														status={suggestionState.status}
 														disabled={props.isSuggestionInFlight(suggestionKey)}
 														onAction={(action) =>
-															props.onChangeSuggestionStatus(
+															decide(
+																ingredient.id,
 																suggestionKey,
 																suggestionState.status === action
 																	? 'UNDECIDED'
 																	: action,
+																undecidedSuggestionKeys.length,
 															)
 														}
 														onInfoClicked={props.onInfoClicked}
@@ -234,6 +258,15 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 							);
 						})}
 					</IonList>
+					{allReviewed ? (
+						<div className="all-reviewed" role="status">
+							{[
+								t('ingredient.allReviewed'),
+								t('ingredient.acceptedCount', { count: acceptedCount }),
+								...(skippedCount > 0 ? [t('ingredient.skippedCount', { count: skippedCount })] : []),
+							].join(' · ')}
+						</div>
+					) : null}
 				</>
 			) : props.recipe.text ? (
 				<pre className="text-pre-wrap">{props.recipe.text}</pre>

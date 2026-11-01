@@ -52,12 +52,30 @@ describe('settings storage', () => {
 		await expect(loadSettings()).resolves.toMatchObject({ onboardingSeen: false });
 	});
 
+	it('advances to the next ingredient for users whose settings predate the choice', async () => {
+		stored({ language: 'el', onboardingSeen: true });
+
+		await expect(loadSettings()).resolves.toMatchObject({ autoAdvance: true });
+	});
+
+	it('remembers that the user does not want to advance to the next ingredient', async () => {
+		stored({ language: 'en', onboardingSeen: true, autoAdvance: false });
+
+		await expect(loadSettings()).resolves.toMatchObject({ autoAdvance: false });
+	});
+
+	it('ignores an auto-advance flag that is not a boolean', async () => {
+		stored({ language: 'en', onboardingSeen: true, autoAdvance: 'no' });
+
+		await expect(loadSettings()).resolves.toMatchObject({ autoAdvance: true });
+	});
+
 	it('writes the whole settings object under one key', async () => {
-		await saveSettings({ language: 'nl', onboardingSeen: true });
+		await saveSettings({ language: 'nl', onboardingSeen: true, autoAdvance: false });
 
 		expect(set).toHaveBeenCalledWith({
 			key: 'recipewatch.settings',
-			value: JSON.stringify({ language: 'nl', onboardingSeen: true }),
+			value: JSON.stringify({ language: 'nl', onboardingSeen: true, autoAdvance: false }),
 		});
 	});
 });

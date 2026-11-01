@@ -3,6 +3,7 @@ import { atomWithReducer } from 'jotai/utils';
 import { createInitialState, reducer } from './reducer';
 import { MainData } from './model';
 import { MainAction } from './actions';
+import { settingsAtom } from '@/settings/atoms';
 
 export const mainStateAtom: WritableAtom<MainData, [MainAction], void> = atomWithReducer(createInitialState(), reducer);
 
@@ -20,5 +21,13 @@ export const cookingModeAtom = atom(
 	},
 	(get, set, on: boolean) => {
 		set(cookingModeSuggestionKeysAtom, on ? get(mainStateAtom).suggestionKeys : undefined);
+	},
+);
+
+/** Whether accepting an alternative, or rejecting the last one, opens the next ingredient; kept in the settings. */
+export const autoAdvanceAtom = atom(
+	(get) => get(settingsAtom).autoAdvance,
+	async (get, set, autoAdvance: boolean) => {
+		await set(settingsAtom, { ...get(settingsAtom), autoAdvance });
 	},
 );

@@ -111,7 +111,8 @@
 			"rating": "The star rating (1-10) reflects how well a recipe aligns with established dietary guidelines. A higher score means the overall balance of ingredients is more in line with recommended nutritional standards. Our AI's suggestions are designed to help you tweak your recipes to achieve a higher rating and improve the overall nutritional balance of your meal.",
 			"inControlTitle": "You're in control",
 			"inControl": "You decide which changes to accept. Small swaps can make a big difference in your health and the planet."
-		}
+		},
+		"autoAdvance": "Auto-advance"
 	},
 	"ingredient": {
 		"equivalence": "Equivalence:",
@@ -122,7 +123,12 @@
 		"reconsider": "Rejected: {{alternative}}. Tap to reconsider.",
 		"skip": "Skip",
 		"skipped": "skipped",
-		"skipHint": "Leave undecided and open the next ingredient"
+		"skipHint": "Leave undecided and open the next ingredient",
+		"allReviewed": "All ingredients reviewed",
+		"acceptedCount_one": "{{count}} alternative accepted",
+		"acceptedCount_other": "{{count}} alternatives accepted",
+		"skippedCount_one": "{{count}} skipped — tap it to revisit",
+		"skippedCount_other": "{{count}} skipped — tap one to revisit"
 	},
 	"settings": {
 		"title": "MyRecipeWatch Settings",

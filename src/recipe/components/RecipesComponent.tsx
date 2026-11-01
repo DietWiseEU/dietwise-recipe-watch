@@ -1,6 +1,6 @@
 import { useIonAlert } from '@ionic/react';
 import { useAtomValue } from 'jotai';
-import { mainStateAtom } from '@/recipe/atoms';
+import { autoAdvanceAtom, mainStateAtom } from '@/recipe/atoms';
 import type { MainDataStatus, Recipe, RecipeDetectionType, SuggestionState } from '@/recipe/model';
 import { useTranslation } from 'react-i18next';
 import { hasSingleRecipe } from './recipesComponentUtils';
@@ -18,6 +18,7 @@ export interface RecipesComponentProps {
 const RecipesComponent: React.FC = () => {
 	const { t } = useTranslation();
 	const mainState = useAtomValue(mainStateAtom);
+	const autoAdvance = useAtomValue(autoAdvanceAtom);
 	const { isSuggestionInFlight, changeSuggestionStatus } = useChangeSuggestionStatus();
 	const [presentAlert] = useIonAlert();
 
@@ -43,6 +44,7 @@ const RecipesComponent: React.FC = () => {
 					suggestionKeys={mainState.suggestionKeys}
 					suggestions={mainState.suggestions}
 					ingredientState={mainState.ingredientState}
+					autoAdvance={autoAdvance}
 					isSuggestionInFlight={isSuggestionInFlight}
 					onChangeSuggestionStatus={changeSuggestionStatus}
 					onInfoClicked={(header, message) => presentAlert({ header, message, buttons: [t('general.OK')] })}

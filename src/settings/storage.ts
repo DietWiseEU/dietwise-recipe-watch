@@ -7,11 +7,16 @@ function mergeLoadedSettings(value: unknown): Settings {
 	if (!value || typeof value !== 'object') {
 		return DEFAULT_SETTINGS;
 	}
-	const { language, onboardingSeen } = value as { language?: unknown; onboardingSeen?: unknown };
+	const { language, onboardingSeen, autoAdvance } = value as {
+		language?: unknown;
+		onboardingSeen?: unknown;
+		autoAdvance?: unknown;
+	};
 	return {
 		...DEFAULT_SETTINGS,
 		language: typeof language === 'string' && language.length > 0 ? language : DEFAULT_SETTINGS.language,
 		onboardingSeen: typeof onboardingSeen === 'boolean' ? onboardingSeen : DEFAULT_SETTINGS.onboardingSeen,
+		autoAdvance: typeof autoAdvance === 'boolean' ? autoAdvance : DEFAULT_SETTINGS.autoAdvance,
 	};
 }
 
