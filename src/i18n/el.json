@@ -119,7 +119,10 @@
 		"alternatives_one": "{{count}} εναλλακτικό",
 		"alternatives_other": "{{count}} εναλλακτικά",
 		"noSuggestions": "χωρίς προτάσεις",
-		"reconsider": "Απορρίφθηκε: {{alternative}}. Πατήστε για επανεξέταση."
+		"reconsider": "Απορρίφθηκε: {{alternative}}. Πατήστε για επανεξέταση.",
+		"skip": "Παράλειψη",
+		"skipped": "παραλείφθηκε",
+		"skipHint": "Αφήστε το χωρίς απόφαση και ανοίξτε το επόμενο συστατικό"
 	},
 	"settings": {
 		"title": "MyRecipeWatch Ρυθμίσεις",

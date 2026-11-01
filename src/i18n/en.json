@@ -119,7 +119,10 @@
 		"alternatives_one": "{{count}} alternative",
 		"alternatives_other": "{{count}} alternatives",
 		"noSuggestions": "no suggestions",
-		"reconsider": "Rejected: {{alternative}}. Tap to reconsider."
+		"reconsider": "Rejected: {{alternative}}. Tap to reconsider.",
+		"skip": "Skip",
+		"skipped": "skipped",
+		"skipHint": "Leave undecided and open the next ingredient"
 	},
 	"settings": {
 		"title": "MyRecipeWatch Settings",

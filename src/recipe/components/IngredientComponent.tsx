@@ -16,6 +16,8 @@ export interface IngredientComponentProps {
 	undecidedSuggestionCount: number;
 	/** Whether the undecided Suggestions show under the ingredient. */
 	open: boolean;
+	/** Whether the user skipped the ingredient, leaving its Suggestions undecided. */
+	skipped: boolean;
 	onToggle: () => void;
 }
 
@@ -51,6 +53,7 @@ const IngredientComponent: React.FC<IngredientComponentProps> = ({
 	suggestionCount,
 	undecidedSuggestionCount,
 	open,
+	skipped,
 	onToggle,
 }) => {
 	const { t } = useTranslation();
@@ -74,6 +77,7 @@ const IngredientComponent: React.FC<IngredientComponentProps> = ({
 					<IonIcon slot="icon-only" icon={removeOutline}></IonIcon>
 				</IonButton>
 			)}
+			{skipped && <IonNote slot="end">{t('ingredient.skipped')}</IonNote>}
 			{!acceptedSuggestion && undecidedSuggestionCount > 0 && (
 				<IonButton slot="end" size="small" shape="round" fill="outline" aria-expanded={open} onClick={onToggle}>
 					{t('ingredient.alternatives', { count: undecidedSuggestionCount })}

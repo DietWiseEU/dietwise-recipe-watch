@@ -1,5 +1,6 @@
-import { IonChip, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
+import { IonButton, IonChip, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 import { addIcons } from 'ionicons';
+import { playForwardOutline } from 'ionicons/icons';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
@@ -40,6 +41,8 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 	const titleRef = useRef<HTMLHeadingElement>(null);
 	/** The ingredient the user opened, or null once they closed it; undefined until they open or close one. */
 	const [chosenOpenIngredientId, setChosenOpenIngredientId] = useState<string | null>();
+	/** The ingredients the user skipped and has not opened again since. */
+	const [skippedIngredientIds, setSkippedIngredientIds] = useState<ReadonlySet<string>>(() => new Set());
 
 	useEffect(() => {
 		const section = sectionRef.current;
@@ -74,6 +77,32 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 		suggestionKeys.filter(
 			(suggestionKey) => (props.suggestions?.[suggestionKey]?.status ?? 'UNDECIDED') === status,
 		);
+
+	/** Whether the ingredient has no accepted Suggestion and some the user has neither accepted nor rejected. */
+	const hasUndecidedSuggestions = (ingredientId: string) =>
+		!props.ingredientState?.[ingredientId] &&
+		suggestionKeysWithStatus(suggestionKeysOf(ingredientId), 'UNDECIDED').length > 0;
+	/** The first ingredient after the given one, going on from the start, that is not skipped and has undecided Suggestions. */
+	const nextIngredientIdAfter = (ingredientId: string, skipped: ReadonlySet<string>) => {
+		const ingredients = props.recipe.recipeIngredients ?? [];
+		const index = ingredients.findIndex((ingredient) => ingredient.id === ingredientId);
+		return (
+			[...ingredients.slice(index + 1), ...ingredients.slice(0, index)].find(
+				(ingredient) => !skipped.has(ingredient.id) && hasUndecidedSuggestions(ingredient.id),
+			)?.id ?? null
+		);
+	};
+	const skip = (ingredientId: string) => {
+		const skipped = new Set(skippedIngredientIds).add(ingredientId);
+		setSkippedIngredientIds(skipped);
+		setChosenOpenIngredientId(nextIngredientIdAfter(ingredientId, skipped));
+	};
+	const toggle = (ingredientId: string, open: boolean) => {
+		const skipped = new Set(skippedIngredientIds);
+		skipped.delete(ingredientId);
+		setSkippedIngredientIds(skipped);
+		setChosenOpenIngredientId(open ? null : ingredientId);
+	};
 
 	const openIngredientId =
 		chosenOpenIngredientId === undefined
@@ -114,10 +143,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 							const suggestionKeys = suggestionKeysOf(ingredient.id);
 							const undecidedSuggestionKeys = suggestionKeysWithStatus(suggestionKeys, 'UNDECIDED');
 							const rejectedSuggestionKeys = suggestionKeysWithStatus(suggestionKeys, 'REJECTED');
-							const open =
-								openIngredientId === ingredient.id &&
-								!acceptedSuggestion &&
-								undecidedSuggestionKeys.length > 0;
+							const open = openIngredientId === ingredient.id && hasUndecidedSuggestions(ingredient.id);
 							return (
 								<Fragment key={ingredient.id}>
 									<IngredientComponent
@@ -132,7 +158,12 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 										suggestionCount={suggestionKeys.length}
 										undecidedSuggestionCount={undecidedSuggestionKeys.length}
 										open={open}
-										onToggle={() => setChosenOpenIngredientId(open ? null : ingredient.id)}
+										skipped={
+											!open &&
+											skippedIngredientIds.has(ingredient.id) &&
+											hasUndecidedSuggestions(ingredient.id)
+										}
+										onToggle={() => toggle(ingredient.id, open)}
 									/>
 									{open
 										? undecidedSuggestionKeys.map((suggestionKey) => {
@@ -156,6 +187,22 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 												);
 											})
 										: null}
+									{open ? (
+										<IonItem lines="none">
+											<IonButton
+												slot="end"
+												size="small"
+												shape="round"
+												fill="outline"
+												color="medium"
+												title={t('ingredient.skipHint')}
+												onClick={() => skip(ingredient.id)}
+											>
+												{t('ingredient.skip')}
+												<IonIcon slot="end" icon={playForwardOutline}></IonIcon>
+											</IonButton>
+										</IonItem>
+									) : null}
 									{!acceptedSuggestion && rejectedSuggestionKeys.length > 0 ? (
 										<IonItem lines="none">
 											<div className="rejected-suggestions">

@@ -120,7 +120,10 @@
 		"alternatives_few": "{{count}} alternatyvos",
 		"alternatives_other": "{{count}} alternatyvų",
 		"noSuggestions": "pasiūlymų nėra",
-		"reconsider": "Atmesta: {{alternative}}. Palieskite, kad persvarstytumėte."
+		"reconsider": "Atmesta: {{alternative}}. Palieskite, kad persvarstytumėte.",
+		"skip": "Praleisti",
+		"skipped": "praleista",
+		"skipHint": "Palikti nenuspręstą ir atidaryti kitą ingredientą"
 	},
 	"settings": {
 		"title": "MyRecipeWatch Nustatymai",

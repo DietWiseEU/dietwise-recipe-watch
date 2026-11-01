@@ -182,6 +182,72 @@ describe('RecipesComponent', () => {
 		expect(screen.getByText('sunflower oil')).toBeTruthy();
 	});
 
+	it('skips the open ingredient, leaving it undecided, and opens the next one with alternatives', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.skip'));
+
+		expect(document.body.textContent).toContain('Use honey instead of sugar');
+		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
+		expect(screen.getAllByText('ingredient.skipped')).toHaveLength(1);
+		expect(screen.getByText('ingredient.alternatives:2')).toBeTruthy();
+		expect(store.get(mainStateAtom).suggestions?.[keyOfSuggestion(SUGGESTION)].status).toBe('UNDECIDED');
+		expect(postedStatistics()).toEqual([]);
+	});
+
+	it('goes on from the last ingredient to the first one when skipping', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.alternatives:1'));
+		fireEvent.click(screen.getByText('ingredient.skip'));
+
+		expect(document.body.textContent).toContain('Use olive oil instead of butter');
+		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+	});
+
+	it('opens no ingredient once every ingredient with alternatives is skipped', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.skip'));
+		fireEvent.click(screen.getByText('ingredient.skip'));
+
+		expect(document.body.textContent).not.toContain('Use olive oil instead of butter');
+		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+		expect(screen.getAllByText('ingredient.skipped')).toHaveLength(2);
+	});
+
+	it('passes over the ingredients that have an accepted alternative when skipping', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		store.set(mainStateAtom, createSuggestionStatusAction(keyOfSuggestion(SUGGESTION), 'ACCEPTED'));
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.alternatives:1'));
+		fireEvent.click(screen.getByText('ingredient.skip'));
+
+		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+		expect(document.body.textContent).not.toContain('Use sunflower oil instead of butter');
+	});
+
+	it('reopens a skipped ingredient on tap, and no longer marks it skipped', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.skip'));
+		fireEvent.click(screen.getByText('ingredient.alternatives:2'));
+
+		expect(document.body.textContent).toContain('Use olive oil instead of butter');
+		expect(document.body.textContent).not.toContain('Use honey instead of sugar');
+		expect(screen.queryByText('ingredient.skipped')).toBeNull();
+	});
+
 	it('says which ingredients have no suggestions', () => {
 		const store = storeWithButterAndSugar();
 		assessWithSuggestions(store, [SUGGESTION]);

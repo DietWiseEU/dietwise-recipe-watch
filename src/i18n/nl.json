@@ -119,7 +119,10 @@
 		"alternatives_one": "{{count}} alternatief",
 		"alternatives_other": "{{count}} alternatieven",
 		"noSuggestions": "geen suggesties",
-		"reconsider": "Afgewezen: {{alternative}}. Tik om te heroverwegen."
+		"reconsider": "Afgewezen: {{alternative}}. Tik om te heroverwegen.",
+		"skip": "Overslaan",
+		"skipped": "overgeslagen",
+		"skipHint": "Onbeslist laten en het volgende ingrediënt openen"
 	},
 	"settings": {
 		"title": "MyRecipeWatch Instellingen",
