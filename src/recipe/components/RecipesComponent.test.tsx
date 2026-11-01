@@ -357,9 +357,7 @@ describe('RecipesComponent', () => {
 		store.set(mainStateAtom, createSuggestionStatusAction(keyOfSuggestion(SUGGESTION), 'ACCEPTED'));
 		renderRecipes(store);
 
-		const undoButton = document.querySelector('ion-button[color="dark"]');
-		if (!undoButton) throw new Error('No undo button');
-		fireEvent.click(undoButton);
+		fireEvent.click(screen.getByLabelText('ingredient.undo'));
 
 		await waitFor(() => expect(postedStatistics()).toHaveLength(1));
 		expect(postedStatistics()).toEqual([

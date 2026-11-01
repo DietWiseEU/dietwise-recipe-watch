@@ -124,6 +124,7 @@
 		"accept": "Priimti",
 		"reject": "Atmesti",
 		"moreInfo": "Daugiau apie šią alternatyvą",
+		"undo": "Grąžinti į nespręstus",
 		"reconsider": "Atmesta: {{alternative}}. Palieskite, kad persvarstytumėte.",
 		"skip": "Praleisti",
 		"skipped": "praleista",

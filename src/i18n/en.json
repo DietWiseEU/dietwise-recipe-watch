@@ -123,6 +123,7 @@
 		"accept": "Accept",
 		"reject": "Reject",
 		"moreInfo": "More about this alternative",
+		"undo": "Back to undecided",
 		"reconsider": "Rejected: {{alternative}}. Tap to reconsider.",
 		"skip": "Skip",
 		"skipped": "skipped",

@@ -1,7 +1,7 @@
-import { IonButton, IonChip, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
+import { IonButton, IonChip, IonIcon } from '@ionic/react';
 import { addIcons } from 'ionicons';
-import { playForwardOutline } from 'ionicons/icons';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { checkmark, playForwardOutline } from 'ionicons/icons';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
 	IngredientStateType,
@@ -157,10 +157,8 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 			{props.recipe.recipeIngredients?.length > 0 ? (
 				<>
 					<h3 className="sticky-ingredients-title">{t('recipe.titleOfIngredients')}</h3>
-					<IonList>
-						<IonItem color="warning">
-							<IonLabel>{t('recipe.disclaimer')}</IonLabel>
-						</IonItem>
+					<div className="recipe-disclaimer">{t('recipe.disclaimer')}</div>
+					<ul className="ingredient-rows">
 						{props.recipe.recipeIngredients.map((ingredient) => {
 							const acceptedSuggestionId = props.ingredientState?.[ingredient.id];
 							const acceptedSuggestion = acceptedSuggestionId
@@ -171,7 +169,10 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 							const rejectedSuggestionKeys = suggestionKeysWithStatus(suggestionKeys, 'REJECTED');
 							const open = openIngredientId === ingredient.id && hasUndecidedSuggestions(ingredient.id);
 							return (
-								<Fragment key={ingredient.id}>
+								<li
+									key={ingredient.id}
+									className={open ? 'ingredient-row ingredient-row--open' : 'ingredient-row'}
+								>
 									<IngredientComponent
 										ingredient={ingredient}
 										acceptedSuggestion={acceptedSuggestion}
@@ -187,8 +188,9 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 										skipped={!open && remainsSkipped(ingredient.id)}
 										onToggle={() => toggle(ingredient.id, open)}
 									/>
-									{open
-										? undecidedSuggestionKeys.map((suggestionKey) => {
+									{open ? (
+										<div className="ingredient-row__alternatives">
+											{undecidedSuggestionKeys.map((suggestionKey) => {
 												const suggestionState = props.suggestions![suggestionKey];
 												return (
 													<SuggestionComponent
@@ -208,67 +210,63 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 														onInfoClicked={props.onInfoClicked}
 													/>
 												);
-											})
-										: null}
-									{open ? (
-										<IonItem lines="none">
-											<IonButton
-												slot="end"
-												size="small"
-												shape="round"
-												fill="outline"
-												color="medium"
-												title={t('ingredient.skipHint')}
-												onClick={() => skip(ingredient.id)}
-											>
-												{t('ingredient.skip')}
-												<IonIcon slot="end" icon={playForwardOutline}></IonIcon>
-											</IonButton>
-										</IonItem>
+											})}
+											<div className="ingredient-row__skip">
+												<IonButton
+													shape="round"
+													fill="outline"
+													title={t('ingredient.skipHint')}
+													onClick={() => skip(ingredient.id)}
+												>
+													{t('ingredient.skip')}
+													<IonIcon slot="end" icon={playForwardOutline}></IonIcon>
+												</IonButton>
+											</div>
+										</div>
 									) : null}
 									{!acceptedSuggestion && rejectedSuggestionKeys.length > 0 ? (
-										<IonItem lines="none">
-											<div className="rejected-suggestions">
-												{rejectedSuggestionKeys.map((suggestionKey) => {
-													const alternative =
-														props.suggestions![suggestionKey].suggestion.alternative;
-													return (
-														<IonChip
-															key={suggestionKey}
-															outline
-															className="text-strikethrough"
-															aria-label={t('ingredient.reconsider', { alternative })}
-															disabled={props.isSuggestionInFlight(suggestionKey)}
-															onClick={() =>
-																props.onChangeSuggestionStatus(
-																	suggestionKey,
-																	'UNDECIDED',
-																)
-															}
-														>
-															{alternative}
-														</IonChip>
-													);
-												})}
-											</div>
-										</IonItem>
+										<div className="rejected-suggestions">
+											{rejectedSuggestionKeys.map((suggestionKey) => {
+												const alternative =
+													props.suggestions![suggestionKey].suggestion.alternative;
+												return (
+													<IonChip
+														key={suggestionKey}
+														outline
+														className="rejected-suggestions__chip"
+														aria-label={t('ingredient.reconsider', { alternative })}
+														disabled={props.isSuggestionInFlight(suggestionKey)}
+														onClick={() =>
+															props.onChangeSuggestionStatus(suggestionKey, 'UNDECIDED')
+														}
+													>
+														{alternative}
+													</IonChip>
+												);
+											})}
+										</div>
 									) : null}
-								</Fragment>
+								</li>
 							);
 						})}
-					</IonList>
+					</ul>
 					{allReviewed ? (
 						<div className="all-reviewed" role="status">
-							{[
-								t('ingredient.allReviewed'),
-								t('ingredient.acceptedCount', { count: acceptedCount }),
-								...(skippedCount > 0 ? [t('ingredient.skippedCount', { count: skippedCount })] : []),
-							].join(' · ')}
+							<IonIcon className="all-reviewed__check" icon={checkmark} aria-hidden="true"></IonIcon>
+							<div>
+								{[
+									t('ingredient.allReviewed'),
+									t('ingredient.acceptedCount', { count: acceptedCount }),
+									...(skippedCount > 0
+										? [t('ingredient.skippedCount', { count: skippedCount })]
+										: []),
+								].join(' · ')}
+							</div>
 						</div>
 					) : null}
 				</>
 			) : props.recipe.text ? (
-				<pre className="text-pre-wrap">{props.recipe.text}</pre>
+				<pre className="recipe-text text-pre-wrap">{props.recipe.text}</pre>
 			) : null}
 		</section>
 	);

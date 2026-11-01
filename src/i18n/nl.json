@@ -123,6 +123,7 @@
 		"accept": "Accepteren",
 		"reject": "Afwijzen",
 		"moreInfo": "Meer over dit alternatief",
+		"undo": "Terug naar onbeslist",
 		"reconsider": "Afgewezen: {{alternative}}. Tik om te heroverwegen.",
 		"skip": "Overslaan",
 		"skipped": "overgeslagen",

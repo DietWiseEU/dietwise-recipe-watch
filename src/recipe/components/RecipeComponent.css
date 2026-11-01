@@ -4,7 +4,7 @@
 	z-index: 20;
 	background: var(--ion-background-color, #fff);
 	margin: 0;
-	padding: 0.75rem 0;
+	padding: 0.75rem 18px;
 }
 
 .sticky-ingredients-title {
@@ -13,10 +13,94 @@
 	z-index: 10;
 	background: var(--ion-background-color, #fff);
 	margin: 0;
-	padding: 0 0 0.5rem 0;
+	padding: 0 18px 0.5rem;
+}
+
+.recipe-text {
+	padding: 0 18px;
+}
+
+.recipe-disclaimer {
+	margin: 12px 18px 4px;
+	padding: 8px 11px;
+	border-radius: 14px;
+	background: var(--color-notice);
+	color: var(--color-notice-text);
+	font-size: 10.5px;
+	line-height: 1.45;
+}
+
+.ingredient-rows {
+	margin: 0;
+	padding: 0 0 22px;
+	list-style: none;
+}
+
+.ingredient-row {
+	padding: 11px 18px;
+	border-bottom: 1px solid color-mix(in srgb, var(--color-text) 7%, transparent);
+	transition: background 0.25s;
+}
+
+.ingredient-row--open {
+	background: var(--color-surface);
+}
+
+.ingredient-row__alternatives {
+	display: flex;
+	flex-direction: column;
+	gap: 9px;
+	margin-top: 10px;
+}
+
+.ingredient-row__skip {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.ingredient-row__skip ion-button {
+	height: 34px;
+	margin: 0;
+	--padding-start: 14px;
+	--padding-end: 12px;
+	--border-width: 1px;
+	--border-color: var(--color-neutral-400);
+	--color: var(--color-neutral-800);
+	--box-shadow: none;
+	font-size: 12.5px;
+	font-weight: 700;
+	letter-spacing: normal;
+	text-transform: none;
+}
+
+.ingredient-row__skip ion-icon {
+	margin-left: 5px;
+	font-size: 13px;
+}
+
+.rejected-suggestions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 8px;
+}
+
+.rejected-suggestions__chip {
+	height: auto;
+	min-height: 0;
+	margin: 0;
+	padding: 3px 9px;
+	border: 1px dashed var(--color-neutral-400);
+	color: var(--color-neutral-700);
+	font-size: 11px;
+	font-weight: 600;
+	text-decoration: line-through;
 }
 
 .all-reviewed {
+	display: flex;
+	align-items: center;
+	gap: 10px;
 	margin: 16px 18px 0;
 	padding: 13px 14px;
 	border-radius: 18px;
@@ -25,4 +109,10 @@
 	color: var(--color-accent-2-900);
 	font-size: 12.5px;
 	line-height: 1.4;
+}
+
+.all-reviewed__check {
+	flex: none;
+	font-size: 18px;
+	color: var(--color-accent-2-800);
 }
