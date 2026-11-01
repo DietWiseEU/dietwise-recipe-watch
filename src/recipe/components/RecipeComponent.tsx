@@ -1,7 +1,7 @@
 import { IonButton, IonChip, IonIcon } from '@ionic/react';
 import { addIcons } from 'ionicons';
 import { checkmark, playForwardOutline } from 'ionicons/icons';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
 	IngredientStateType,
@@ -39,36 +39,10 @@ export interface RecipeComponentProps {
 
 const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentProps) => {
 	const { t } = useTranslation();
-	const sectionRef = useRef<HTMLElement>(null);
-	const titleRef = useRef<HTMLHeadingElement>(null);
 	/** The ingredient the user opened, or null once they closed it; undefined until they open or close one. */
 	const [chosenOpenIngredientId, setChosenOpenIngredientId] = useState<string | null>();
 	/** The ingredients the user skipped and has not opened again since. */
 	const [skippedIngredientIds, setSkippedIngredientIds] = useState<ReadonlySet<string>>(() => new Set());
-
-	useEffect(() => {
-		const section = sectionRef.current;
-		const title = titleRef.current;
-		if (!section || !title) {
-			return;
-		}
-
-		const updateTitleHeight = () => {
-			section.style.setProperty('--recipe-title-height', `${title.getBoundingClientRect().height}px`);
-		};
-
-		updateTitleHeight();
-
-		const resizeObserver = new ResizeObserver(updateTitleHeight);
-		resizeObserver.observe(title);
-		window.addEventListener('resize', updateTitleHeight);
-
-		return () => {
-			resizeObserver.disconnect();
-			window.removeEventListener('resize', updateTitleHeight);
-			section.style.removeProperty('--recipe-title-height');
-		};
-	}, [props.showTitle]);
 
 	const suggestionKeysOf = (ingredientId: string) =>
 		props.suggestionKeys?.filter((suggestionKey) => {
@@ -136,9 +110,9 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 			: chosenOpenIngredientId;
 
 	return (
-		<section ref={sectionRef}>
+		<section>
 			{props.showTitle ? (
-				<h2 ref={titleRef} className="sticky-recipe-title">
+				<h2 className="sticky-recipe-title">
 					<div className="ion-display-flex ion-align-items-center ion-justify-content-between">
 						{props.recipe.name
 							? props.recipe.name
@@ -156,7 +130,6 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 			) : null}
 			{props.recipe.recipeIngredients?.length > 0 ? (
 				<>
-					<h3 className="sticky-ingredients-title">{t('recipe.titleOfIngredients')}</h3>
 					<div className="recipe-disclaimer">{t('recipe.disclaimer')}</div>
 					<ul className="ingredient-rows">
 						{props.recipe.recipeIngredients.map((ingredient) => {

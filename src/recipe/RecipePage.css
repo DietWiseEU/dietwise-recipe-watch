@@ -40,29 +40,3 @@
 .error-pane {
 	padding: 0 18px;
 }
-
-.recipe-pane {
-	padding: 8px 4px;
-}
-
-.recipe-pane__rating {
-	font-weight: 600;
-	margin-bottom: 8px;
-}
-
-.recipe-pane__list {
-	margin: 0;
-	padding-left: 18px;
-}
-
-.recipe-pane__list-item {
-	margin-bottom: 6px;
-}
-
-.recipe-pane--errors {
-	color: var(--ion-color-danger, #b00020);
-}
-
-.recipe-pane__error {
-	margin: 0 0 8px;
-}

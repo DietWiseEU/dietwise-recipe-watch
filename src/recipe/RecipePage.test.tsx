@@ -43,12 +43,6 @@ vi.mock('@/recipe/useLogRating', () => ({
 
 const URL = 'https://example.com/recipe';
 
-// jsdom has no ResizeObserver; the page only uses it to lay out the recipe and the suggestions.
-class InertResizeObserver {
-	observe() {}
-	disconnect() {}
-}
-
 function renderPage(store = createStore()) {
 	render(
 		<JotaiProvider store={store}>
@@ -77,7 +71,6 @@ function toastMessages() {
 
 describe('RecipePage', () => {
 	beforeEach(() => {
-		vi.stubGlobal('ResizeObserver', InertResizeObserver);
 		vi.mocked(KeepAwake.keepAwake).mockClear();
 		vi.mocked(KeepAwake.allowSleep).mockClear();
 		vi.mocked(assessRecipe).mockClear();

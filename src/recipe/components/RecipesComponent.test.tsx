@@ -42,11 +42,6 @@ const SUGAR_SUGGESTION: Suggestion = {
 	text: 'Use honey instead of sugar',
 };
 
-class MockResizeObserver {
-	observe() {}
-	disconnect() {}
-}
-
 function renderRecipes(store: ReturnType<typeof createStore>) {
 	render(
 		<JotaiProvider store={store}>
@@ -100,7 +95,6 @@ function storeWithButterAndSugar() {
 
 describe('RecipesComponent', () => {
 	beforeEach(() => {
-		vi.stubGlobal('ResizeObserver', MockResizeObserver);
 		vi.stubGlobal(
 			'fetch',
 			vi.fn().mockImplementation(() => Promise.resolve(new Response(null, { status: 204 }))),
