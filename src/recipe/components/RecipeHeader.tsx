@@ -63,7 +63,7 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = (props) => {
 				) : null}
 			</div>
 			{mainState.rating || hasSuggestions ? (
-				<div className="recipe-header__rating">
+				<div className="recipe-header__status">
 					{mainState.rating ? <RatingComponent rating={mainState.rating} max={MAX_RATING} /> : null}
 					{hasSuggestions ? (
 						<IonCheckbox

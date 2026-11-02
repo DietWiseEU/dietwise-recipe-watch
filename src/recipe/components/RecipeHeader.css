@@ -58,8 +58,16 @@
 	margin: -4px -8px 0 0;
 }
 
-.recipe-header__rating {
+.recipe-header__status {
+	display: flex;
+	align-items: center;
+	gap: 12px;
 	margin-top: 10px;
+}
+
+.recipe-header__status .rating-score {
+	flex: 1;
+	min-width: 0;
 }
 
 .recipe-header__intervention {
@@ -76,6 +84,22 @@
 }
 
 .recipe-header__auto-advance {
-	margin-top: 6px;
-	font-size: 13px;
+	flex: none;
+	margin-left: auto;
+	--size: 19px;
+	--border-radius: 6px;
+	--border-width: 1.5px;
+	--border-color: var(--color-neutral-600);
+	--border-color-checked: var(--color-accent);
+	--checkbox-background: transparent;
+	--checkbox-background-checked: var(--color-accent);
+	--checkmark-color: var(--color-bg);
+	--checkmark-width: 4;
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--color-text);
+}
+
+.recipe-header__auto-advance::part(label) {
+	margin-inline-start: 7px;
 }
