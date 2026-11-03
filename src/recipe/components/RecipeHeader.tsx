@@ -1,4 +1,4 @@
-import { IonButton, IonCheckbox, IonIcon, IonSpinner } from '@ionic/react';
+import { IonButton, IonCheckbox, IonIcon } from '@ionic/react';
 import { arrowUndo } from 'ionicons/icons';
 import { useAtom, useAtomValue } from 'jotai';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +6,7 @@ import { autoAdvanceAtom, mainStateAtom } from '@/recipe/atoms';
 import { MAX_RATING } from '@/recipe/reducers/calculateRating';
 import brainIcon from '@/assets/images/brain.svg';
 import jsonLdIcon from '@/assets/images/json-ld.svg';
+import AssessmentProgress from './AssessmentProgress';
 import RatingComponent from './RatingComponent';
 import './RecipeHeader.css';
 
@@ -49,7 +50,6 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = (props) => {
 						color="medium"
 					/>
 				) : null}
-				{mainState.status === 'PENDING' ? <IonSpinner className="recipe-header__progress" /> : null}
 				{canReset ? (
 					<IonButton
 						className="recipe-header__reset"
@@ -62,6 +62,11 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = (props) => {
 					</IonButton>
 				) : null}
 			</div>
+			{mainState.status === 'PENDING' ? (
+				<div className="recipe-header__progress">
+					<AssessmentProgress recipeRead={true} />
+				</div>
+			) : null}
 			{mainState.rating || hasSuggestions ? (
 				<div className="recipe-header__status">
 					{mainState.rating ? <RatingComponent rating={mainState.rating} max={MAX_RATING} /> : null}

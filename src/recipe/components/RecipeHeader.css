@@ -48,9 +48,7 @@
 }
 
 .recipe-header__progress {
-	flex: none;
-	width: 24px;
-	height: 24px;
+	margin-top: 12px;
 }
 
 .recipe-header__reset {

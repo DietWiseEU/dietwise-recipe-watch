@@ -107,6 +107,20 @@ describe('RecipeHeader', () => {
 		expect(document.querySelector('ion-button')).toBeNull();
 	});
 
+	it('shows that the recipe is read and its ingredients are being assessed', () => {
+		renderHeader(storeWithExtractedRecipe('omelet'));
+
+		expect(screen.getByText('recipe.recipeRead')).toBeTruthy();
+		expect(screen.getByText('recipe.assessingIngredients')).toBeTruthy();
+	});
+
+	it('shows no progress once the assessment is complete', () => {
+		renderAssessed();
+
+		expect(screen.queryByText('recipe.recipeRead')).toBeNull();
+		expect(screen.queryByText('recipe.assessingIngredients')).toBeNull();
+	});
+
 	it('shows the rating of the recipe once it is scored', () => {
 		const store = storeWithExtractedRecipe('omelet');
 		store.set(

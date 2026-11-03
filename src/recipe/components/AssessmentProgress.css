@@ -1,0 +1,44 @@
+.assessment-progress {
+	display: flex;
+	flex-direction: column;
+	gap: 9px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.assessment-progress__step {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 13.5px;
+	font-weight: 700;
+}
+
+.assessment-progress__marker {
+	flex: none;
+	width: 19px;
+	height: 19px;
+}
+
+.assessment-progress__step--done .assessment-progress__marker {
+	color: var(--color-accent-2-700);
+}
+
+.assessment-progress__step--running {
+	color: var(--color-accent-700);
+}
+
+.assessment-progress__step--running .assessment-progress__marker {
+	color: var(--color-accent);
+}
+
+.assessment-progress__step--waiting {
+	color: color-mix(in srgb, var(--color-text) 45%, transparent);
+}
+
+.assessment-progress__step--waiting .assessment-progress__marker {
+	box-sizing: border-box;
+	border: 3px solid var(--color-neutral-300);
+	border-radius: 999px;
+}

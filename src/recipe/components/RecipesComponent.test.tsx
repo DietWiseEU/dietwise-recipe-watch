@@ -440,6 +440,15 @@ describe('RecipesComponent', () => {
 		expect(screen.getAllByText('ingredient.noSuggestions')).toHaveLength(1);
 	});
 
+	it('shows the ingredients while their suggestions are on their way, saying nothing of suggestions yet', () => {
+		const store = storeWithButterAndSugar();
+		renderRecipes(store);
+
+		expect(screen.getByText('butter')).toBeTruthy();
+		expect(screen.getByText('sugar')).toBeTruthy();
+		expect(screen.queryByText('ingredient.noSuggestions')).toBeNull();
+	});
+
 	it('sends no assessmentId with the statistics when the server assigned no Intervention', async () => {
 		renderAssessed();
 

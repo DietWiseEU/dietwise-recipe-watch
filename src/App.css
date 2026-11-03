@@ -13,11 +13,6 @@
 	color: var(--ion-color-medium);
 }
 
-/* Dimension utilities */
-.min-width-64px {
-	min-width: 64px;
-}
-
 /* Flext extras */
 .gap-10px {
 	gap: 10px;

@@ -167,7 +167,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 										onMarkUndecided={(suggestionKey) =>
 											props.onChangeSuggestionStatus(suggestionKey, 'UNDECIDED')
 										}
-										suggestionCount={suggestionKeys.length}
+										suggestionCount={props.suggestionKeys ? suggestionKeys.length : undefined}
 										undecidedSuggestionCount={undecidedSuggestionKeys.length}
 										open={open}
 										skipped={!open && remainsSkipped(ingredient.id)}

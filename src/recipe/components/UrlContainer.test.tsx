@@ -42,6 +42,19 @@ describe('UrlContainer', () => {
 		expect(container.querySelector('ion-button')).toBeNull();
 	});
 
+	it('shows that the recipe is being read while assessing', () => {
+		render(<UrlContainer onClick={vi.fn()} onReset={vi.fn()} url="https://example.com" status="PENDING" />);
+
+		expect(screen.getByText('recipe.readingRecipe')).toBeTruthy();
+		expect(screen.getByText('recipe.assessingIngredients')).toBeTruthy();
+	});
+
+	it('shows no progress once the assessment is complete', () => {
+		render(<UrlContainer onClick={vi.fn()} onReset={vi.fn()} url="https://example.com" status="FAILURE" />);
+
+		expect(screen.queryByText('recipe.readingRecipe')).toBeNull();
+	});
+
 	it('shows no status icon once the assessment is complete', () => {
 		const { container } = render(
 			<UrlContainer onClick={vi.fn()} onReset={vi.fn()} url="https://example.com" status="FAILURE" />,

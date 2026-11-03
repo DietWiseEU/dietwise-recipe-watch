@@ -11,8 +11,8 @@ export interface IngredientComponentProps {
 	acceptedSuggestion: SuggestionState | undefined;
 	acceptedSuggestionDisabled?: boolean;
 	onMarkUndecided: (suggestionKey: string) => void | Promise<void>;
-	/** How many Suggestions the server sent for this ingredient. */
-	suggestionCount: number;
+	/** How many Suggestions the server sent for this ingredient; undefined while they are on their way. */
+	suggestionCount: number | undefined;
 	/** How many of the Suggestions for this ingredient the user has neither accepted nor rejected. */
 	undecidedSuggestionCount: number;
 	/** Whether the undecided Suggestions show under the ingredient. */
