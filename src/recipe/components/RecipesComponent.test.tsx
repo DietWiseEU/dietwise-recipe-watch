@@ -83,7 +83,7 @@ describe('RecipesComponent', () => {
 					},
 				],
 				pageText: 'omelet',
-			}),
+			})!,
 		);
 		store.set(
 			mainStateAtom,
@@ -92,7 +92,7 @@ describe('RecipesComponent', () => {
 				suggestions: [SUGGESTION],
 				assessmentId: ASSESSMENT_ID,
 				intervention: { id: 1, text: 'Healthiness guaranteed.' },
-			}),
+			})!,
 		);
 		store.set(mainStateAtom, createRecipeAssessmentCompletedAction());
 		store.set(mainStateAtom, createSuggestionStatusAction(keyOfSuggestion(SUGGESTION), 'ACCEPTED'));

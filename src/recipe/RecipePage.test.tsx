@@ -16,6 +16,7 @@ import RecipePage from './RecipePage';
 vi.mock('react-i18next', () => ({
 	useTranslation: () => ({
 		t: (key: string) => key,
+		i18n: { language: 'nl' },
 	}),
 }));
 
@@ -91,6 +92,7 @@ describe('RecipePage', () => {
 			undefined,
 			URL,
 			'el',
+			'nl',
 			expect.any(Function),
 			expect.any(Function),
 			expect.any(Function),
@@ -114,7 +116,7 @@ describe('RecipePage', () => {
 			fireEvent.click(screen.getByText('recipe.retry'));
 		});
 
-		const onMessage = vi.mocked(assessRecipe).mock.calls[0][3];
+		const onMessage = vi.mocked(assessRecipe).mock.calls[0][4];
 		act(() => onMessage?.({ type: 'KEEP_ALIVE' }));
 
 		expect(store.get(mainStateAtom).status).toBe('PENDING');

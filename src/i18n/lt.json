@@ -42,12 +42,12 @@
 			"text": "Nukopijuokite recepto URL adresą, įklijuokite jį programėlėje ir paspauskite „Vertinti“. Mes automatiškai išskirsime ingredientus ir išanalizuosime receptą."
 		},
 		"choose": {
-			"title": "Pasirinkite sveikesnes alternatyvas",
+			"title": "Pasirinkite sveikesnes sveikatai palankesnes alternatyvas",
 			"text": "Peržiūrėkite mūsų siūlomus ingredientų pakaitus. Priimkite tuos, kurie jums patinka, kitus atmeskite ir iškart pamatykite, kaip pasikeičia jūsų receptas."
 		},
 		"impact": {
 			"title": "Pamatykite rezultatą",
-			"text": "Stebėkite, kaip jūsų recepto vertinimas gerėja, kai priimate sveikesnius ingredientus.",
+			"text": "Stebėkite, kaip jūsų recepto vertinimas gerėja, kai priimate sveikesnius sveikatai palankesnius ingredientus.",
 			"cost": "Taip pat matysite numatomą kiekvienos alternatyvos kainą (€–€€€) ir sezoniškumą, kad galėtumėte priimti subalansuotus sprendimus."
 		},
 		"registration": {
@@ -65,7 +65,7 @@
 		"ASSESS": "Vertinti",
 		"urlPlaceholder": "Įvesi adresą čia",
 		"encounteredErrors": "Nustatytos klaidos:",
-		"titleOfIngredients": "Ingridientai",
+		"titleOfIngredients": "Ingridientai Ingredientai",
 		"disclaimer": "Toliau pateiktas turinys yra iš jūsų įvestu adresu esančios svetainės, o jo intelektinė nuosavybė yra ta, kurią nurodo tas pats puslapis.",
 		"titleOfSuggestions": "Pasiūlymai - Patarimai",
 		"keepScreenOn": "Ekranas lieka įjungtas",
@@ -80,7 +80,7 @@
 			"limitedPresent": "Apriboti",
 			"none": "Nėra"
 		},
-		"seasonalityWarning": "Gali būti ne sezoninis produktas",
+		"seasonalityWarning": "Gali būti ne sezoninis produktas  Tai gali būti ne sezoninis produktas",
 		"cost": {
 			"LO": "Maža kaina",
 			"MED": "Vidutinė kaina",
@@ -91,21 +91,21 @@
 		"language": "Recepto kalba",
 		"help": {
 			"title": "Kaip veikia „MyRecipeWatch“",
-			"intro": "Čia rasite viską, ką reikia žinoti apie receptų vertinimą ir sveikesnių ingredientų pasirinkimą.",
+			"intro": "Čia rasite viską, ką reikia žinoti apie receptų vertinimą ir sveikesnių sveikatai palankesnių ingredientų pasirinkimą.",
 			"enterLinkTitle": "Įveskite recepto nuorodą",
-			"paragraph1": "Paspauskite ekrano viršuje esantį lauką ir įveskite adresą recepto, kurio įvertinimą norėtumėte gauti. Tada spauskite mygtuką \"Vertinti\". Sistema automatiškai pradės vertinti receptą.",
+			"paragraph1": "Paspauskite ekrano viršuje esantį lauką ir įveskite adresą recepto recepto adresą, kurio įvertinimą norėtumėte gauti. Tada spauskite mygtuką \"Vertinti\". Sistema automatiškai pradės vertinti receptą.",
 			"twoStepsTitle": "Du paprasti žingsniai",
-			"paragraph2": "Vertinimas vyksta dviejuose žingsniuose: (1) įkeliant receptą iš puslapio ir (2) pasiūlant sveikesnių ir/ar tvaresnių ingridientų alternatyvą. Programa ingridientų sąrašą atvaizduoja viršutinėje puslapio dalyje, o pasiūlymus - apatinėje dalyje. ",
+			"paragraph2": "Vertinimas vyksta dviejuose žingsniuose atliekamas dviem žingsniais: (1) įkeliant receptą iš puslapio ir (2) pasiūlant sveikesnių ir/ar tvaresnių ingridientų ingredientų alternatyvą. Programa ingridientų ingredientų sąrašą atvaizduoja viršutinėje puslapio dalyje, o pasiūlymus - apatinėje dalyje. ",
 			"reviewSuggestionsTitle": "Peržiūrėkite pasiūlymus",
 			"paragraph3": "Naršant pasiūlymus, turite tris pasirinkimus:",
 			"explainUndecidedButton": "Palikti pasiūlymą be sprendimo",
 			"explainApproveButton": "Priimti pasiūlymą - spausti",
 			"explainRejectButton": "Atmesti pasiūlymą - spausti",
 			"paragraph4": "Spauskite mygtuką (\"Priimti\" ar \"Atmesti\") dar kartą, jei norite palikti pasiūlymą be sprendimo",
-			"paragraph5": "Kitas būdas pakeisti pasiūlymo būseną į \"be sprendimo\" yra spaudžiant \"minuso\" ikonėlę prie pakeistų ingridientų recepte viršutinėje puslapio dalyje.",
-			"costTitle": "Sąnaudų įvertinimas",
+			"paragraph5": "Kitas būdas pakeisti pasiūlymo būseną į \"be sprendimo\" yra spaudžiant \"minuso\" ikonėlę prie pakeistų ingridientų ingredientų recepte viršutinėje puslapio dalyje.",
+			"costTitle": "Sąnaudų įvertinimas Kainos įvertinimas",
 			"paragraph6": "Programėlė vertina apytikslę kiekvieno pasiūlyto alternatyvaus recepto kainą vienu, dviem arba trim Euro simboliais (€/€€/€€€). Jų reikšmė - \"įprastai pigus\", \"vidutinė kaina\" ir \"įprastai aukšta kaina\". ",
-			"understandScoreTitle": "Supraskite rezultatą",
+			"understandScoreTitle": "Supraskite rezultatą Supraskite, ką reiškia įvertinimas.",
 			"rating": "Žvaigždučių įvertinimas (1–10) parodo, kiek receptas atitinka nustatytas mitybos gaires. Kuo aukštesnis balas, tuo geriau bendras ingredientų balansas atitinka rekomenduojamus mitybos standartus. Mūsų dirbtinio intelekto pasiūlymai yra skirti padėti jums pakoreguoti receptus, kad jie gautų aukštesnį įvertinimą ir pagerintų bendrą patiekalo maistinę vertę.",
 			"inControlTitle": "Jūs kontroliuojate situaciją",
 			"inControl": "Jūs sprendžiate, kuriuos pakeitimus priimti. Maži pakeitimai gali turėti didelės įtakos jūsų sveikatai ir planetai."

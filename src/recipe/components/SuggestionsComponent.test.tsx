@@ -75,7 +75,7 @@ function assess(store: ReturnType<typeof createStore>, intervention?: Interventi
 				},
 			],
 			pageText: 'omelet',
-		}),
+		})!,
 	);
 	store.set(
 		mainStateAtom,
@@ -83,7 +83,7 @@ function assess(store: ReturnType<typeof createStore>, intervention?: Interventi
 			type: 'SUGGESTIONS',
 			suggestions: [SUGGESTION, OTHER_SUGGESTION],
 			...(intervention ? { assessmentId: ASSESSMENT_ID, intervention } : {}),
-		}),
+		})!,
 	);
 	store.set(mainStateAtom, createRecipeAssessmentCompletedAction());
 }
