@@ -11,10 +11,23 @@ vi.mock('react-i18next', () => ({
 const CURRENT_MONTH = new Date().getMonth() + 1;
 const NEXT_MONTH = (CURRENT_MONTH % 12) + 1;
 
-function renderSuggestion(suggestion: Suggestion = SUGGESTION) {
+const DETAILED_SUGGESTION: Suggestion = {
+	...SUGGESTION,
+	equivalence: '80 g of oil for 100 g of butter',
+	techniqueNotes: 'Melt it first',
+};
+
+function renderSuggestion(suggestion: Suggestion = SUGGESTION, variant?: 'list' | 'compare') {
 	const onAction = vi.fn();
 	const onInfoClicked = vi.fn();
-	render(<SuggestionComponent suggestion={suggestion} onAction={onAction} onInfoClicked={onInfoClicked} />);
+	render(
+		<SuggestionComponent
+			suggestion={suggestion}
+			variant={variant}
+			onAction={onAction}
+			onInfoClicked={onInfoClicked}
+		/>,
+	);
 	return { onAction, onInfoClicked };
 }
 
@@ -76,5 +89,29 @@ describe('SuggestionComponent', () => {
 		fireEvent.click(button('ingredient.moreInfo'));
 
 		expect(onInfoClicked).toHaveBeenCalledWith('olive oil', expect.stringContaining('recommendation-s1'));
+	});
+
+	it('leaves out the equivalence and the notes in the list of alternatives', () => {
+		renderSuggestion(DETAILED_SUGGESTION);
+
+		expect(document.body.textContent).not.toContain('80 g of oil for 100 g of butter');
+		expect(document.body.textContent).not.toContain('Melt it first');
+	});
+
+	it('shows the equivalence and the notes when comparing alternatives', () => {
+		renderSuggestion(DETAILED_SUGGESTION, 'compare');
+
+		expect(screen.getByText('80 g of oil for 100 g of butter')).toBeTruthy();
+		expect(document.body.textContent).toContain('ingredient.techniqueNotes Melt it first');
+	});
+
+	it('rejects the alternative with an icon when comparing alternatives', () => {
+		const { onAction } = renderSuggestion(SUGGESTION, 'compare');
+
+		const reject = button('ingredient.reject');
+		fireEvent.click(reject);
+
+		expect(reject.textContent).toBe('');
+		expect(onAction).toHaveBeenCalledWith('REJECTED');
 	});
 });

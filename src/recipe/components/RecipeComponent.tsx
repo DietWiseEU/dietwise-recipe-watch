@@ -1,6 +1,6 @@
 import { IonButton, IonChip, IonIcon } from '@ionic/react';
 import { addIcons } from 'ionicons';
-import { checkmark, playForwardOutline } from 'ionicons/icons';
+import { arrowForward, checkmark, playForwardOutline } from 'ionicons/icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
@@ -10,6 +10,7 @@ import type {
 	SuggestionState,
 	SuggestionStatus,
 } from '@/recipe/model';
+import CompareSheet from './CompareSheet';
 import IngredientComponent from './IngredientComponent';
 import SuggestionComponent from './SuggestionComponent';
 import brainIcon from '@/assets/images/brain.svg';
@@ -43,6 +44,8 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 	const [chosenOpenIngredientId, setChosenOpenIngredientId] = useState<string | null>();
 	/** The ingredients the user skipped and has not opened again since. */
 	const [skippedIngredientIds, setSkippedIngredientIds] = useState<ReadonlySet<string>>(() => new Set());
+	/** The ingredient whose alternatives the user compares side by side, if any. */
+	const [comparedIngredientId, setComparedIngredientId] = useState<string | null>(null);
 
 	const suggestionKeysOf = (ingredientId: string) =>
 		props.suggestionKeys?.filter((suggestionKey) => {
@@ -74,6 +77,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 	const skip = (ingredientId: string) => {
 		const skipped = new Set(skippedIngredientIds).add(ingredientId);
 		setSkippedIngredientIds(skipped);
+		setComparedIngredientId(null);
 		setChosenOpenIngredientId(nextIngredientIdAfter(ingredientId, skipped));
 	};
 	const toggle = (ingredientId: string, open: boolean) => {
@@ -91,6 +95,9 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 	) => {
 		const decidesIngredient =
 			nextStatus === 'ACCEPTED' || (nextStatus === 'REJECTED' && undecidedSuggestionCount === 1);
+		if (decidesIngredient) {
+			setComparedIngredientId(null);
+		}
 		if (props.autoAdvance && decidesIngredient) {
 			setChosenOpenIngredientId(nextIngredientIdAfter(ingredientId, skippedIngredientIds));
 		}
@@ -103,6 +110,11 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 		ingredients.every((ingredient) => !hasUndecidedSuggestions(ingredient.id) || remainsSkipped(ingredient.id));
 	const acceptedCount = ingredients.filter((ingredient) => props.ingredientState?.[ingredient.id]).length;
 	const skippedCount = ingredients.filter((ingredient) => remainsSkipped(ingredient.id)).length;
+
+	const comparedIngredient = ingredients.find((ingredient) => ingredient.id === comparedIngredientId);
+	const comparedSuggestionKeys = comparedIngredient
+		? suggestionKeysWithStatus(suggestionKeysOf(comparedIngredient.id), 'UNDECIDED')
+		: [];
 
 	const openIngredientId =
 		chosenOpenIngredientId === undefined
@@ -184,8 +196,19 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 													/>
 												);
 											})}
-											<div className="ingredient-row__skip">
+											<div className="ingredient-row__more">
+												{undecidedSuggestionKeys.length > 1 ? (
+													<IonButton
+														className="ingredient-row__compare"
+														fill="clear"
+														onClick={() => setComparedIngredientId(ingredient.id)}
+													>
+														{t('ingredient.compare')}
+														<IonIcon slot="end" icon={arrowForward}></IonIcon>
+													</IonButton>
+												) : null}
 												<IonButton
+													className="ingredient-row__skip"
 													shape="round"
 													fill="outline"
 													title={t('ingredient.skipHint')}
@@ -223,6 +246,19 @@ const RecipeComponent: React.FC<RecipeComponentProps> = (props: RecipeComponentP
 							);
 						})}
 					</ul>
+					<CompareSheet
+						ingredient={comparedIngredient}
+						undecidedSuggestions={comparedSuggestionKeys.map(
+							(suggestionKey) => props.suggestions![suggestionKey],
+						)}
+						isSuggestionInFlight={props.isSuggestionInFlight}
+						onAction={(suggestionKey, action) =>
+							decide(comparedIngredient!.id, suggestionKey, action, comparedSuggestionKeys.length)
+						}
+						onInfoClicked={props.onInfoClicked}
+						onLeaveUndecided={() => setComparedIngredientId(null)}
+						onSkip={() => skip(comparedIngredient!.id)}
+					/>
 					{allReviewed ? (
 						<div className="all-reviewed" role="status">
 							<IonIcon className="all-reviewed__check" icon={checkmark} aria-hidden="true"></IonIcon>

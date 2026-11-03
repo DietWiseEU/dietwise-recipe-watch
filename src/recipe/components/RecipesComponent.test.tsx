@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { ReactNode } from 'react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { Provider as JotaiProvider, createStore } from 'jotai';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
@@ -29,6 +30,15 @@ vi.mock('@/auth/authService', () => ({
 vi.mock('@/settings/storage', () => ({
 	saveSettings: vi.fn(() => Promise.resolve()),
 }));
+
+vi.mock('@ionic/react', async () => {
+	const actual = await vi.importActual<typeof import('@ionic/react')>('@ionic/react');
+	return {
+		...actual,
+		IonModal: ({ isOpen, children }: { isOpen: boolean; children: ReactNode }) =>
+			isOpen ? <div data-testid="ion-modal">{children}</div> : null,
+	};
+});
 
 const INTERVENTION_TEXT = 'Healthiness guaranteed.';
 
@@ -294,6 +304,99 @@ describe('RecipesComponent', () => {
 		expect(shownAlternatives()).not.toContain('sunflower oil');
 	});
 
+	it('compares the alternatives of the open ingredient side by side', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		expect(screen.queryByTestId('ion-modal')).toBeNull();
+
+		fireEvent.click(screen.getByText('ingredient.compare'));
+
+		expect(within(comparison()).getByText('butter')).toBeTruthy();
+		expect(alternativesCompared()).toEqual(['olive oil', 'sunflower oil']);
+	});
+
+	it('stops comparing once an alternative is accepted, and opens the next ingredient when the user wants that', async () => {
+		const store = storeWithButterAndSugar();
+		await preferAutoAdvance(store, true);
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.compare'));
+		fireEvent.click(comparedButtonsLabelled('ingredient.accept')[1]);
+		await waitFor(() => expect(postedStatistics()).toHaveLength(1));
+
+		expect(screen.queryByTestId('ion-modal')).toBeNull();
+		expect(store.get(mainStateAtom).suggestions?.[keyOfSuggestion(OTHER_SUGGESTION)].status).toBe('ACCEPTED');
+		expect(shownAlternatives()).toEqual(['honey']);
+	});
+
+	it('keeps comparing the other alternatives once one is rejected', async () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.compare'));
+		fireEvent.click(comparedButtonsLabelled('ingredient.reject')[0]);
+		await waitFor(() => expect(postedStatistics()).toHaveLength(1));
+
+		expect(alternativesCompared()).toEqual(['sunflower oil']);
+	});
+
+	it('stops comparing once the last alternative is rejected', async () => {
+		const store = storeWithButterAndSugar();
+		await preferAutoAdvance(store, false);
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.compare'));
+		fireEvent.click(comparedButtonsLabelled('ingredient.reject')[0]);
+		await waitFor(() => expect(postedStatistics()).toHaveLength(1));
+		fireEvent.click(comparedButtonsLabelled('ingredient.reject')[0]);
+		await waitFor(() => expect(postedStatistics()).toHaveLength(2));
+
+		expect(screen.queryByTestId('ion-modal')).toBeNull();
+	});
+
+	it('offers no comparison when a single alternative remains undecided', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		store.set(mainStateAtom, createSuggestionStatusAction(keyOfSuggestion(SUGGESTION), 'REJECTED'));
+		renderRecipes(store);
+
+		expect(shownAlternatives()).toEqual(['sunflower oil']);
+		expect(screen.queryByText('ingredient.compare')).toBeNull();
+		expect(screen.getByText('ingredient.skip')).toBeTruthy();
+	});
+
+	it('stops comparing and leaves the alternatives undecided', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.compare'));
+		fireEvent.click(within(comparison()).getByText('ingredient.leaveUndecided'));
+
+		expect(screen.queryByTestId('ion-modal')).toBeNull();
+		expect(shownAlternatives()).toEqual(['olive oil', 'sunflower oil']);
+		expect(postedStatistics()).toEqual([]);
+	});
+
+	it('skips the ingredient being compared and opens the next one with alternatives', () => {
+		const store = storeWithButterAndSugar();
+		assessWithSuggestions(store, [SUGGESTION, SUGAR_SUGGESTION, OTHER_SUGGESTION]);
+		renderRecipes(store);
+
+		fireEvent.click(screen.getByText('ingredient.compare'));
+		fireEvent.click(within(comparison()).getByText('ingredient.skip'));
+
+		expect(screen.queryByTestId('ion-modal')).toBeNull();
+		expect(shownAlternatives()).toEqual(['honey']);
+		expect(screen.getAllByText('ingredient.skipped')).toHaveLength(1);
+		expect(postedStatistics()).toEqual([]);
+	});
+
 	it('says when every ingredient is reviewed, with how many alternatives were accepted and skipped', async () => {
 		const store = storeWithButterAndSugar();
 		await preferAutoAdvance(store, true);
@@ -396,6 +499,22 @@ describe('RecipesComponent', () => {
 /** The names of the alternatives shown for the user to decide on. */
 function shownAlternatives() {
 	return screen.queryAllByRole('heading', { level: 4 }).map((heading) => heading.textContent);
+}
+
+function comparison() {
+	return screen.getByTestId('ion-modal');
+}
+
+function alternativesCompared() {
+	return within(comparison())
+		.queryAllByRole('heading', { level: 4 })
+		.map((heading) => heading.textContent);
+}
+
+function comparedButtonsLabelled(label: string) {
+	return [...comparison().querySelectorAll('ion-button')].filter(
+		(button) => button.textContent === label || button.getAttribute('aria-label') === label,
+	);
 }
 
 function buttonsLabelled(label: string) {

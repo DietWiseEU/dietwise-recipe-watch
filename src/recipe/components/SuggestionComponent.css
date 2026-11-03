@@ -64,3 +64,49 @@
 	--color: var(--color-text);
 	--border-color: var(--color-neutral-500);
 }
+
+.suggestion-card--compare {
+	display: flex;
+	flex-direction: column;
+	flex: none;
+	width: 250px;
+	padding: 13px;
+	border-radius: 20px;
+}
+
+.suggestion-card__equivalence {
+	margin-top: 4px;
+	font-size: 11.5px;
+	font-weight: 700;
+	color: var(--color-accent-700);
+}
+
+.suggestion-card__notes {
+	margin-top: 8px;
+	font-size: 11.5px;
+	line-height: 1.45;
+	color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+
+.suggestion-card--compare .suggestion-card__details {
+	margin-top: 9px;
+}
+
+.suggestion-card--compare .suggestion-card__actions {
+	margin-top: auto;
+	padding-top: 12px;
+	gap: 7px;
+}
+
+.suggestion-card--compare .suggestion-card__actions ion-button {
+	height: 40px;
+	font-size: 13.5px;
+}
+
+.suggestion-card__reject--icon {
+	flex: none !important;
+	width: 40px;
+	--padding-start: 0;
+	--padding-end: 0;
+	--color: var(--color-neutral-800);
+}
