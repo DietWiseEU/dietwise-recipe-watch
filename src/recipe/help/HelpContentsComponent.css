@@ -119,17 +119,40 @@
 	color: var(--color-accent-2-800);
 }
 
-.sim-button {
+/* Small copies of the buttons under an ingredient, so the reader recognises the ones the text talks about. */
+.help__button {
 	display: inline-flex;
-	border: 2px solid black;
-	border-radius: 4px;
-	padding: 2px 6px;
+	align-items: center;
+	gap: 4px;
+	padding: 1px 11px;
+	border: 1px solid transparent;
+	border-radius: 999px;
+	font-family: var(--font-heading);
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.4;
+	white-space: nowrap;
 }
 
-.sim-button.sim-button-success {
-	border-color: var(--ion-color-success);
+.help__button--accept {
+	border-color: var(--ion-color-primary);
+	background: var(--ion-color-primary);
+	color: var(--ion-color-primary-contrast);
 }
 
-.sim-button.sim-button-reject {
-	border-color: var(--ion-color-medium);
+.help__button--reject {
+	border-color: var(--color-neutral-500);
+	color: var(--color-text);
+}
+
+.help__button--skip {
+	border-color: var(--color-neutral-400);
+	color: var(--color-neutral-800);
+	font-family: var(--font-body);
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.help__button--skip ion-icon {
+	font-size: 12px;
 }

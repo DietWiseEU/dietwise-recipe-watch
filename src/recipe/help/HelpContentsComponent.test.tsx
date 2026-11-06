@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import { playForwardOutline } from 'ionicons/icons';
 import { describe, expect, it, vi } from 'vitest';
 import el from '@/i18n/el.json';
 import en from '@/i18n/en.json';
@@ -51,11 +52,25 @@ describe('HelpContentsComponent', () => {
 		expect(titles).toEqual(['recipe.help.costTitle', 'recipe.help.inControlTitle']);
 	});
 
-	it('keeps the accept and reject buttons illustrated with their icons', () => {
+	it('explains each choice next to a copy of its button', () => {
 		const { container } = render(<HelpContentsComponent />);
 
-		expect(container.querySelectorAll('.sim-button-success ion-icon')).toHaveLength(1);
-		expect(container.querySelectorAll('.sim-button-reject ion-icon')).toHaveLength(1);
+		const options = [...container.querySelectorAll('.help__options li')].map((option) => [
+			option.querySelector('.help__button')?.textContent,
+			option.querySelector('.help__option-text')?.textContent,
+		]);
+		expect(options).toEqual([
+			['ingredient.accept', 'recipe.help.explainApproveButton'],
+			['ingredient.reject', 'recipe.help.explainRejectButton'],
+			['ingredient.skip', 'recipe.help.explainSkipButton'],
+		]);
+	});
+
+	it('draws the skip button with its icon', () => {
+		const { container } = render(<HelpContentsComponent />);
+
+		const icon = container.querySelector<HTMLIonIconElement>('.help__button--skip ion-icon');
+		expect(icon?.icon).toBe(playForwardOutline);
 	});
 
 	it('only asks for strings that exist', () => {
@@ -64,8 +79,7 @@ describe('HelpContentsComponent', () => {
 
 		expect(requestedKeys.length).toBeGreaterThan(0);
 		for (const key of requestedKeys) {
-			expect(key).toMatch(/^recipe\.help\./);
-			expect(en.recipe.help, key).toHaveProperty(key.replace('recipe.help.', ''));
+			expect(en, key).toHaveProperty(key.split('.'));
 		}
 	});
 });

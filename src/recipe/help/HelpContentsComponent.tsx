@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { IonIcon } from '@ionic/react';
-import { checkmark, close, leafOutline } from 'ionicons/icons';
+import { leafOutline, playForwardOutline } from 'ionicons/icons';
 import './HelpContentsComponent.css';
 
 const HelpContentsComponent: React.FC = () => {
@@ -28,22 +28,20 @@ const HelpContentsComponent: React.FC = () => {
 						<h2 className="help__step-title">{t('recipe.help.reviewSuggestionsTitle')}</h2>
 						<p>{t('recipe.help.paragraph3')}</p>
 						<ul className="help__options">
-							<li>{t('recipe.help.explainUndecidedButton')}</li>
 							<li>
-								<span className="ion-display-inline-flex ion-align-items-center gap-10px">
-									<span>{t('recipe.help.explainApproveButton')}</span>
-									<span className="sim-button sim-button-success">
-										<IonIcon icon={checkmark} color="success" />
-									</span>
-								</span>
+								<span className="help__button help__button--accept">{t('ingredient.accept')}</span>{' '}
+								<span className="help__option-text">{t('recipe.help.explainApproveButton')}</span>
 							</li>
 							<li>
-								<span className="ion-display-inline-flex ion-align-items-center gap-10px">
-									<span>{t('recipe.help.explainRejectButton')}</span>
-									<span className="sim-button sim-button-reject">
-										<IonIcon icon={close} color="medium" />
-									</span>
-								</span>
+								<span className="help__button help__button--reject">{t('ingredient.reject')}</span>{' '}
+								<span className="help__option-text">{t('recipe.help.explainRejectButton')}</span>
+							</li>
+							<li>
+								<span className="help__button help__button--skip">
+									{t('ingredient.skip')}
+									<IonIcon icon={playForwardOutline} aria-hidden="true" />
+								</span>{' '}
+								<span className="help__option-text">{t('recipe.help.explainSkipButton')}</span>
 							</li>
 						</ul>
 						<p>{t('recipe.help.paragraph4')}</p>
