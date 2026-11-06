@@ -22,39 +22,38 @@ const UrlContainer: React.FC<UrlContainerProps> = (props) => {
 
 	return (
 		<>
-			<p
-				className={`url-container${hasUrl ? '' : ' url-container--empty'} ion-display-flex ion-align-items-center`}
-				onClick={props.onClick}
-			>
-				{hasUrl ? (
-					<>
-						{statusIcon ? (
-							<IonIcon className="url-container__status" icon={statusIcon} aria-hidden="true" />
-						) : null}
-						<span className="url-container__url ion-text-nowrap overflow-hidden text-overflow-ellipsis">
-							{props.url}
-						</span>
-						{showReset ? (
-							<IonButton
-								className="url-container__reset"
-								fill="clear"
-								aria-label={t('recipe.startOver')}
-								onClick={(e) => {
-									e.stopPropagation();
-									props.onReset();
-								}}
-							>
-								<IonIcon slot="icon-only" icon={arrowUndo} />
-							</IonButton>
-						) : null}
-					</>
-				) : (
-					<>
-						<IonIcon className="url-container__status" icon={linkOutline} aria-hidden="true" />
-						<span className="enter-url-label">{t('recipe.enterUrl')}</span>
-					</>
-				)}
-			</p>
+			{hasUrl ? (
+				<p className="url-container ion-display-flex ion-align-items-center" onClick={props.onClick}>
+					{statusIcon ? (
+						<IonIcon className="url-container__status" icon={statusIcon} aria-hidden="true" />
+					) : null}
+					<span className="url-container__url ion-text-nowrap overflow-hidden text-overflow-ellipsis">
+						{props.url}
+					</span>
+					{showReset ? (
+						<IonButton
+							className="url-container__reset"
+							fill="clear"
+							aria-label={t('recipe.startOver')}
+							onClick={(e) => {
+								e.stopPropagation();
+								props.onReset();
+							}}
+						>
+							<IonIcon slot="icon-only" icon={arrowUndo} />
+						</IonButton>
+					) : null}
+				</p>
+			) : (
+				<button
+					type="button"
+					className="url-container url-container--empty ion-display-flex ion-align-items-center"
+					onClick={props.onClick}
+				>
+					<IonIcon className="url-container__status" icon={linkOutline} aria-hidden="true" />
+					<span className="enter-url-label">{t('recipe.enterUrl')}</span>
+				</button>
+			)}
 			{props.status === 'PENDING' ? (
 				<div className="url-container__progress">
 					<AssessmentProgress recipeRead={false} />

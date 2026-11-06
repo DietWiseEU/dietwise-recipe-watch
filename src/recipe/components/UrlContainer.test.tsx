@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { alertCircleOutline, linkOutline, sparklesOutline } from 'ionicons/icons';
 import { describe, expect, it, vi } from 'vitest';
 import UrlContainer from './UrlContainer';
@@ -135,6 +136,18 @@ describe('UrlContainer', () => {
 
 		expect(statusIcon(container)?.icon).toBe(linkOutline);
 		expect(screen.getByText('recipe.enterUrl')).toBeTruthy();
+	});
+
+	it('lets the keyboard open the url modal before an assessment starts', async () => {
+		const user = userEvent.setup();
+		const onClick = vi.fn();
+		render(<UrlContainer onClick={onClick} onReset={vi.fn()} url={undefined} status="INITIAL" failed={false} />);
+
+		await user.tab();
+		expect(document.activeElement).toBe(screen.getByRole('button', { name: 'recipe.enterUrl' }));
+		await user.keyboard('{Enter}');
+
+		expect(onClick).toHaveBeenCalledTimes(1);
 	});
 
 	it('names the reset button for screen readers', () => {
