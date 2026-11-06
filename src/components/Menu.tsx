@@ -121,21 +121,21 @@ const Menu: React.FC = () => {
 				<IonList id="labels-list">
 					{user ? (
 						<IonMenuToggle autoHide={false} onClick={signOut}>
-							<IonItem lines="none" button={true}>
+							<IonItem lines="none" button={true} detail={false}>
 								<IonIcon aria-hidden="true" slot="start" ios={logOutOutline} md={logOutSharp} />
 								<IonLabel>{t('menu.logout')}</IonLabel>
 							</IonItem>
 						</IonMenuToggle>
 					) : (
 						<IonMenuToggle autoHide={false} onClick={signIn}>
-							<IonItem lines="none" button={true}>
+							<IonItem lines="none" button={true} detail={false}>
 								<IonIcon aria-hidden="true" slot="start" ios={logInOutline} md={logInSharp} />
 								<IonLabel>{t('menu.login')}</IonLabel>
 							</IonItem>
 						</IonMenuToggle>
 					)}
 				</IonList>
-				<div className="menu-build-info ion-padding-start ion-padding-end ion-padding-bottom ion-text-center">
+				<div className="menu-build-info">
 					v{__APP_VERSION__} ({__APP_GIT_HASH__})
 				</div>
 			</IonContent>
