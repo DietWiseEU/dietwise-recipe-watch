@@ -6,7 +6,7 @@
 	height: 100%;
 	padding: 8px 16px 4px;
 	text-align: center;
-	color: var(--dietwise-body-text);
+	color: var(--color-neutral-800);
 }
 
 /* Lets the illustration give up height before the navigation is pushed out of sight. */
@@ -35,7 +35,7 @@
 .onboarding__brand-name {
 	font-size: 1.4rem;
 	font-weight: 600;
-	color: var(--dietwise-accent);
+	color: var(--ion-color-primary);
 }
 
 .onboarding__step-number {
@@ -47,10 +47,12 @@
 	height: 40px;
 	margin: 6px 0 2px;
 	border-radius: 50%;
-	background: var(--dietwise-badge-background);
-	color: var(--dietwise-accent);
+	background: var(--color-accent-700);
+	color: var(--color-accent-100);
+	font-family: var(--font-heading);
 	font-size: 1.25rem;
-	font-weight: 600;
+	font-weight: var(--font-heading-weight);
+	font-variant-numeric: lining-nums;
 	line-height: 1;
 }
 
@@ -59,7 +61,7 @@
 	font-size: 1.5rem;
 	font-weight: 700;
 	line-height: 1.25;
-	color: var(--dietwise-accent);
+	color: var(--color-text);
 }
 
 .onboarding__text {
@@ -80,7 +82,7 @@
 	margin: 6px 0 0;
 	padding: 8px;
 	border-radius: 14px;
-	background: var(--dietwise-callout-background);
+	background: var(--color-accent-2-100);
 }
 
 .onboarding__image {
@@ -146,6 +148,6 @@
 }
 
 .onboarding__dot[aria-current='true']::before {
-	border-color: var(--dietwise-accent);
-	background: var(--dietwise-accent);
+	border-color: var(--ion-color-primary);
+	background: var(--ion-color-primary);
 }

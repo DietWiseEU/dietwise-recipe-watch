@@ -2,7 +2,7 @@ import { IonButton, IonIcon } from '@ionic/react';
 import { chevronForward } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 import { authService } from '@/auth/authService';
-import brandIcon from '@/assets/images/DietWise_icon_LightGreen.svg';
+import brandIcon from '@/assets/images/DietWise_icon_Orange.svg';
 import { onboardingScreens } from './model';
 import './OnboardingContentsComponent.css';
 

@@ -188,11 +188,3 @@ ion-title {
 	font-family: var(--font-heading);
 	font-weight: var(--font-heading-weight);
 }
-
-:root {
-	/* Shared accents of the explanatory screens (help, onboarding) */
-	--dietwise-accent: var(--color-accent-2-800);
-	--dietwise-badge-background: var(--color-accent-2-200);
-	--dietwise-callout-background: var(--color-accent-2-100);
-	--dietwise-body-text: var(--color-neutral-800);
-}

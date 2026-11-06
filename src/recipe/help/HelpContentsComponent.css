@@ -6,7 +6,7 @@
 .help p {
 	margin: 0 0 12px;
 	line-height: 1.55;
-	color: var(--dietwise-body-text);
+	color: var(--color-neutral-800);
 }
 
 .help__title {
@@ -53,8 +53,8 @@
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
-	background: var(--dietwise-badge-background);
-	color: var(--dietwise-accent);
+	background: var(--color-accent-2-200);
+	color: var(--color-accent-2-800);
 	font-size: 1rem;
 	font-weight: 600;
 	line-height: 1;
@@ -63,7 +63,7 @@
 .help__step::before {
 	counter-increment: help-step;
 	content: counter(help-step);
-	background: var(--color-accent);
+	background: var(--color-accent-700);
 	color: var(--color-accent-100);
 	font-family: var(--font-heading);
 	font-size: 15px;
@@ -90,11 +90,11 @@
 	margin: 0 0 12px;
 	padding-left: 20px;
 	line-height: 1.55;
-	color: var(--dietwise-body-text);
+	color: var(--color-neutral-800);
 }
 
 .help__options li::marker {
-	color: var(--dietwise-accent);
+	color: var(--color-accent-2-800);
 }
 
 .help__callout {
@@ -104,7 +104,7 @@
 	margin-top: 16px;
 	padding: 14px 16px;
 	border-radius: 12px;
-	background: var(--dietwise-callout-background);
+	background: var(--color-accent-2-100);
 }
 
 .help__callout > div > *:last-child {
@@ -116,7 +116,7 @@
 	font-size: 1rem;
 	font-weight: 600;
 	line-height: 1.25;
-	color: var(--dietwise-accent);
+	color: var(--color-accent-2-800);
 }
 
 .sim-button {
