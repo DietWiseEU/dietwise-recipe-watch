@@ -52,6 +52,14 @@ describe('HelpContentsComponent', () => {
 		expect(titles).toEqual(['recipe.help.costTitle', 'recipe.help.inControlTitle']);
 	});
 
+	it('mentions the seasonality warning along with the cost', () => {
+		const { container } = render(<HelpContentsComponent />);
+
+		const costCallout = container.querySelector('.help__callout');
+		const paragraphs = [...(costCallout?.querySelectorAll('p') ?? [])].map((e) => e.textContent);
+		expect(paragraphs).toEqual(['recipe.help.paragraph6', 'recipe.help.seasonality']);
+	});
+
 	it('explains each choice next to a copy of its button', () => {
 		const { container } = render(<HelpContentsComponent />);
 

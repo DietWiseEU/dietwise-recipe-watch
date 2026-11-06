@@ -108,9 +108,10 @@
 			"explainSkipButton": "palikti ingredientą nenuspręstą ir eiti toliau. Prie jo galėsite grįžti vėliau.",
 			"paragraph4": "Persigalvojote dėl priimtos alternatyvos? Paspauskite šalia jos esantį „minuso“ mygtuką, kad ji vėl taptų nenuspręsta.",
 			"paragraph5": "Kai pažymėta „Automatiškai pereiti“, kitas ingredientas atsidaro vos tik apsisprendžiate dėl ankstesnio. Jei ingredientas turi daugiau nei vieną alternatyvą, „Palyginti greta“ parodo jas vieną šalia kitos.",
-			"costTitle": "Sąnaudų įvertinimas Kainos įvertinimas",
+			"costTitle": "Kainos įvertinimas",
 			"paragraph6": "Programėlė vertina apytikslę kiekvieno pasiūlyto alternatyvaus recepto kainą vienu, dviem arba trim Euro simboliais (€/€€/€€€). Jų reikšmė - \"įprastai pigus\", \"vidutinė kaina\" ir \"įprastai aukšta kaina\". ",
-			"understandScoreTitle": "Supraskite rezultatą Supraskite, ką reiškia įvertinimas.",
+			"seasonality": "Jei alternatyva šiuo metų laiku gali būti ne sezoninė, šalia jos kainos rodomas įspėjimas.",
+			"understandScoreTitle": "Supraskite, ką reiškia įvertinimas",
 			"rating": "Įvertinimas (0–100) parodo, kiek receptas atitinka nustatytas mitybos gaires. Kuo aukštesnis balas, tuo geriau bendras ingredientų balansas atitinka rekomenduojamus mitybos standartus. Paspauskite šalia esantį „i“, kad pamatytumėte, kurie recepte esantys komponentai yra gairių skatinami, o kuriuos jos siūlo riboti. Mūsų dirbtinio intelekto pasiūlymai yra skirti padėti jums pakoreguoti receptus, kad jie gautų aukštesnį įvertinimą ir pagerintų bendrą patiekalo maistinę vertę.",
 			"inControlTitle": "Jūs kontroliuojate situaciją",
 			"inControl": "Jūs sprendžiate, kuriuos pakeitimus priimti. Maži pakeitimai gali turėti didelės įtakos jūsų sveikatai ir planetai."

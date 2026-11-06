@@ -110,6 +110,7 @@
 			"paragraph5": "With \"Auto-advance\" ticked, the next ingredient opens as soon as you decide on one. When an ingredient has more than one alternative, \"Compare side by side\" shows them next to each other.",
 			"costTitle": "Cost estimation",
 			"paragraph6": "The application displays a rough cost estimation of each alternative in the form of one, two or three Euro symbols (€/€€/€€€), meaning \"relatively cheap\", \"medium/average cost\", and \"relatively high cost\" respectively.",
+			"seasonality": "If an alternative may be out of season at this time of year, a warning next to its cost says so.",
 			"understandScoreTitle": "Understand the score",
 			"rating": "The score (0–100) reflects how well a recipe aligns with established dietary guidelines. A higher score means the overall balance of ingredients is more in line with recommended nutritional standards. Tap the \"i\" next to it to see what the recipe contains that the guidelines encourage, and what they say to limit. Our AI's suggestions are designed to help you tweak your recipes to achieve a higher score and improve the overall nutritional balance of your meal.",
 			"inControlTitle": "You're in control",

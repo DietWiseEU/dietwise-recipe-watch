@@ -53,6 +53,7 @@ const HelpContentsComponent: React.FC = () => {
 							<div>
 								<h3 className="help__callout-title">{t('recipe.help.costTitle')}</h3>
 								<p>{t('recipe.help.paragraph6')}</p>
+								<p>{t('recipe.help.seasonality')}</p>
 							</div>
 						</aside>
 					</div>

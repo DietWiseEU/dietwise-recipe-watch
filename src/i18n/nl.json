@@ -110,6 +110,7 @@
 			"paragraph5": "Als \"Automatisch verder\" is aangevinkt, gaat het volgende ingrediënt open zodra je over een ingrediënt hebt beslist. Heeft een ingrediënt meer dan één alternatief, dan toont \"Naast elkaar vergelijken\" ze naast elkaar.",
 			"costTitle": "Kostenraming",
 			"paragraph6": "De applicatie toont een ruwe kostinschatting van elk alternatief in de vorm van een, twee of drie eurotekens (€/€€/€€€), wat respectievelijk \"relatief goedkoop\", \"gemiddelde kostprijs\" en \"relatief hoge kostprijs\" betekent.",
+			"seasonality": "Als een alternatief in deze tijd van het jaar mogelijk niet in het seizoen is, staat er een waarschuwing naast de prijs.",
 			"understandScoreTitle": "Begrijp de score",
 			"rating": "De score (0–100) geeft aan hoe goed een recept aansluit bij de voedingsrichtlijnen. Een hogere score betekent dat de algemene balans van ingrediënten beter overeenkomt met de aanbevolen voedingsnormen. Tik op de \"i\" ernaast om te zien wat het recept bevat van wat de richtlijnen aanmoedigen, en van wat ze aanraden te beperken. De suggesties van onze AI zijn bedoeld om je te helpen je recepten aan te passen voor een hogere score en een betere voedingsbalans van je maaltijd.",
 			"inControlTitle": "Jij hebt de controle",
