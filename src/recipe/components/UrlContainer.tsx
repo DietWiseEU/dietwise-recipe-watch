@@ -1,5 +1,5 @@
 import { IonButton, IonIcon } from '@ionic/react';
-import { alertCircleOutline, arrowUndo, sparklesOutline } from 'ionicons/icons';
+import { alertCircleOutline, arrowUndo, linkOutline, sparklesOutline } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 import type { MainDataStatus } from '@/recipe/model';
 import AssessmentProgress from './AssessmentProgress';
@@ -18,11 +18,15 @@ const UrlContainer: React.FC<UrlContainerProps> = (props) => {
 	const { t } = useTranslation();
 	const showReset = props.status === 'SUCCESS' || props.status === 'FAILURE';
 	const statusIcon = props.failed ? alertCircleOutline : props.status === 'PENDING' ? sparklesOutline : undefined;
+	const hasUrl = typeof props.url === 'string';
 
 	return (
 		<>
-			<p className="url-container ion-display-flex ion-align-items-center" onClick={props.onClick}>
-				{typeof props.url === 'string' ? (
+			<p
+				className={`url-container${hasUrl ? '' : ' url-container--empty'} ion-display-flex ion-align-items-center`}
+				onClick={props.onClick}
+			>
+				{hasUrl ? (
 					<>
 						{statusIcon ? (
 							<IonIcon className="url-container__status" icon={statusIcon} aria-hidden="true" />
@@ -45,7 +49,10 @@ const UrlContainer: React.FC<UrlContainerProps> = (props) => {
 						) : null}
 					</>
 				) : (
-					<span className="enter-url-label">{t('recipe.enterUrl')}</span>
+					<>
+						<IonIcon className="url-container__status" icon={linkOutline} aria-hidden="true" />
+						<span className="enter-url-label">{t('recipe.enterUrl')}</span>
+					</>
 				)}
 			</p>
 			{props.status === 'PENDING' ? (

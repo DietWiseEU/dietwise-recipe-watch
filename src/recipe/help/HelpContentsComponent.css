@@ -10,19 +10,21 @@
 }
 
 .help__title {
-	margin: 18px 0 10px;
-	font-size: 1.75rem;
+	margin: 10px 0 8px;
+	font-size: 24px;
 	font-weight: 700;
-	line-height: 1.2;
-	color: var(--dietwise-accent);
+	line-height: 1.1;
 }
 
 .help__intro {
-	margin-bottom: 4px;
-	font-size: 1.05rem;
+	margin-bottom: 16px;
+	font-size: 13.5px;
 }
 
 .help__steps {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -32,16 +34,15 @@
 .help__step {
 	display: grid;
 	grid-template-columns: auto 1fr;
-	column-gap: 14px;
-	padding: 20px 0;
-	border-top: 1px solid var(--color-divider);
+	column-gap: 12px;
+	padding: 14px;
+	border: 1px solid var(--color-neutral-300);
+	border-radius: 20px;
+	background: var(--color-neutral-100);
+	font-size: 13.5px;
 }
 
-.help__step:first-child {
-	border-top: none;
-}
-
-/* The step number and the callout icon share the same tinted disc. */
+/* The step number and the callout icon share the disc's shape; the step number fills it with the accent. */
 .help__step::before,
 .help__callout-badge {
 	display: flex;
@@ -49,8 +50,8 @@
 	justify-content: center;
 	flex: 0 0 auto;
 	align-self: start;
-	width: 34px;
-	height: 34px;
+	width: 30px;
+	height: 30px;
 	border-radius: 50%;
 	background: var(--dietwise-badge-background);
 	color: var(--dietwise-accent);
@@ -62,15 +63,20 @@
 .help__step::before {
 	counter-increment: help-step;
 	content: counter(help-step);
+	background: var(--color-accent);
+	color: var(--color-accent-100);
+	font-family: var(--font-heading);
+	font-size: 15px;
+	font-weight: var(--font-heading-weight);
+	font-variant-numeric: lining-nums;
 }
 
 .help__step-title {
-	/* Centres the title against the 34px number disc beside it. */
-	margin: 6px 0 10px;
-	font-size: 1.15rem;
+	/* Centres the title against the 30px number disc beside it. */
+	margin: 5px 0 6px;
+	font-size: 16px;
 	font-weight: 700;
 	line-height: 1.25;
-	color: var(--dietwise-accent);
 }
 
 .help__step-body > *:last-child {

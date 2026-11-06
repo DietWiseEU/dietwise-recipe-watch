@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { alertCircleOutline, sparklesOutline } from 'ionicons/icons';
+import { alertCircleOutline, linkOutline, sparklesOutline } from 'ionicons/icons';
 import { describe, expect, it, vi } from 'vitest';
 import UrlContainer from './UrlContainer';
 
@@ -126,6 +126,15 @@ describe('UrlContainer', () => {
 		);
 
 		expect(statusIcon(container)?.icon).toBe(sparklesOutline);
+	});
+
+	it('invites an address with a link before an assessment starts', () => {
+		const { container } = render(
+			<UrlContainer onClick={vi.fn()} onReset={vi.fn()} url={undefined} status="INITIAL" failed={false} />,
+		);
+
+		expect(statusIcon(container)?.icon).toBe(linkOutline);
+		expect(screen.getByText('recipe.enterUrl')).toBeTruthy();
 	});
 
 	it('names the reset button for screen readers', () => {

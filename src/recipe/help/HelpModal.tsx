@@ -20,7 +20,7 @@ const HelpModal: React.FC<HelpModalProps> = (props) => {
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent className="ion-padding">
+			<IonContent className="ion-padding-vertical">
 				<HelpContentsComponent />
 			</IonContent>
 		</IonModal>

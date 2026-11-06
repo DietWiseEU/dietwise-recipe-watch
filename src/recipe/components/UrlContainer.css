@@ -37,11 +37,28 @@
 	font-size: 18px;
 }
 
+.url-container--empty {
+	gap: 12px;
+	padding: 18px;
+	border: 2px dashed var(--color-accent-400);
+	border-radius: 24px;
+	background: var(--color-accent-100);
+	cursor: pointer;
+}
+
+.url-container--empty:hover {
+	background: var(--color-accent-200);
+}
+
+.url-container--empty .url-container__status {
+	font-size: 26px;
+}
+
 .enter-url-label {
-	color: var(--ion-color-medium);
-	font-style: italic;
-	padding-left: 20px;
-	padding-right: 20px;
+	flex: 1;
+	font-size: 14.5px;
+	font-weight: 600;
+	line-height: 1.4;
 }
 
 .url-container__progress {
