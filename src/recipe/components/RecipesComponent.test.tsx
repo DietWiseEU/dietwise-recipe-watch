@@ -472,26 +472,30 @@ describe('RecipesComponent', () => {
 		expect(store.get(mainStateAtom).suggestions?.[keyOfSuggestion(SUGGESTION)].status).toBe('UNDECIDED');
 	});
 
-	it('shows the errors of the server below the recipe when it has no suggestions', () => {
+	it('shows the recipe and leaves the errors of the server to the failure card', () => {
 		const store = storeWithButterAndSugar();
 		store.set(mainStateAtom, createMessageReceivedAction({ type: 'ERROR', errors: ['No ingredients matched'] })!);
 		renderRecipes(store);
 
 		expect(screen.getByText('sugar')).toBeTruthy();
-		expect(screen.getByText('No ingredients matched')).toBeTruthy();
+		expect(screen.queryByText('No ingredients matched')).toBeNull();
+		expect(screen.queryByText('recipe.encounteredErrors')).toBeNull();
 	});
 
-	it('says so below the recipe when the server has no suggestions for it', () => {
+	it('says so above the ingredients, and not as an error, when the server has no suggestions for the recipe', () => {
 		const store = storeWithButterAndSugar();
 		store.set(mainStateAtom, createMessageReceivedAction({ type: 'SUGGESTIONS', suggestions: [] })!);
 		store.set(mainStateAtom, createRecipeAssessmentCompletedAction());
 		renderRecipes(store);
 
-		expect(screen.getByText('sugar')).toBeTruthy();
-		expect(screen.getByText('recipe.emptySuggestionsFromServer')).toBeTruthy();
+		const note = screen.getByText('recipe.emptySuggestionsFromServer');
+		expect(
+			note.compareDocumentPosition(screen.getByText('butter')) & Node.DOCUMENT_POSITION_FOLLOWING,
+		).toBeTruthy();
+		expect(screen.queryByText('recipe.encounteredErrors')).toBeNull();
 	});
 
-	it('shows the errors when no recipe was found', () => {
+	it('shows nothing when no recipe was found, leaving the errors to the failure card', () => {
 		const store = createStore();
 		store.set(mainStateAtom, createPrepareToAssessRecipeAction('https://example.test/recipe', 'en'));
 		store.set(
@@ -500,8 +504,7 @@ describe('RecipesComponent', () => {
 		);
 		renderRecipes(store);
 
-		expect(screen.getByText('recipe.encounteredErrors')).toBeTruthy();
-		expect(screen.getByText('No recipe found on that page')).toBeTruthy();
+		expect(document.body.textContent).toBe('');
 	});
 });
 

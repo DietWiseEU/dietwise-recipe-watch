@@ -77,6 +77,7 @@
 		"emptySuggestionsFromServer": "Δεν υπάρχουν προτάσεις για αυτή τη συνταγή.",
 		"assessmentInterrupted": "Η σύνδεση διακόπηκε πριν ολοκληρωθεί η αξιολόγηση.",
 		"retry": "Δοκιμάστε ξανά",
+		"tryAnotherAddress": "Δοκιμάστε άλλη διεύθυνση",
 		"rating": {
 			"score": "Βαθμολογία {{score}} από {{max}}",
 			"detailsTitle": "Στοιχεία της συνταγής",

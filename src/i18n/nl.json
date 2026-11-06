@@ -77,6 +77,7 @@
 		"emptySuggestionsFromServer": "Er zijn geen suggesties voor dit recept.",
 		"assessmentInterrupted": "De verbinding werd verbroken voordat de beoordeling voltooid was.",
 		"retry": "Opnieuw proberen",
+		"tryAnotherAddress": "Ander adres proberen",
 		"rating": {
 			"score": "Beoordeling {{score}} van {{max}}",
 			"detailsTitle": "Componenten aanwezig in dit recept",

@@ -22,15 +22,15 @@ const RecipesComponent: React.FC = () => {
 	const { isSuggestionInFlight, changeSuggestionStatus } = useChangeSuggestionStatus();
 	const [presentAlert] = useIonAlert();
 
-	const hasRecipes = Boolean(mainState.recipes?.length);
-	const hasProblems =
-		!mainState.suggestionKeys?.length && Boolean(mainState.errors?.length || mainState.emptySuggestionsFromServer);
-	if (!hasRecipes && !hasProblems) {
+	if (!mainState.recipes?.length && !mainState.emptySuggestionsFromServer) {
 		return null;
 	}
 
 	return (
 		<div className="recipes-pane">
+			{mainState.emptySuggestionsFromServer ? (
+				<p className="no-suggestions-note">{t('recipe.emptySuggestionsFromServer')}</p>
+			) : null}
 			{mainState.recipes?.map((r, index) => (
 				<RecipeComponent
 					key={
@@ -50,20 +50,6 @@ const RecipesComponent: React.FC = () => {
 					onInfoClicked={(header, message) => presentAlert({ header, message, buttons: [t('general.OK')] })}
 				/>
 			))}
-			{hasProblems ? (
-				<div className="error-pane">
-					<h2>{t('recipe.encounteredErrors')}</h2>
-					<ul>
-						{mainState.errors?.map((err, index) => (
-							// eslint-disable-next-line @eslint-react/no-array-index-key -- the error list is static and never reordered
-							<li key={index}>{err}</li>
-						))}
-						{mainState.emptySuggestionsFromServer ? (
-							<li>{t('recipe.emptySuggestionsFromServer')}</li>
-						) : null}
-					</ul>
-				</div>
-			) : null}
 		</div>
 	);
 };

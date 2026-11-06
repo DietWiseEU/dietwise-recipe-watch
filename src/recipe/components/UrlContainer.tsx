@@ -1,5 +1,5 @@
 import { IonButton, IonIcon } from '@ionic/react';
-import { arrowUndo } from 'ionicons/icons';
+import { alertCircleOutline, arrowUndo, sparklesOutline } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 import type { MainDataStatus } from '@/recipe/model';
 import AssessmentProgress from './AssessmentProgress';
@@ -10,17 +10,23 @@ export interface UrlContainerProps {
 	onReset: () => void;
 	url: string | undefined;
 	status: MainDataStatus;
+	/** Whether the assessment went wrong. */
+	failed: boolean;
 }
 
 const UrlContainer: React.FC<UrlContainerProps> = (props) => {
 	const { t } = useTranslation();
 	const showReset = props.status === 'SUCCESS' || props.status === 'FAILURE';
+	const statusIcon = props.failed ? alertCircleOutline : props.status === 'PENDING' ? sparklesOutline : undefined;
 
 	return (
 		<>
 			<p className="url-container ion-display-flex ion-align-items-center" onClick={props.onClick}>
 				{typeof props.url === 'string' ? (
 					<>
+						{statusIcon ? (
+							<IonIcon className="url-container__status" icon={statusIcon} aria-hidden="true" />
+						) : null}
 						<span className="url-container__url ion-text-nowrap overflow-hidden text-overflow-ellipsis">
 							{props.url}
 						</span>

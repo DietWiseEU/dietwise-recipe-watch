@@ -3,8 +3,10 @@ import { Provider as JotaiProvider, createStore } from 'jotai';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Capacitor } from '@capacitor/core';
 import { KeepAwake } from '@capacitor-community/keep-awake';
+import { alertCircleOutline } from 'ionicons/icons';
 import { assessRecipe } from '@/recipe/assessRecipe';
 import {
+	createMessageReceivedAction,
 	createPrepareToAssessRecipeAction,
 	createRecipeAssessmentCompletedAction,
 	createRecipeAssessmentFailedAction,
@@ -154,6 +156,71 @@ describe('RecipePage', () => {
 		renderPage(store);
 
 		expect(screen.queryByText('recipe.assessmentInterrupted')).toBeNull();
+	});
+
+	it('shows what went wrong above the ingredients', () => {
+		const store = createStore();
+		store.set(mainStateAtom, createPrepareToAssessRecipeAction(URL, 'en'));
+		store.set(
+			mainStateAtom,
+			createMessageReceivedAction({
+				type: 'RECIPES',
+				recipes: [
+					{
+						recipe: {
+							name: 'omelet',
+							recipeIngredients: [{ id: 'i1', nameInRecipe: 'butter' }],
+							recipeInstructions: [],
+						},
+						detectionType: 'JSONLD',
+					},
+				],
+				pageText: 'omelet',
+			})!,
+		);
+		store.set(mainStateAtom, createMessageReceivedAction({ type: 'ERROR', errors: ['No ingredients matched'] })!);
+
+		renderPage(store);
+
+		const error = screen.getByText('No ingredients matched');
+		const ingredient = screen.getByText('butter');
+		expect(error.closest('.recipe-page__scroll')).not.toBeNull();
+		expect(error.compareDocumentPosition(ingredient) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	});
+
+	it('marks the address with an alert once the server reported errors and closed the connection', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const store = createStore();
+		store.set(mainStateAtom, createPrepareToAssessRecipeAction(URL, 'en'));
+		store.set(
+			mainStateAtom,
+			createMessageReceivedAction({ type: 'ERROR', errors: ['No recipe found on that page'] })!,
+		);
+		store.set(mainStateAtom, createRecipeAssessmentCompletedAction());
+		renderPage(store);
+
+		const statusIcon = document.querySelector<HTMLIonIconElement>(
+			'.url-container ion-icon:not([slot="icon-only"])',
+		);
+		expect(statusIcon?.icon).toBe(alertCircleOutline);
+		expect(warn).toHaveBeenCalledWith('Received completion while in FAILURE state, that is weird');
+		warn.mockRestore();
+	});
+
+	it('opens the address for editing to try another one', async () => {
+		const store = createStore();
+		store.set(mainStateAtom, createPrepareToAssessRecipeAction(URL, 'en'));
+		store.set(
+			mainStateAtom,
+			createMessageReceivedAction({ type: 'ERROR', errors: ['No recipe found on that page'] })!,
+		);
+		renderPage(store);
+
+		expect(screen.queryByText('recipe.enterUrlModalTitle')).toBeNull();
+
+		fireEvent.click(screen.getByText('recipe.tryAnotherAddress'));
+
+		expect(await screen.findByText('recipe.enterUrlModalTitle')).toBeTruthy();
 	});
 
 	it('shows the app icon beside the title in the toolbar', () => {

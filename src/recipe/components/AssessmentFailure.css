@@ -1,0 +1,54 @@
+.assessment-failure {
+	margin: 0 18px;
+	padding: 18px;
+	border: 1px solid var(--color-accent-400);
+	border-radius: 24px;
+	background: var(--color-accent-200);
+	color: var(--color-accent-900);
+}
+
+.assessment-failure h2 {
+	margin: 0 0 8px;
+	font-size: 22px;
+	line-height: 1.12;
+}
+
+.assessment-failure ul {
+	margin: 0;
+	padding-left: 20px;
+	font-size: 13.5px;
+	line-height: 1.55;
+}
+
+.assessment-failure li + li {
+	margin-top: 6px;
+}
+
+.assessment-failure__actions {
+	display: flex;
+	gap: 9px;
+	margin-top: 16px;
+}
+
+.assessment-failure__actions ion-button {
+	height: 44px;
+	margin: 0;
+	--box-shadow: none;
+	font-family: var(--font-heading);
+	font-size: 14px;
+	letter-spacing: normal;
+	text-transform: none;
+}
+
+.assessment-failure__another {
+	flex: 1;
+}
+
+.assessment-failure__retry {
+	flex: none;
+	--border-width: 1px;
+	--border-color: var(--color-accent-700);
+	--color: var(--color-accent-900);
+	--background-hover: var(--color-accent-300);
+	--background-hover-opacity: 1;
+}

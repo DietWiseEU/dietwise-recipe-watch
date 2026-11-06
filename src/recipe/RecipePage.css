@@ -37,6 +37,12 @@
 	padding: 0 0 10px;
 }
 
-.error-pane {
-	padding: 0 18px;
+.no-suggestions-note {
+	margin: 0 18px;
+	padding: 14px 18px;
+	border: 1px solid var(--color-neutral-300);
+	border-radius: 24px;
+	background: var(--color-neutral-100);
+	font-size: 13.5px;
+	line-height: 1.55;
 }

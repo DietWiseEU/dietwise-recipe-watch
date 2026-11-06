@@ -33,9 +33,9 @@ import RecipeHeader from '@/recipe/components/RecipeHeader';
 import UrlContainer from '@/recipe/components/UrlContainer';
 import UrlModal from '@/recipe/components/UrlModal';
 import HelpModal from '@/recipe/help/HelpModal';
-import InterruptedNotice from '@/recipe/components/InterruptedNotice';
+import AssessmentFailure from '@/recipe/components/AssessmentFailure';
 import RecipesComponent from '@/recipe/components/RecipesComponent';
-import { hasSingleRecipe } from './components/recipesComponentUtils';
+import { hasFailed, hasSingleRecipe } from './components/recipesComponentUtils';
 import HelpContentsComponent from '@/recipe/help/HelpContentsComponent';
 import './RecipePage.css';
 
@@ -155,10 +155,14 @@ const RecipePage: React.FC = () => {
 							onReset={resetCallback}
 							url={mainState.url}
 							status={mainState.status}
+							failed={hasFailed(mainState)}
 						/>
 					)}
-					{mainState.interrupted ? <InterruptedNotice onRetry={retryCallback} /> : null}
 					<div className="recipe-page__scroll">
+						<AssessmentFailure
+							onTryAnotherAddress={() => setIsUrlModalOpen(true)}
+							onRetry={retryCallback}
+						/>
 						{!assessing && !hasOutcome ? (
 							<>
 								<HelpContentsComponent />
