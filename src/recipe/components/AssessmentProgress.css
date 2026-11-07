@@ -34,7 +34,7 @@
 }
 
 .assessment-progress__step--waiting {
-	color: color-mix(in srgb, var(--color-text) 45%, transparent);
+	color: color-mix(in srgb, var(--color-text) 70%, transparent);
 }
 
 .assessment-progress__step--waiting .assessment-progress__marker {

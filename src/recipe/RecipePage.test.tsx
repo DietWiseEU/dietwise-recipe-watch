@@ -80,7 +80,6 @@ describe('RecipePage', () => {
 	});
 
 	afterEach(() => {
-		vi.unstubAllGlobals();
 		// Ionic presents toasts outside the rendered container, where cleanup does not reach
 		document.querySelectorAll('ion-toast').forEach((toast) => toast.remove());
 	});

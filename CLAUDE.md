@@ -13,7 +13,7 @@ Functional purpose (per the Grant Agreement, `Grant Agreement - GAP-DIETWISE SHO
 - **Ionic React 9 + Capacitor 8** — single codebase targeting web, Android and iOS.
 - **React 19, TypeScript 6**, build with **Vite 8** (`vite.config.ts`). Path alias `@/` → `src/`.
 - **Jotai 2** for state. `atomWithReducer` for the recipe page's main state machine; `atomWithObservable` to bridge `ionic-appauth` RxJS streams into atoms.
-- **react-i18next** for translations. Languages: `en`, `el`, `lt`, `nl` (only `en` is currently exposed in the Settings UI — others are commented out in `SettingsPage.tsx`).
+- **react-i18next** for translations. Languages: `en`, `el`, `lt`, `nl`, all selectable in Settings and in the URL modal's recipe-language select.
 - **ionic-appauth** for OIDC/PKCE auth against **Keycloak** (realm `dietwise`, client_id `recipewatch`).
 - **capacitor-secure-storage-plugin** for persisting settings and OIDC tokens.
 - **Vitest + jsdom** for unit tests, **Cypress** for e2e. Testing is sparse — most coverage is on pure reducers/utils under `src/recipe/`.
