@@ -150,6 +150,18 @@ describe('UrlContainer', () => {
 		expect(onClick).toHaveBeenCalledTimes(1);
 	});
 
+	it('lets the keyboard open the url modal once an address is entered', async () => {
+		const user = userEvent.setup();
+		const onClick = vi.fn();
+		render(<UrlContainer onClick={onClick} onReset={vi.fn()} url="https://example.com" status="FAILURE" failed />);
+
+		await user.tab();
+		expect(document.activeElement).toBe(screen.getByRole('button', { name: 'https://example.com' }));
+		await user.keyboard('{Enter}');
+
+		expect(onClick).toHaveBeenCalledTimes(1);
+	});
+
 	it('names the reset button for screen readers', () => {
 		const { container } = render(
 			<UrlContainer

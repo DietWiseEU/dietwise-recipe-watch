@@ -23,22 +23,23 @@ const UrlContainer: React.FC<UrlContainerProps> = (props) => {
 	return (
 		<>
 			{hasUrl ? (
-				<p className="url-container ion-display-flex ion-align-items-center" onClick={props.onClick}>
+				<p className="url-container ion-display-flex ion-align-items-center">
 					{statusIcon ? (
 						<IonIcon className="url-container__status" icon={statusIcon} aria-hidden="true" />
 					) : null}
-					<span className="url-container__url ion-text-nowrap overflow-hidden text-overflow-ellipsis">
+					<button
+						type="button"
+						className="url-container__url ion-text-nowrap overflow-hidden text-overflow-ellipsis"
+						onClick={props.onClick}
+					>
 						{props.url}
-					</span>
+					</button>
 					{showReset ? (
 						<IonButton
 							className="url-container__reset"
 							fill="clear"
 							aria-label={t('recipe.startOver')}
-							onClick={(e) => {
-								e.stopPropagation();
-								props.onReset();
-							}}
+							onClick={props.onReset}
 						>
 							<IonIcon slot="icon-only" icon={arrowUndo} />
 						</IonButton>
