@@ -48,7 +48,7 @@
 		"impact": {
 			"title": "See the impact",
 			"text": "Watch your recipe score improve as you accept healthier ingredients.",
-			"cost": "You'll also see an estimated cost (€–€€€) and seasonality for each alternative to help you make balanced choices."
+			"cost": "You'll also see an estimated cost (€–€€€) and seasonality where applicable to help you make balanced choices."
 		},
 		"registration": {
 			"title": "Registration",
@@ -56,7 +56,7 @@
 		}
 	},
 	"recipe": {
-		"title": "MyRecipeWatch Recipe",
+		"title": "MyRecipeWatch",
 		"helpTitle": "Help",
 		"welcomeHeading": "Welcome to the Recipe assessment page",
 		"welcomeFooter": "Don't worry if you forget these instructions; to see them again, press the Help button that will appear at the top of the screen while assessing a recipe!",
@@ -64,10 +64,10 @@
 		"enterUrlModalTitle": "Enter address",
 		"ASSESS": "ASSESS",
 		"urlPlaceholder": "Enter the address here",
-		"encounteredErrors": "Encountered errors:",
+		"encounteredErrors": "Oops! One or more errors occurred:",
 		"titleOfIngredients": "Ingredients",
 		"disclaimer": "The following content comes from the website at the address you have entered and its intellectual property is that specified by the same page.",
-		"titleOfSuggestions": "Suggestions - Advice",
+		"titleOfSuggestions": "Suggestions",
 		"keepScreenOn": "Keep screen on",
 		"anonymousRecipeTemplateTitle": "Recipe #{{index, number}}",
 		"emptySuggestionsFromServer": "There are no suggestions for this recipe.",
