@@ -75,6 +75,7 @@ An assessment takes minutes and says nothing for most of them, so the backend se
 
 - Native (Capacitor) uses the custom URL scheme `eu.dietwise.recipewatch://authcallback`; web uses `${basePath}/authcallback`. `basePath` is derived from `BASE_URL` so a non-root deployment (e.g. `/recipewatch/`) keeps working.
 - The **mobile-preview** page (`mobile-preview.html`) embeds the web app in an iframe to demo the mobile UX in a desktop browser. Keycloak refuses to be framed, so `MobilePreviewAwareBrowser` (`src/auth/mobilePreviewAuth.ts`) opens the OIDC URL in `_top` and stashes the return path in `sessionStorage` so the iframe can navigate back after the redirect. Don't simplify this unless you've verified the framed flow still works.
+- **Native sign-out restarts the app** (`restartApp` on `SignOutSuccess`, `src/auth/authService.ts`). The WebView keeps running while the in-app browser signs the user out, so without the restart every atom and mounted page of the previous user (recipe, assessment id, cached personal info) carries over to the next login. Web needs no restart: it leaves for Keycloak and loads afresh on `/endsession`.
 - `LOG_SENSITIVE_DATA` (`src/common/logging.ts`) gates verbose auth logging. Don't log tokens or user info unconditionally.
 
 ## Build & dev commands

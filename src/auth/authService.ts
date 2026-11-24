@@ -5,6 +5,7 @@ import { RequestorImpl } from '@/services/RequestorImpl';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { MobilePreviewAwareBrowser } from '@/auth/mobilePreviewAuth';
 import { LOG_SENSITIVE_DATA } from '@/common/logging';
+import { restartApp } from '@/common/restartApp';
 
 const browser = isPlatform('capacitor') ? new CapacitorBrowser() : new MobilePreviewAwareBrowser();
 
@@ -57,6 +58,13 @@ if (isPlatform('capacitor')) {
 			authService.authorizationCallback(data.url);
 		} else {
 			authService.endSessionCallback();
+		}
+	});
+	// The app keeps running while the in-app browser signs the user out, unlike the web app, which leaves for the
+	// identity server and loads afresh on its return; restarting is what forgets everything of the signed-out user.
+	authService.events$.subscribe((action) => {
+		if (action.action === AuthActions.SignOutSuccess) {
+			restartApp();
 		}
 	});
 	App.addListener('appStateChange', async ({ isActive }) => {
