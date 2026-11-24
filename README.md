@@ -14,6 +14,19 @@ This allows:
 - one artifact with per-environment runtime overrides (`public/config.json` or mounted replacement),
 - plus optional build-time overrides for CI/dev.
 
+## Rating logging
+
+`logRating` prints the recipe rating and the components it is made of to the browser console. It is resolved in the same order: `"logRating": true` in `config.json`, then `VITE_LOG_RATING=true` (set in `.env.development`), and is off otherwise.
+
+To turn it on in a container, mount a `config.json` that sets it. The mounted file replaces the bundled one, so give it the hosts too:
+
+```bash
+docker run -d --name recipe-watch-web -p 8080:80 \
+	-v "$PWD/config.json:/usr/share/nginx/html/config.json:ro" recipe-watch-web:local
+```
+
+(With a `VITE_BASE_PATH` the file lives under it, e.g. `/usr/share/nginx/html/recipewatch/config.json`.) The app fetches `config.json` uncached, so a change to the mounted file applies on the next page load. An editor that replaces the file instead of rewriting it leaves the container seeing the old one; restart the container then.
+
 ## Docker deploy (web testing)
 
 This repository includes a production-style static web container:

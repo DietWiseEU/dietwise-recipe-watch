@@ -1,6 +1,9 @@
-import { StrictMode } from 'react';
+import { Fragment, StrictMode } from 'react';
 import { renderHook } from '@testing-library/react';
+import { Provider as JotaiProvider, createStore } from 'jotai';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { appConfigAtom } from '@/config/atoms';
+import { FALLBACK_APP_CONFIG } from '@/config/model';
 import type { Ingredient, MainData, Rating, ScoringData, Suggestion, SuggestionState } from '@/recipe/model';
 import { useLogRating } from './useLogRating';
 
@@ -85,16 +88,36 @@ function loggedWith(log: ReturnType<typeof spyOnConsole>, label: string) {
 	return log.mock.calls.filter((call) => call[0] === label || String(call[0]).startsWith(label));
 }
 
-function renderUseLogRating(state: MainData, wrapper?: React.FC<{ children: React.ReactNode }>) {
+interface RenderOptions {
+	wrapper?: React.FC<{ children: React.ReactNode }>;
+	logRating?: boolean;
+}
+
+/** Renders the hook in an app configured with the given logRating, on by default. */
+function renderUseLogRating(state: MainData, { wrapper: Wrapper = Fragment, logRating = true }: RenderOptions = {}) {
+	const store = createStore();
+	store.set(appConfigAtom, { ...FALLBACK_APP_CONFIG, logRating });
 	return renderHook(({ state }: { state: MainData }) => useLogRating(state), {
 		initialProps: { state },
-		wrapper,
+		wrapper: ({ children }) => (
+			<JotaiProvider store={store}>
+				<Wrapper>{children}</Wrapper>
+			</JotaiProvider>
+		),
 	});
 }
 
 describe('useLogRating', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
+	});
+
+	it('logs nothing when the app is not configured to log the rating', () => {
+		const log = spyOnConsole();
+		renderUseLogRating(withSuggestions([OLIVE_OIL, HERBS], { scoringData: SCORING, rating: RATING }), {
+			logRating: false,
+		});
+		expect(log).not.toHaveBeenCalled();
 	});
 
 	describe('the score', () => {
@@ -129,7 +152,7 @@ describe('useLogRating', () => {
 
 		it('logs once under the double rendering of StrictMode', () => {
 			const log = spyOnConsole();
-			renderUseLogRating(mainData({ rating: RATING }), StrictMode);
+			renderUseLogRating(mainData({ rating: RATING }), { wrapper: StrictMode });
 			expect(loggedWith(log, RATING_LABEL)).toHaveLength(1);
 		});
 	});

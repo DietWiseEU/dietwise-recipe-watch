@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { useAtomValue } from 'jotai';
+import { logRatingAtom } from '@/config/atoms';
 import type { MainData, Recipe, ScoringData } from '@/recipe/model';
 import { MAX_RATING, ratingScore } from '@/recipe/reducers/calculateRating';
-
-const LOG_RATING = import.meta.env.DEV;
 
 /** The components a named ingredient or alternative carries into the rating. */
 type ComponentsByName = { [name: string]: string[] };
@@ -17,27 +17,30 @@ interface NamedContribution {
 /**
  * Prints the rating and the data it is made of to the console: the score as soon as it is calculated and
  * every time it is recalculated, the components of the ingredients and of the suggested alternatives once
- * per assessment. A development aid; the effects fold to nothing and print nothing in production builds.
+ * per assessment. A debugging aid that prints nothing unless the app config enables logRating.
  */
 export function useLogRating(state: MainData): void {
-	useLogWhenNew(state.rating, (rating) => console.log(`Recipe rating: ${ratingScore(rating)}/${MAX_RATING}`, rating));
-	useLogWhenNew(state.scoringData, (scoringData) =>
+	const enabled = useAtomValue(logRatingAtom);
+	useLogWhenNew(enabled, state.rating, (rating) =>
+		console.log(`Recipe rating: ${ratingScore(rating)}/${MAX_RATING}`, rating),
+	);
+	useLogWhenNew(enabled, state.scoringData, (scoringData) =>
 		console.log('Rating components per ingredient:', componentsPerIngredient(scoringData, state.recipes)),
 	);
-	useLogWhenNew(state.suggestionKeys, () =>
+	useLogWhenNew(enabled, state.suggestionKeys, () =>
 		console.log('Rating components per suggestion:', componentsPerSuggestion(state.suggestions)),
 	);
 }
 
 /** Logs every value that has not been logged before; StrictMode runs the effect twice per mount. */
-function useLogWhenNew<T>(value: T | undefined, log: (value: T) => void): void {
+function useLogWhenNew<T>(enabled: boolean, value: T | undefined, log: (value: T) => void): void {
 	const loggedValueRef = useRef<T | undefined>(undefined);
 
 	useEffect(() => {
-		if (!LOG_RATING || value === undefined || value === loggedValueRef.current) return;
+		if (!enabled || value === undefined || value === loggedValueRef.current) return;
 		loggedValueRef.current = value;
 		log(value);
-	}, [value, log]);
+	}, [enabled, value, log]);
 }
 
 function componentsPerIngredient(scoringData: ScoringData, recipes: Recipe[] | undefined): ComponentsByName {
