@@ -70,6 +70,7 @@ const UrlModal: React.FC<UrlModalProps> = (props) => {
 							onIonInput={(e) => setUrl(e.target.value)}
 						>
 							<IonButton
+								className="url-modal__clear"
 								fill="clear"
 								slot="end"
 								aria-label={t('general.clear')}

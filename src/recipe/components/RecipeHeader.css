@@ -56,6 +56,10 @@
 	margin: -4px -8px 0 0;
 }
 
+.recipe-header__reset ion-icon {
+	font-size: 24px;
+}
+
 .recipe-header__status {
 	display: flex;
 	align-items: center;

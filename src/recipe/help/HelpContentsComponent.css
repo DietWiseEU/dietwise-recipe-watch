@@ -60,6 +60,10 @@
 	line-height: 1;
 }
 
+.help__callout-badge ion-icon {
+	font-size: 24px;
+}
+
 .help__step::before {
 	counter-increment: help-step;
 	content: counter(help-step);

@@ -42,6 +42,10 @@
 	--padding-end: 4px;
 }
 
+.suggestion-card__info ion-icon {
+	font-size: 24px;
+}
+
 .suggestion-card__actions {
 	display: flex;
 	gap: 8px;
@@ -109,4 +113,8 @@
 	--padding-start: 0;
 	--padding-end: 0;
 	--color: var(--color-neutral-800);
+}
+
+.suggestion-card__reject--icon ion-icon {
+	font-size: 24px;
 }

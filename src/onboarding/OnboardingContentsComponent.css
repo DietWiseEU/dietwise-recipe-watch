@@ -121,6 +121,10 @@
 	justify-self: end;
 }
 
+.onboarding__forward ion-icon {
+	font-size: 24px;
+}
+
 .onboarding__dots {
 	display: flex;
 	gap: 2px;
