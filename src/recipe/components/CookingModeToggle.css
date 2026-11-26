@@ -10,8 +10,12 @@ ion-button.cooking-mode-toggle {
 	text-transform: none;
 }
 
+.cooking-mode-toggle__label {
+	margin-top: 3px;
+}
+
 /* Narrow screens keep only the icon, so that the title fits; the button's aria-label still names it */
-@media (max-width: 399.98px) {
+@media (max-width: 360px) {
 	.cooking-mode-toggle__label {
 		display: none;
 	}
@@ -23,5 +27,6 @@ ion-button.cooking-mode-toggle {
 
 	ion-button.cooking-mode-toggle ion-icon {
 		margin: 0;
+		padding-left: 4px;
 	}
 }

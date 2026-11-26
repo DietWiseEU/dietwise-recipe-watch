@@ -43,12 +43,20 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = (props) => {
 					</button>
 				</div>
 				{detectionType ? (
-					<IonIcon
-						className="recipe-header__detection"
-						icon={detectionType === 'JSONLD' ? jsonLdIcon : brainIcon}
+					<IonButton
+						className="recipe-header__detection_btn"
+						fill="clear"
+						color="dark"
 						aria-hidden="true"
-						color="medium"
-					/>
+						disabled
+					>
+						<IonIcon
+							slot="icon-only"
+							icon={detectionType === 'JSONLD' ? jsonLdIcon : brainIcon}
+							aria-hidden="true"
+							color="medium"
+						/>
+					</IonButton>
 				) : null}
 				{canReset ? (
 					<IonButton

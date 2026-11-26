@@ -104,7 +104,7 @@ describe('RecipeHeader', () => {
 		renderHeader(storeWithExtractedRecipe('omelet'));
 
 		expect(document.querySelector('ion-spinner')).toBeTruthy();
-		expect(document.querySelector('ion-button')).toBeNull();
+		expect(document.querySelector('ion-button[aria-label="recipe.startOver"]')).toBeNull();
 	});
 
 	it('shows that the recipe is read and its ingredients are being assessed', () => {
