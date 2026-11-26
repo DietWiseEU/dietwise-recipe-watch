@@ -34,41 +34,41 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = (props) => {
 	return (
 		<header className="recipe-header">
 			<div className="recipe-header__top">
-				<div className="recipe-header__identity">
+				<div className="recipe-header__title-row">
 					<h2 className="recipe-header__title">
 						{recipe.name ? recipe.name : t('recipe.anonymousRecipeTemplateTitle', { index: 1 })}
 					</h2>
-					<button type="button" className="recipe-header__url" onClick={props.onEditUrl}>
-						{mainState.url}
-					</button>
-				</div>
-				{detectionType ? (
-					<IonButton
-						className="recipe-header__detection_btn"
-						fill="clear"
-						color="dark"
-						aria-hidden="true"
-						disabled
-					>
-						<IonIcon
-							slot="icon-only"
-							icon={detectionType === 'JSONLD' ? jsonLdIcon : brainIcon}
+					{detectionType ? (
+						<IonButton
+							className="recipe-header__detection_btn"
+							fill="clear"
+							color="dark"
 							aria-hidden="true"
-							color="medium"
-						/>
-					</IonButton>
-				) : null}
-				{canReset ? (
-					<IonButton
-						className="recipe-header__reset"
-						fill="clear"
-						color="dark"
-						aria-label={t('recipe.startOver')}
-						onClick={props.onReset}
-					>
-						<IonIcon slot="icon-only" icon={arrowUndo} />
-					</IonButton>
-				) : null}
+							disabled
+						>
+							<IonIcon
+								slot="icon-only"
+								icon={detectionType === 'JSONLD' ? jsonLdIcon : brainIcon}
+								aria-hidden="true"
+								color="medium"
+							/>
+						</IonButton>
+					) : null}
+					{canReset ? (
+						<IonButton
+							className="recipe-header__reset"
+							fill="clear"
+							color="dark"
+							aria-label={t('recipe.startOver')}
+							onClick={props.onReset}
+						>
+							<IonIcon slot="icon-only" icon={arrowUndo} />
+						</IonButton>
+					) : null}
+				</div>
+				<button type="button" className="recipe-header__url" onClick={props.onEditUrl}>
+					{mainState.url}
+				</button>
 			</div>
 			{mainState.status === 'PENDING' ? (
 				<div className="recipe-header__progress">

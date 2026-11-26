@@ -10,18 +10,18 @@
 }
 
 .recipe-header__top {
+	position: relative;
+}
+
+.recipe-header__title-row {
 	display: flex;
 	align-items: flex-start;
 	gap: 8px;
 }
 
-.recipe-header__identity {
-	position: relative;
+.recipe-header__title {
 	flex: 1;
 	min-width: 0;
-}
-
-.recipe-header__title {
 	margin: 0 0 5px;
 	font-size: 24px;
 	line-height: 1.08;
@@ -43,7 +43,7 @@
 	cursor: pointer;
 }
 
-/* Stretches the address button over the name and the address, so a tap anywhere on them edits the address. */
+/* Stretches the address button over the top of the header: a tap on the name or the address edits the address. */
 .recipe-header__url::after {
 	content: '';
 	position: absolute;
@@ -73,7 +73,10 @@
 	margin-top: 12px;
 }
 
+/* Above the stretched address button, so that the reset keeps its own taps. */
 .recipe-header__reset {
+	position: relative;
+	z-index: 1;
 	flex: none;
 	margin: -4px -8px 0 0;
 }
