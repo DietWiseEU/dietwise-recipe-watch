@@ -83,6 +83,12 @@ export default defineConfig(({ mode }) => {
 			globals: true, // So we can use describe/it/expect directly
 			setupFiles: './src/setupTests.ts',
 			exclude: [...configDefaults.exclude],
+			// Every test file needs a fresh environment: without isolation the files leak rendered DOM and mocks into
+			// each other, so the outcome depends on their order. A vm pool keeps isolation, but vmThreads runs this
+			// suite more than twice as slowly and fails the streamJson tests. Both values are Vitest's defaults; stating
+			// them keeps Vitest from hinting at `isolate: false` or a vm pool after every run.
+			pool: 'forks',
+			isolate: true,
 			coverage: {
 				provider: 'v8',
 				reporter: ['text', 'html'],
