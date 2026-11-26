@@ -25,7 +25,6 @@ import {
 } from '@/recipe/actions';
 import { assessRecipe } from '@/recipe/assessRecipe';
 import type { CancellationFunction } from '@/recipe/assessRecipe';
-import dietWiseIconOrange from '@/assets/images/DietWise_icon_Orange.svg';
 import { useKeepScreenAwake } from '@/recipe/useKeepScreenAwake';
 import { useLogRating } from '@/recipe/useLogRating';
 import CookingModeToggle from '@/recipe/components/CookingModeToggle';
@@ -129,12 +128,7 @@ const RecipePage: React.FC = () => {
 							</IonButton>
 						</IonButtons>
 					) : null}
-					<IonTitle>
-						<span className="recipe-page__title">
-							<img className="recipe-page__title-icon" src={dietWiseIconOrange} alt="" />
-							<span className="recipe-page__title-text">{t('recipe.title')}</span>
-						</span>
-					</IonTitle>
+					<IonTitle>{t('recipe.title')}</IonTitle>
 				</IonToolbar>
 			</IonHeader>
 

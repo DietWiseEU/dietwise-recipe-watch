@@ -222,12 +222,12 @@ describe('RecipePage', () => {
 		expect(await screen.findByText('recipe.enterUrlModalTitle')).toBeTruthy();
 	});
 
-	it('shows the app icon beside the title in the toolbar', () => {
+	it('shows the bare title in the toolbar', () => {
 		renderPage();
 
 		const title = document.querySelector('ion-header:not([collapse]) ion-title');
 		expect(title?.textContent).toBe('recipe.title');
-		expect(title?.querySelector('img')?.getAttribute('alt')).toBe('');
+		expect(title?.querySelector('img')).toBeNull();
 	});
 
 	it('shows the recipe in a header in place of the address bar once it is known', () => {
