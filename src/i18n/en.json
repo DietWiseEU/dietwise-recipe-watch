@@ -2,7 +2,8 @@
 	"general": {
 		"CANCEL": "CANCEL",
 		"OK": "OK",
-		"clear": "Clear"
+		"clear": "Clear",
+		"close": "Close"
 	},
 	"menu": {
 		"anonymous": "anonymous",

@@ -138,6 +138,13 @@ export function reducer(state: MainData, action: MainAction): MainData {
 				errors: action.message.errors,
 			};
 		}
+		case 'DismissInterventionAction': {
+			if (!state.intervention?.text) throw new Error('No Intervention to dismiss');
+			return {
+				...state,
+				interventionDismissed: true,
+			};
+		}
 		case 'SuggestionStatusAction': {
 			if (state.status !== 'SUCCESS') {
 				throw new Error('Inconsistent state for SuggestionStatusAction: ' + state.status);

@@ -58,6 +58,10 @@ export interface SuggestionStatusAction extends Action {
 	status: SuggestionStatus;
 }
 
+export interface DismissInterventionAction extends Action {
+	type: 'DismissInterventionAction';
+}
+
 export type MessageReceivedAction =
 	| RecipeExtractionMessageReceivedAction
 	| MoreThanOneRecipesAssessmentMessageReceivedAction
@@ -75,7 +79,8 @@ export type MainAction =
 	| SuggestionsMessageReceivedAction
 	| ScoringMessageReceivedAction
 	| RecipeAssessmentErrorMessageReceivedAction
-	| SuggestionStatusAction;
+	| SuggestionStatusAction
+	| DismissInterventionAction;
 
 export function createPrepareToAssessRecipeAction(url: string, lang: string): PrepareToAssessRecipeAction {
 	return {
@@ -148,5 +153,11 @@ export function createSuggestionStatusAction(key: string, status: SuggestionStat
 		type: 'SuggestionStatusAction',
 		key,
 		status,
+	};
+}
+
+export function createDismissInterventionAction(): DismissInterventionAction {
+	return {
+		type: 'DismissInterventionAction',
 	};
 }

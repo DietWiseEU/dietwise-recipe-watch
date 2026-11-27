@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createInitialState, reducer } from './reducer';
 import {
+	createDismissInterventionAction,
 	createMessageReceivedAction,
 	createPrepareToAssessRecipeAction,
 	createRecipeAssessmentFailedAction,
@@ -159,6 +160,34 @@ describe('reducer', () => {
 
 		expect(next.assessmentId).toBeUndefined();
 		expect(next.intervention).toBeUndefined();
+	});
+
+	it('keeps the Intervention, marked as dismissed, once the user dismisses it', () => {
+		const next = reducer(assessedState(), createDismissInterventionAction());
+
+		expect(next.interventionDismissed).toBe(true);
+		expect(next.intervention).toEqual(INTERVENTION);
+		expect(next.assessmentId).toBe(ASSESSMENT_ID);
+	});
+
+	it('shows the Intervention of a new assessment even if the previous one was dismissed', () => {
+		const dismissed = reducer(assessedState(), createDismissInterventionAction());
+
+		const next = reducer(dismissed, createPrepareToAssessRecipeAction('https://example.test/other-recipe', 'en'));
+
+		expect(next.interventionDismissed).toBeFalsy();
+	});
+
+	it.each([
+		['no Intervention', {}],
+		['the "no Intervention" arm', { assessmentId: ASSESSMENT_ID, intervention: { id: 0, text: null } }],
+	])('refuses to dismiss an Intervention when the server assigned %s', (_, assignment) => {
+		const withoutText = reducer(
+			pendingState(),
+			createMessageReceivedAction({ type: 'SUGGESTIONS', suggestions: [createSuggestion('s1')], ...assignment })!,
+		);
+
+		expect(() => reducer(withoutText, createDismissInterventionAction())).toThrow('No Intervention to dismiss');
 	});
 
 	it.each(['ACCEPTED', 'REJECTED'] as const)(

@@ -2,7 +2,8 @@
 	"general": {
 		"CANCEL": "ΑΚΥΡΩΣΗ",
 		"OK": "OK",
-		"clear": "Καθαρισμός"
+		"clear": "Καθαρισμός",
+		"close": "Κλείσιμο"
 	},
 	"menu": {
 		"anonymous": "anonymous",

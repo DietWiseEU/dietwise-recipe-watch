@@ -212,6 +212,8 @@ export interface MainData {
 	assessmentId?: string;
 	/** The Intervention the server assigned to this assessment. */
 	intervention?: Intervention;
+	/** Set when the user has closed the Intervention; it stays closed for the rest of this assessment. */
+	interventionDismissed?: boolean;
 }
 
 export function keyOfSuggestion(s: Suggestion): string {

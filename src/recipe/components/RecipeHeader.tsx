@@ -1,7 +1,8 @@
 import { IonButton, IonCheckbox, IonIcon } from '@ionic/react';
-import { arrowUndo } from 'ionicons/icons';
-import { useAtom, useAtomValue } from 'jotai';
+import { arrowUndo, close } from 'ionicons/icons';
+import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
+import { createDismissInterventionAction } from '@/recipe/actions';
 import { autoAdvanceAtom, mainStateAtom } from '@/recipe/atoms';
 import { MAX_RATING } from '@/recipe/reducers/calculateRating';
 import brainIcon from '@/assets/images/brain.svg';
@@ -21,7 +22,7 @@ export interface RecipeHeaderProps {
  */
 const RecipeHeader: React.FC<RecipeHeaderProps> = (props) => {
 	const { t } = useTranslation();
-	const mainState = useAtomValue(mainStateAtom);
+	const [mainState, dispatch] = useAtom(mainStateAtom);
 	const [autoAdvance, setAutoAdvance] = useAtom(autoAdvanceAtom);
 	const recipe = mainState.recipes?.[0];
 	if (!recipe) {
@@ -90,9 +91,19 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = (props) => {
 					) : null}
 				</div>
 			) : null}
-			{mainState.intervention?.text ? (
-				<div className="recipe-header__intervention" role="status">
-					{mainState.intervention.text}
+			{mainState.intervention?.text && !mainState.interventionDismissed ? (
+				<div className="recipe-header__intervention">
+					<p className="recipe-header__intervention-text" role="status">
+						{mainState.intervention.text}
+					</p>
+					<IonButton
+						className="recipe-header__intervention-close"
+						fill="clear"
+						aria-label={t('general.close')}
+						onClick={() => dispatch(createDismissInterventionAction())}
+					>
+						<IonIcon slot="icon-only" icon={close} />
+					</IonButton>
 				</div>
 			) : null}
 		</header>

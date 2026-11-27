@@ -98,8 +98,9 @@
 }
 
 .recipe-header__intervention {
+	position: relative;
 	margin-top: 10px;
-	padding: 10px 14px;
+	padding: 10px 36px 10px 14px;
 	border-radius: 14px;
 	background: var(--color-notice);
 	color: var(--color-notice-text);
@@ -108,6 +109,31 @@
 	line-height: 1.35;
 	text-align: center;
 	box-shadow: var(--shadow-sm);
+}
+
+.recipe-header__intervention-text {
+	margin: 0;
+}
+
+/* In the corner and out of the flow, so that it adds no height to the banner. It is no taller than a one-line banner,
+   which Ionic's minimum size for an icon-only button would exceed. */
+.recipe-header__intervention-close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 36px;
+	height: 36px;
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+	--padding-start: 0;
+	--padding-end: 0;
+	--border-radius: 50%;
+	--color: var(--color-notice-text);
+}
+
+.recipe-header__intervention-close ion-icon {
+	font-size: 20px;
 }
 
 .recipe-header__auto-advance {

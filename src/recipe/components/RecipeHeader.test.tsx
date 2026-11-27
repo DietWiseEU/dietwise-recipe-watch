@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider as JotaiProvider, createStore } from 'jotai';
 import { describe, expect, it, vi } from 'vitest';
 import {
@@ -196,6 +196,35 @@ describe('RecipeHeader', () => {
 		expect(screen.getByRole('status').textContent).toBe(OTHER_INTERVENTION_TEXT);
 	});
 
+	it('hides the Intervention when the user closes it', () => {
+		renderAssessed({ id: 1, text: INTERVENTION_TEXT });
+
+		fireEvent.click(closeInterventionButton()!);
+
+		expect(screen.queryByRole('status')).toBeNull();
+		expect(closeInterventionButton()).toBeNull();
+	});
+
+	it('keeps the closed Intervention hidden when the user comes back to the recipe', () => {
+		const store = renderAssessed({ id: 1, text: INTERVENTION_TEXT });
+		fireEvent.click(closeInterventionButton()!);
+
+		cleanup();
+		renderHeader(store);
+
+		expect(screen.getByRole('heading').textContent).toBe('omelet');
+		expect(screen.queryByRole('status')).toBeNull();
+	});
+
+	it('shows the Intervention of a new assessment after the user closed the previous one', () => {
+		const store = renderAssessed({ id: 1, text: INTERVENTION_TEXT });
+		fireEvent.click(closeInterventionButton()!);
+
+		act(() => assess(store, { id: 2, text: OTHER_INTERVENTION_TEXT }));
+
+		expect(screen.getByRole('status').textContent).toBe(OTHER_INTERVENTION_TEXT);
+	});
+
 	it('keeps the Intervention when a Suggestion is accepted', () => {
 		const store = renderAssessed({ id: 1, text: INTERVENTION_TEXT });
 
@@ -205,6 +234,10 @@ describe('RecipeHeader', () => {
 		expect(screen.getByRole('status').textContent).toBe(INTERVENTION_TEXT);
 	});
 });
+
+function closeInterventionButton() {
+	return document.querySelector('ion-button[aria-label="general.close"]');
+}
 
 function autoAdvanceCheckbox() {
 	const checkbox = document.querySelector('ion-checkbox');

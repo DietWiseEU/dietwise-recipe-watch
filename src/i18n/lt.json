@@ -2,7 +2,8 @@
 	"general": {
 		"CANCEL": "Atšaukti",
 		"OK": "Gerai",
-		"clear": "Išvalyti"
+		"clear": "Išvalyti",
+		"close": "Uždaryti"
 	},
 	"menu": {
 		"anonymous": "Anonimas",
